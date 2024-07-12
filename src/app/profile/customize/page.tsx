@@ -9,13 +9,22 @@ import {
     InstagramProfile,
 } from '@/services/user'
 import { formatDistanceToNow } from 'date-fns'
-import { Instagram } from 'lucide-react'
+import {
+    Instagram,
+    InstagramIcon,
+    LinkIcon,
+    XIcon,
+    YoutubeIcon,
+} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import AddIntegrationDialog from './add-integration-dialog'
 import AddLinkDialog from './add-link-dialog'
 import LogoutButton from './logout-button'
+import { InferSelectModel } from 'drizzle-orm'
+import { userLinks } from '@/drizzle/schema'
+import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 export default async function CustomizePage() {
@@ -42,7 +51,7 @@ export default async function CustomizePage() {
         : undefined
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen pt-10 pb-20">
+        <div className="flex flex-col justify-center items-center min-h-screen pt-10 pb-24">
             <div className="grid items-center gap-5">
                 {instagramMedia && instagramProfile && (
                     <InstagramWidget
@@ -52,14 +61,10 @@ export default async function CustomizePage() {
                 )}
                 {user.links.length > 0 &&
                     user.links.map((socialLink) => (
-                        <AddLinkDialog link={socialLink} key={socialLink.id}>
-                            <button
-                                className="bg-card text-card-foreground p-2 border text-sm 
-                                tracking-tight font-medium rounded-md text-center"
-                            >
-                                {socialLink.title}
-                            </button>
-                        </AddLinkDialog>
+                        <SocialLink
+                            socialLink={socialLink}
+                            key={socialLink.id}
+                        />
                     ))}
             </div>
             <div className="fixed bottom-5 p-3 bg-card text-card-foreground flex gap-1">
@@ -68,6 +73,41 @@ export default async function CustomizePage() {
                 <AddLinkDialog />
             </div>
         </div>
+    )
+}
+
+function SocialLink({
+    socialLink,
+}: {
+    socialLink: InferSelectModel<typeof userLinks>
+}) {
+    const type = getUrlType(socialLink.url)
+
+    return (
+        <AddLinkDialog
+            link={socialLink}
+            trigger={
+                <Button
+                    variant="outline"
+                    className="bg-card hover:bg-card flex flex-col h-full gap-1 items-center"
+                >
+                    {type === 'youtube' && <YoutubeIcon />}
+                    {type === 'instagram' && <InstagramIcon />}
+                    {(type === 'twitter' || type === 'x') && <XIcon />}
+                    {type === 'other' && <LinkIcon />}
+                    {socialLink.title}
+                    {socialLink.showThumbnail && (
+                        <Image
+                            className="rounded-md border"
+                            src={getYoutubeThumbnailFromUrl(socialLink.url)}
+                            alt="Thumbnail image"
+                            width={150}
+                            height={150}
+                        />
+                    )}
+                </Button>
+            }
+        />
     )
 }
 

@@ -2,7 +2,7 @@
 import { db } from '@/drizzle/index'
 import { userLinks } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
-import { linkSchema, LinkValues } from './schema'
+import { linkSchema, LinkValues } from './add-link-schema'
 import { revalidatePath } from 'next/cache'
 import { eq } from 'drizzle-orm'
 
@@ -23,6 +23,7 @@ export async function addUserLink(values: LinkValues) {
                 .set({
                     title: values.title,
                     url: values.url,
+                    showThumbnail: values.showThumbnail
                 })
                 .where(eq(userLinks.id, values.id))
         } else {
@@ -30,6 +31,7 @@ export async function addUserLink(values: LinkValues) {
                 userId: session.user.id,
                 title: values.title,
                 url: values.url,
+                showThumbnail: values.showThumbnail,
             })
         }
         revalidatePath('/profile/customize')

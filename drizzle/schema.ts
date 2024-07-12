@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm'
-import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
     id: text('id')
@@ -22,6 +22,7 @@ export const userLinks = pgTable('userLinks', {
         .notNull()
         .references(() => users.id, { onDelete: 'cascade' }),
     title: text('title').notNull(),
+    showThumbnail: boolean('showThumbnail'),
     url: text('url').notNull(),
 })
 
