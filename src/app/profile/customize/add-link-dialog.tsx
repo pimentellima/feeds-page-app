@@ -10,140 +10,103 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
-import { users } from '@/drizzle/schema'
-import { DialogDescription } from '@radix-ui/react-dialog'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { PlusIcon } from 'lucide-react'
+import { ReactNode, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { addUserLink, deleteUserLink } from './actions'
+import { linkSchema, LinkValues } from './schema'
 import { InferSelectModel } from 'drizzle-orm'
-import {
-    CogIcon,
-    InstagramIcon,
-    PlusIcon,
-    XIcon,
-    YoutubeIcon,
-} from 'lucide-react'
-import { useState } from 'react'
-
-const urlPlaceholder = {
-    youtube: 'https://www.youtube.com/@example',
-    x: 'https://x.com/example',
-    instagram: 'https://www.instagram.com/example',
-    custom: 'https://something.com/example',
-}
-
-const titlePlaceholder = {
-    youtube: 'Check my youtube channel',
-    instagram: 'Follow my instagram profile',
-    x: 'Follow my X account',
-    custom: 'Follow me at something!',
-}
-
-type IntegrationType = 'youtube' | 'instagram' | 'x' | 'custom'
+import { userLinks } from '@/drizzle/schema'
 
 export default function AddLinkDialog({
-    user,
+    link,
+    children,
 }: {
-    user: InferSelectModel<typeof users>
+    link?: InferSelectModel<typeof userLinks>
+    children?: ReactNode
 }) {
     const [open, setOpen] = useState(false)
-    const [integration, setIntegration] = useState<IntegrationType>()
-    const [url, setUrl] = useState('')
-    const [title, setTitle] = useState('')
+    const {
+        handleSubmit,
+        register,
+        reset,
+        setError,
+        formState: { errors, isSubmitting },
+    } = useForm<LinkValues>({
+        resolver: zodResolver(linkSchema),
+        defaultValues: {
+            id: link?.id || null,
+            title: link?.title || '',
+            url: link?.url || '',
+        },
+    })
+
+    const onSubmit = async (values: LinkValues) => {
+        const error = await addUserLink(values)
+        if (error) {
+            setError('root', { message: error })
+            return
+        }
+        setOpen(false)
+    }
 
     return (
         <Dialog
             onOpenChange={(open) => {
                 setOpen(open)
-                if (open) {
-                    setTitle('')
-                    setUrl('')
-                    setIntegration(undefined)
-                }
+                if (open) reset()
             }}
             open={open}
         >
             <DialogTrigger asChild>
-                <Button variant={'secondary'}>
-                    <PlusIcon className="h-5 w-5 mr-1" />
-                    Add social link
-                </Button>
+                {children ? (
+                    children
+                ) : (
+                    <Button variant={'secondary'}>
+                        <PlusIcon className="h-5 w-5 mr-1" />
+                        Add social link
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add social link</DialogTitle>
+                    <DialogTitle>
+                        {link ? 'Edit social link' : 'Add social link'}
+                    </DialogTitle>
                 </DialogHeader>
-                <form className="grid gap-4">
-                    <Select
-                        value={integration}
-                        onValueChange={(value) =>
-                            setIntegration(value as IntegrationType)
-                        }
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a link type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="youtube">
-                                <p className="flex items-center gap-1">
-                                    <YoutubeIcon
-                                        color="red"
-                                        className="w-5 h-5"
-                                    />
-                                    Youtube
-                                </p>
-                            </SelectItem>
-                            <SelectItem value="instagram">
-                                <p className="flex items-center gap-1">
-                                    <InstagramIcon
-                                        color="pink"
-                                        className="h-5 w-5"
-                                    />
-                                    Instagram
-                                </p>
-                            </SelectItem>
-                            <SelectItem value="x">
-                                <p className="flex items-center gap-1">
-                                    <XIcon color="white" className="h-5 w-5" />X
-                                </p>
-                            </SelectItem>
-                            <SelectItem value="custom">
-                                <p className="flex items-center gap-1">
-                                    <CogIcon color="gray" className="h-5 w-5" />
-                                    Custom
-                                </p>
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="title">Title</Label>
                         <Input
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            {...register('title')}
                             id="title"
-                            disabled={!integration}
-                            placeholder={
-                                integration ? titlePlaceholder[integration] : ''
-                            }
+                            placeholder={'Follow me at example.com!'}
                         />
+                        {!!errors.title?.message && (
+                            <p className="text-destructive text-sm">
+                                {errors.title.message}
+                            </p>
+                        )}
                     </div>
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="url">Url</Label>
                         <Input
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
+                            {...register('url')}
                             id="url"
-                            disabled={!integration}
-                            type="url"
-                            placeholder={
-                                integration ? urlPlaceholder[integration] : ''
-                            }
+                            placeholder={'https://example.com'}
                         />
+                        {!!errors.url?.message && (
+                            <p className="text-destructive text-sm">
+                                {errors.url.message}
+                            </p>
+                        )}
                     </div>
+                    {!!errors.root?.message && (
+                        <p className="text-destructive text-sm">
+                            {errors.root.message}
+                        </p>
+                    )}
                     <DialogFooter className="flex justify-end gap-1">
                         <Button
                             type="button"
@@ -152,7 +115,23 @@ export default function AddLinkDialog({
                         >
                             Cancel
                         </Button>
-                        <Button disabled={!url || !title}>Confirm</Button>
+                        {link && (
+                            <Button
+                                type="button"
+                                onClick={async () => {
+                                    try {
+                                        await deleteUserLink(link?.id)
+                                        setOpen(false)
+                                    } catch {}
+                                }}
+                                variant={'destructive'}
+                            >
+                                Delete
+                            </Button>
+                        )}
+                        <Button disabled={isSubmitting} type="submit">
+                            Save
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

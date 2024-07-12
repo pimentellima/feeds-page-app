@@ -1,11 +1,4 @@
 'use client'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -16,22 +9,18 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import {
-    CogIcon,
-    InstagramIcon,
-    PlusIcon,
-    XIcon,
-    YoutubeIcon,
-} from 'lucide-react'
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import { InstagramIcon, PlusIcon, XIcon, YoutubeIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Input } from '@/components/ui/input'
 
 type IntegrationType = 'youtube' | 'instagram' | 'x'
 
-export default function AddIntegration({
-    hasInstagramIntegration,
-}: {
-    hasInstagramIntegration: boolean
-}) {
+export default function AddIntegrationDialog() {
     const [open, setOpen] = useState(false)
     const [integration, setIntegration] = useState<IntegrationType>()
 
@@ -53,7 +42,7 @@ export default function AddIntegration({
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add new integration</DialogTitle>
+                    <DialogTitle>Add integration</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4">
                     <Select

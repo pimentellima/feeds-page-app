@@ -7,6 +7,7 @@ export async function getUser(userId: string) {
     try {
         const user = await db.query.users.findFirst({
             where: eq(users.id, userId),
+            with: { links: true },
         })
 
         if (!user) return null

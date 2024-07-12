@@ -1,6 +1,6 @@
 {
-  "id": "b6ced52d-716e-426d-accd-620899bfe9b9",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "5164dc58-2214-40bf-9cbc-4f93a5e96586",
+  "prevId": "910967b0-6882-4402-86e2-747e5f77a430",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -33,6 +33,55 @@
         "refreshTokens_userId_users_id_fk": {
           "name": "refreshTokens_userId_users_id_fk",
           "tableFrom": "refreshTokens",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.userLinks": {
+      "name": "userLinks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "userLinks_userId_users_id_fk": {
+          "name": "userLinks_userId_users_id_fk",
+          "tableFrom": "userLinks",
           "tableTo": "users",
           "columnsFrom": [
             "userId"

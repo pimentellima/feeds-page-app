@@ -9,15 +9,14 @@ import {
     InstagramProfile,
 } from '@/services/user'
 import { formatDistanceToNow } from 'date-fns'
-import { Instagram, LinkIcon } from 'lucide-react'
+import { Instagram } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import LinkInstagramDialog from './link-instagram-dialog'
-import LogoutButton from './logout-button'
 import AddIntegrationDialog from './add-integration-dialog'
-import { Button } from '@/components/ui/button'
 import AddLinkDialog from './add-link-dialog'
+import LogoutButton from './logout-button'
+import { Button } from '@/components/ui/button'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -29,32 +28,45 @@ export default async function CustomizePage() {
     const user = await getUser(session.user.id)
 
     if (!user) {
-        redirect('/sign-in')
+        redirect('/404')
     }
 
     const instagramAccessToken = user?.instagramAccessToken
 
-    const userMedia = instagramAccessToken
+    const instagramMedia = instagramAccessToken
         ? await getUserInstagramMedia(instagramAccessToken)
         : undefined
 
-    const userProfile = instagramAccessToken
+    const instagramProfile = instagramAccessToken
         ? await getUserInstagramProfile(instagramAccessToken)
         : undefined
 
     return (
-        <div className="flex flex-col justify-center items-center h-screen space-y-4">
-            <div className="flex items-center gap-5">
-                {userMedia && userProfile && (
-                    <InstagramWidget profile={userProfile} media={userMedia} />
+        <div className="flex flex-col justify-center items-center min-h-screen pt-10 pb-20">
+            <div className="grid items-center gap-5">
+                {instagramMedia && instagramProfile && (
+                    <InstagramWidget
+                        profile={instagramProfile}
+                        media={instagramMedia}
+                    />
                 )}
-                <div className="flex flex-col gap-1">
-                    <AddIntegrationDialog user={user} />
-                    <AddLinkDialog user={user} />
-                </div>
+                {user.links.length > 0 &&
+                    user.links.map((socialLink) => (
+                        <AddLinkDialog link={socialLink} key={socialLink.id}>
+                            <button
+                                className="bg-card text-card-foreground p-2 border text-sm 
+                                tracking-tight font-medium rounded-md text-center"
+                            >
+                                {socialLink.title}
+                            </button>
+                        </AddLinkDialog>
+                    ))}
             </div>
-            <LogoutButton />
-            {/* <LinkInstagramDialog userProfile={userProfile} /> */}
+            <div className="fixed bottom-5 p-2 bg-card text-card-foreground flex gap-1">
+                <LogoutButton />
+                <AddIntegrationDialog />
+                <AddLinkDialog />
+            </div>
         </div>
     )
 }

@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm'
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { relations, sql } from 'drizzle-orm'
+import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
     id: text('id')
@@ -14,6 +14,17 @@ export const users = pgTable('users', {
     imageUrl: text('imageUrl'),
 })
 
+export const userLinks = pgTable('userLinks', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    userId: text('userId')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    url: text('url').notNull(),
+})
+
 export const refreshTokens = pgTable('refreshTokens', {
     token: text('token')
         .notNull()
@@ -24,3 +35,14 @@ export const refreshTokens = pgTable('refreshTokens', {
         .notNull(),
     expires: timestamp('expires', { mode: 'date' }).notNull(),
 })
+
+export const usersRelations = relations(users, ({ many }) => ({
+    links: many(userLinks),
+}))
+
+export const userLinksRelations = relations(userLinks, ({ one }) => ({
+    user: one(users, {
+        fields: [userLinks.userId],
+        references: [users.id],
+    }),
+}))

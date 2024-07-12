@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"name" text,
 	"email" text,
 	"password" text,
+	"instagramAccessToken" text,
 	"created_at" timestamp DEFAULT now(),
 	"imageUrl" text
 );
