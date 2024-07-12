@@ -62,7 +62,7 @@ export default async function CustomizePage() {
                         </AddLinkDialog>
                     ))}
             </div>
-            <div className="fixed bottom-5 p-2 bg-card text-card-foreground flex gap-1">
+            <div className="fixed bottom-5 p-3 bg-card text-card-foreground flex gap-1">
                 <LogoutButton />
                 <AddIntegrationDialog />
                 <AddLinkDialog />
@@ -101,7 +101,8 @@ function InstagramWidget({
                                 media_type === 'CAROUSEL_ALBUM'
                         )
                         .map((post) => (
-                            <div
+                            <Link
+                                href={post.permalink || '/404'}
                                 key={post.id}
                                 className="flex flex-col justify-center items-center group"
                             >
@@ -124,7 +125,7 @@ function InstagramWidget({
                                     </p>
                                 </div>
                                 <Separator className="my-4 group-last:hidden" />
-                            </div>
+                            </Link>
                         ))}
                 </div>
             </ScrollArea>
