@@ -13,6 +13,8 @@ import {
     Instagram,
     InstagramIcon,
     LinkIcon,
+    PencilIcon,
+    UserIcon,
     XIcon,
     YoutubeIcon,
 } from 'lucide-react'
@@ -23,9 +25,20 @@ import AddIntegrationDialog from './add-integration-dialog'
 import AddLinkDialog from './add-link-dialog'
 import LogoutButton from './logout-button'
 import { InferSelectModel } from 'drizzle-orm'
-import { userLinks } from '@/drizzle/schema'
+import { userLinks, users } from '@/drizzle/schema'
 import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import ChangeBioDialog from './change-bio-dialog'
+import ChangeImageDialog from './change-image-dialog'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -51,8 +64,9 @@ export default async function CustomizePage() {
         : undefined
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen pt-10 pb-24">
-            <div className="grid items-center gap-5">
+        <div className="flex justify-center items-center min-h-screen pt-10 pb-24">
+            <div className="grid items-center gap-5 w-80 ">
+                <ProfileInfo user={user} />
                 {instagramMedia && instagramProfile && (
                     <InstagramWidget
                         profile={instagramProfile}
@@ -76,6 +90,22 @@ export default async function CustomizePage() {
     )
 }
 
+function ProfileInfo({ user }: { user: InferSelectModel<typeof users> }) {
+    return (
+        <div className="w-80 flex flex-col justify-center items-center text-center p-3 bg-card border rounded-md">
+            <div className="flex justify-center">
+                <ChangeImageDialog />
+            </div>
+            <div className="grid grid-cols-[6fr,1fr] gap-1 place-items-center mt-1">
+                <p className="text-sm tracking-tight line-clamp-2">
+                    {user.bio || 'No bio'}
+                </p>
+                <ChangeBioDialog bio={user?.bio || ''} />
+            </div>
+        </div>
+    )
+}
+
 function SocialLink({
     socialLink,
 }: {
@@ -91,10 +121,10 @@ function SocialLink({
                     variant="outline"
                     className="bg-card hover:bg-card flex flex-col h-full gap-1 items-center"
                 >
-                    {type === 'youtube' && <YoutubeIcon />}
-                    {type === 'instagram' && <InstagramIcon />}
-                    {(type === 'twitter' || type === 'x') && <XIcon />}
-                    {type === 'other' && <LinkIcon />}
+                    {type === 'youtube' && <YoutubeIcon className='h-5 w-5' />}
+                    {type === 'instagram' && <InstagramIcon className='h-5 w-5' />}
+                    {(type === 'twitter' || type === 'x') && <XIcon className='h-5 w-5' />}
+                    {type === 'other' && <LinkIcon className='h-5 w-5' />}
                     {socialLink.title}
                     {socialLink.showThumbnail && (
                         <Image
@@ -132,7 +162,7 @@ function InstagramWidget({
                     {profile.username}
                 </Link>
             </div>
-            <ScrollArea className="h-72 w-80">
+            <ScrollArea className="h-72">
                 <div className="grid gap-2">
                     {media
                         .filter(

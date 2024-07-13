@@ -54,7 +54,17 @@ export async function getUserInstagramProfile(accessToken: string) {
         const data = await response.json()
         return data as InstagramProfile
     } catch (e) {
-        console.log(e)
         return null
+    }
+}
+
+export async function updateUserImage(userId: string, url: string) {
+    try {
+        await db
+            .update(users)
+            .set({ imageUrl: url })
+            .where(eq(users.id, userId))
+    } catch (e) {
+        console.log(e)
     }
 }

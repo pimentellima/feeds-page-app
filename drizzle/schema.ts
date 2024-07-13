@@ -7,6 +7,8 @@ export const users = pgTable('users', {
         .default(sql`gen_random_uuid()`)
         .primaryKey(),
     name: text('name'),
+    username: text('username'),
+    bio: text('bio'),
     email: text('email'),
     password: text('password'),
     instagramAccessToken: text('instagramAccessToken'),

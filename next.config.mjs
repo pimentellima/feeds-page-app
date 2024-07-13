@@ -4,6 +4,7 @@ const nextConfig = {
         remotePatterns: [
             { hostname: 'scontent.cdninstagram.com' },
             { hostname: 'img.youtube.com' },
+            { hostname: 'utfs.io' },
         ],
     },
 }

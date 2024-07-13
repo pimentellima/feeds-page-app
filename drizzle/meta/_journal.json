@@ -29,6 +29,13 @@
       "when": 1720801048119,
       "tag": "0003_red_killmonger",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1720817179459,
+      "tag": "0004_early_sauron",
+      "breakpoints": true
     }
   ]
 }
