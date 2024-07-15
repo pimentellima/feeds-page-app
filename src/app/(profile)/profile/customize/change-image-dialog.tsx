@@ -17,7 +17,6 @@ export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
     const [open, setOpen] = useState(false)
     const [error, setError] = useState('')
     const [previewUrl, setPreviewUrl] = useState<string>()
-
     return (
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>

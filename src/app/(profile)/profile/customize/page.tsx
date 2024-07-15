@@ -87,7 +87,7 @@ function ProfileInfo({ user }: { user: InferSelectModel<typeof users> }) {
     return (
         <div className="grid justify-center items-center text-center p-3 bg-card border rounded-md">
             <div className="flex justify-center">
-                <ChangeImageDialog />
+                <ChangeImageDialog imageUrl={user?.imageUrl || ''} />
             </div>
             <EditProfileDialog user={user} />
         </div>

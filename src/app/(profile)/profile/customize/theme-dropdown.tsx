@@ -17,10 +17,10 @@ import { updateUserTheme } from './actions'
 export function ThemeDropdown() {
     const { setTheme, theme, forcedTheme } = useTheme()
     const [mounted, setMounted] = React.useState(false)
-    console.log(forcedTheme)
 
     React.useEffect(() => {
         setMounted(true)
+        setTheme(forcedTheme || 'undefined')
     }, [])
 
     if (!mounted) return <></>
