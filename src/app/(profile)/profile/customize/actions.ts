@@ -73,13 +73,19 @@ export async function updateUsernameAndBio(formData: FormData) {
         if (validation.error) return validation.error.issues[0].message
 
         const { username, bio } = validation.data
-        console.log(bio, username)
+        const existingUser = await db.query.users.findFirst({
+            where: eq(users.username, username),
+        })
+        if (!!existingUser && existingUser.id !== session.user.id)
+            return 'Username already exists'
+
         await db
             .update(users)
             .set({ bio, username })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
-    } catch {
+    } catch (e) {
+        console.log(e)
         return 'An error occurred while saving the bio.'
     }
 }
