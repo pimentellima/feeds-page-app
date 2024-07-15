@@ -43,14 +43,18 @@ export default function ChangeBioDialog({ bio }: { bio?: string }) {
                             defaultValue={bio}
                             name="bio"
                             id="bio"
+                            maxLength={50}
                             placeholder="Type here..."
                         />
                         {!!error && (
-                            <p className="text-right text-destructive text-sm">{error}</p>
+                            <p className="text-right text-destructive text-sm">
+                                {error}
+                            </p>
                         )}
                     </div>
                     <div className="flex gap-1 justify-end mt-3">
                         <Button
+                            type="button"
                             variant="outline"
                             onClick={() => setOpen(false)}
                         >

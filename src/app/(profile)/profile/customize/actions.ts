@@ -8,6 +8,7 @@ import { eq } from 'drizzle-orm'
 import * as z from 'zod'
 import { utapi } from '@/server/uploadthing'
 import { FileEsque, UploadFileResult } from 'uploadthing/types'
+import { themes } from '@/constants'
 
 export async function addUserLink(values: LinkValues) {
     'use server'
@@ -69,16 +70,37 @@ export async function updateUserImage(formData: FormData) {
     const file: File | null = formData.get('file') as unknown as File
     if (!file) return 'No files selected'
     try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
         const response: UploadFileResult = await utapi.uploadFiles(file)
         if (response.error) {
             return 'An error occurred'
         }
         if (response.data.url) {
-            await db.update(users).set({ imageUrl: response.data.url })
+            await db
+                .update(users)
+                .set({ imageUrl: response.data.url })
+                .where(eq(users.id, session.user.id))
             revalidatePath('/profile/customize')
         }
     } catch (e) {
         console.log(e)
+        return 'An error occurred'
+    }
+}
+
+export async function updateUserTheme(theme: string) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
+        await db
+            .update(users)
+            .set({ theme: theme })
+            .where(eq(users.id, session.user.id))
+        revalidatePath('/profile/customize')
+    } catch (e) {
         return 'An error occurred'
     }
 }

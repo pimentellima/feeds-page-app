@@ -9,6 +9,7 @@ export const users = pgTable('users', {
     name: text('name'),
     username: text('username'),
     bio: text('bio'),
+    theme: text('theme'),
     email: text('email'),
     password: text('password'),
     instagramAccessToken: text('instagramAccessToken'),

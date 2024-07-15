@@ -57,25 +57,19 @@ export default function AddIntegrationDialog() {
                         <SelectContent>
                             <SelectItem value="youtube">
                                 <p className="flex items-center gap-1">
-                                    <YoutubeIcon
-                                        color="red"
-                                        className="w-5 h-5"
-                                    />
+                                    <YoutubeIcon className="text-red-500 w-5 h-5" />
                                     Youtube
                                 </p>
                             </SelectItem>
                             <SelectItem value="instagram">
                                 <p className="flex items-center gap-1">
-                                    <InstagramIcon
-                                        color="pink"
-                                        className="h-5 w-5"
-                                    />
+                                    <InstagramIcon className="text-pink-500 h-5 w-5" />
                                     Instagram
                                 </p>
                             </SelectItem>
                             <SelectItem value="x">
                                 <p className="flex items-center gap-1">
-                                    <XIcon color="white" className="h-5 w-5" />X
+                                    <XIcon className="text-foreground h-5 w-5" />X
                                 </p>
                             </SelectItem>
                         </SelectContent>

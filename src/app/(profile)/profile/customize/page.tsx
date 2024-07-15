@@ -1,6 +1,9 @@
+import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { userLinks, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
+import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
 import {
     getUser,
     getUserInstagramMedia,
@@ -9,12 +12,11 @@ import {
     InstagramProfile,
 } from '@/services/user'
 import { formatDistanceToNow } from 'date-fns'
+import { InferSelectModel } from 'drizzle-orm'
 import {
     Instagram,
     InstagramIcon,
     LinkIcon,
-    PencilIcon,
-    UserIcon,
     XIcon,
     YoutubeIcon,
 } from 'lucide-react'
@@ -23,22 +25,10 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import AddIntegrationDialog from './add-integration-dialog'
 import AddLinkDialog from './add-link-dialog'
-import LogoutButton from './logout-button'
-import { InferSelectModel } from 'drizzle-orm'
-import { userLinks, users } from '@/drizzle/schema'
-import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import ChangeBioDialog from './change-bio-dialog'
 import ChangeImageDialog from './change-image-dialog'
+import LogoutButton from './logout-button'
+import { ThemeDropdown } from './theme-dropdown'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -64,8 +54,8 @@ export default async function CustomizePage() {
         : undefined
 
     return (
-        <div className="flex justify-center items-center min-h-screen pt-10 pb-24">
-            <div className="grid items-center gap-5 w-80 ">
+        <div className="bg-gradient flex justify-center items-center min-h-screen pt-10 pb-24">
+            <div className="grid items-center gap-5 w-1/2">
                 <ProfileInfo user={user} />
                 {instagramMedia && instagramProfile && (
                     <InstagramWidget
@@ -81,10 +71,13 @@ export default async function CustomizePage() {
                         />
                     ))}
             </div>
-            <div className="fixed bottom-5 p-3 bg-card text-card-foreground flex gap-1">
+            <div className="shadow-md rounded-md fixed bottom-5 p-3 bg-card text-card-foreground flex gap-1">
                 <LogoutButton />
                 <AddIntegrationDialog />
                 <AddLinkDialog />
+            </div>
+            <div className="fixed top-5 right-5">
+                <ThemeDropdown />
             </div>
         </div>
     )
@@ -92,13 +85,13 @@ export default async function CustomizePage() {
 
 function ProfileInfo({ user }: { user: InferSelectModel<typeof users> }) {
     return (
-        <div className="w-80 flex flex-col justify-center items-center text-center p-3 bg-card border rounded-md">
+        <div className="grid justify-center items-center text-center p-3 bg-card border rounded-md">
             <div className="flex justify-center">
                 <ChangeImageDialog />
             </div>
             <div className="grid grid-cols-[6fr,1fr] gap-1 place-items-center mt-1">
-                <p className="text-sm tracking-tight line-clamp-2">
-                    {user.bio || 'No bio'}
+                <p className="w-full text-sm tracking-tight line-clamp-2">
+                    {user?.bio}
                 </p>
                 <ChangeBioDialog bio={user?.bio || ''} />
             </div>
@@ -121,10 +114,14 @@ function SocialLink({
                     variant="outline"
                     className="bg-card hover:bg-card flex flex-col h-full gap-1 items-center"
                 >
-                    {type === 'youtube' && <YoutubeIcon className='h-5 w-5' />}
-                    {type === 'instagram' && <InstagramIcon className='h-5 w-5' />}
-                    {(type === 'twitter' || type === 'x') && <XIcon className='h-5 w-5' />}
-                    {type === 'other' && <LinkIcon className='h-5 w-5' />}
+                    {type === 'youtube' && <YoutubeIcon className="text-red-500 h-5 w-5" />}
+                    {type === 'instagram' && (
+                        <InstagramIcon className="text-pink-500 h-5 w-5" />
+                    )}
+                    {(type === 'twitter' || type === 'x') && (
+                        <XIcon className="h-5 w-5 text-foreground" />
+                    )}
+                    {type === 'other' && <LinkIcon className="h-5 w-5 text-gray-500" />}
                     {socialLink.title}
                     {socialLink.showThumbnail && (
                         <Image
@@ -155,10 +152,10 @@ function InstagramWidget({
         >
             <div className="mb-3">
                 <Link
-                    className="flex gap-2 items-center"
+                    className="flex gap-2 justify-center"
                     href={`https://instagram.com/${profile.username}`}
                 >
-                    <Instagram className="w-4 h-4" />
+                    <InstagramIcon className="text-pink-500 w-4 h-4" />
                     {profile.username}
                 </Link>
             </div>

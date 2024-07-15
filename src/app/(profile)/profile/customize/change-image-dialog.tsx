@@ -1,4 +1,5 @@
 'use client'
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
@@ -6,14 +7,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { PencilIcon, UserIcon } from 'lucide-react'
-import { useFormState, useFormStatus } from 'react-dom'
-import { changeUserBio, updateUserImage } from './actions'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { UserIcon } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { updateUserImage } from './actions'
 
 export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
     const [open, setOpen] = useState(false)
@@ -33,7 +31,7 @@ export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
                             alt="profile image"
                         />
                     ) : (
-                        <UserIcon className="h-28 w-28 rounded-full bg-secondary p-1" />
+                        <UserIcon className="h-28 w-28 rounded-full bg-background p-1" />
                     )}
                 </button>
             </DialogTrigger>
