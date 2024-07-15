@@ -37,7 +37,7 @@ export const authOptions = {
             }
             const [newUser] = await db
                 .insert(users)
-                .values({ id: user.id })
+                .values({ id: user.id, email: user.email })
                 .returning()
             user.id = newUser.id
             return true
@@ -92,13 +92,13 @@ export const authOptions = {
                     const user = await db.query.users.findFirst({
                         where: eq(users.email, email),
                     })
-                    
+
                     if (!user || !user.password) return null
                     const passwordsMatch = await bcrypt.compare(
                         password,
                         user.password
                     )
-                    
+
                     if (passwordsMatch)
                         return {
                             id: user.id,
