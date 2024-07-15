@@ -51,6 +51,7 @@ export default function EditProfileDialog({
                             return
                         }
                         setOpen(false)
+                        setError('')
                     }}
                 >
                     <div className="flex flex-col space-y-1.5">
