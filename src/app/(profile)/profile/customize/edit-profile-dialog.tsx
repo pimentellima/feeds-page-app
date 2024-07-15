@@ -10,26 +10,42 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PencilIcon } from 'lucide-react'
 import { useFormState, useFormStatus } from 'react-dom'
-import { changeUserBio } from './actions'
+import { updateUsernameAndBio } from './actions'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import { InferSelectModel } from 'drizzle-orm'
+import { users } from '@/drizzle/schema'
+import { Textarea } from '@/components/ui/textarea'
 
-export default function ChangeBioDialog({ bio }: { bio?: string }) {
+export default function EditProfileDialog({
+    user,
+}: {
+    user: Pick<InferSelectModel<typeof users>, 'bio' | 'username'>
+}) {
     const [error, setError] = useState('')
     const [open, setOpen] = useState(false)
 
     return (
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger>
-                <PencilIcon className="h-5 w-5" />
+                <div
+                    className="mt-1 rounded-md text-sm font-medium hover:bg-accent transition-colors
+                        px-4 py-2 max-w-96"
+                >
+                    <p className="w-full">{user.username || 'No username'}</p>
+                    <p className="overflow-hidden whitespace-nowrap text-ellipsis">
+                        {user.bio || 'No bio'}
+                    </p>
+                </div>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Change bio</DialogTitle>
+                    <DialogTitle>Edit username and bio</DialogTitle>
                 </DialogHeader>
                 <form
+                    className="grid gap-4"
                     action={async (formData) => {
-                        const error = await changeUserBio(formData)
+                        const error = await updateUsernameAndBio(formData)
                         if (error) {
                             setError(error)
                             return
@@ -38,20 +54,30 @@ export default function ChangeBioDialog({ bio }: { bio?: string }) {
                     }}
                 >
                     <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="bio">Bio</Label>
+                        <Label htmlFor="username">Username</Label>
                         <Input
-                            defaultValue={bio}
-                            name="bio"
-                            id="bio"
-                            maxLength={50}
+                            defaultValue={user.username || ''}
+                            name="username"
+                            id="username"
+                            maxLength={25}
                             placeholder="Type here..."
                         />
-                        {!!error && (
-                            <p className="text-right text-destructive text-sm">
-                                {error}
-                            </p>
-                        )}
                     </div>
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="bio">Bio</Label>
+                        <Textarea
+                            defaultValue={user.bio || ''}
+                            name="bio"
+                            id="bio"
+                            maxLength={150}
+                            placeholder="Type here..."
+                        />
+                    </div>
+                    {!!error && (
+                        <p className="text-right text-destructive text-sm">
+                            {error}
+                        </p>
+                    )}
                     <div className="flex gap-1 justify-end mt-3">
                         <Button
                             type="button"
@@ -72,7 +98,7 @@ function SubmitButton() {
     const status = useFormStatus()
     return (
         <Button disabled={status.pending} type="submit">
-            Submit
+            Save
         </Button>
     )
 }

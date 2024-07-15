@@ -49,16 +49,34 @@ export async function deleteUserLink(linkId: string) {
     revalidatePath('/profile/customize')
 }
 
-export async function changeUserBio(formData: FormData) {
+export async function updateUsernameAndBio(formData: FormData) {
     try {
-        const valiation = z.string().safeParse(formData.get('bio'))
-        if (valiation.error) return 'Error validating form values.'
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
+        const validation = z
+            .object({
+                username: z
+                    .string()
+                    .max(25, {
+                        message: 'Username must be 25 characters or less',
+                    })
+                    .min(1, { message: 'Username is required' }),
+                bio: z
+                    .string()
+                    .max(150, { message: 'Bio must be 150 characters or less' })
+                    .optional(),
+            })
+            .safeParse({
+                username: formData.get('username'),
+                bio: formData.get('bio'),
+            })
+        if (validation.error) return validation.error.issues[0].message
 
+        const { username, bio } = validation.data
+        console.log(bio, username)
         await db
             .update(users)
-            .set({ bio: valiation.data })
+            .set({ bio, username })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
     } catch {

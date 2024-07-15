@@ -25,7 +25,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import AddIntegrationDialog from './add-integration-dialog'
 import AddLinkDialog from './add-link-dialog'
-import ChangeBioDialog from './change-bio-dialog'
+import EditProfileDialog from './edit-profile-dialog'
 import ChangeImageDialog from './change-image-dialog'
 import LogoutButton from './logout-button'
 import { ThemeDropdown } from './theme-dropdown'
@@ -89,12 +89,7 @@ function ProfileInfo({ user }: { user: InferSelectModel<typeof users> }) {
             <div className="flex justify-center">
                 <ChangeImageDialog />
             </div>
-            <div className="grid grid-cols-[6fr,1fr] gap-1 place-items-center mt-1">
-                <p className="w-full text-sm tracking-tight line-clamp-2">
-                    {user?.bio}
-                </p>
-                <ChangeBioDialog bio={user?.bio || ''} />
-            </div>
+            <EditProfileDialog user={user} />
         </div>
     )
 }
@@ -114,14 +109,18 @@ function SocialLink({
                     variant="outline"
                     className="bg-card hover:bg-card flex flex-col h-full gap-1 items-center"
                 >
-                    {type === 'youtube' && <YoutubeIcon className="text-red-500 h-5 w-5" />}
+                    {type === 'youtube' && (
+                        <YoutubeIcon className="text-red-500 h-5 w-5" />
+                    )}
                     {type === 'instagram' && (
                         <InstagramIcon className="text-pink-500 h-5 w-5" />
                     )}
                     {(type === 'twitter' || type === 'x') && (
                         <XIcon className="h-5 w-5 text-foreground" />
                     )}
-                    {type === 'other' && <LinkIcon className="h-5 w-5 text-gray-500" />}
+                    {type === 'other' && (
+                        <LinkIcon className="h-5 w-5 text-gray-500" />
+                    )}
                     {socialLink.title}
                     {socialLink.showThumbnail && (
                         <Image
