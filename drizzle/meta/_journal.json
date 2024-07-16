@@ -71,6 +71,13 @@
       "when": 1721147523190,
       "tag": "0009_elite_the_spike",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1721152281147,
+      "tag": "0010_shallow_cobalt_man",
+      "breakpoints": true
     }
   ]
 }

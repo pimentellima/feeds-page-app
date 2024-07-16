@@ -1,14 +1,13 @@
 'use server'
 import { db } from '@/drizzle/index'
-import { userLinks, users } from '@/drizzle/schema'
+import { accountLinks, userLinks, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
-import { linkSchema, LinkValues } from './add-link-schema'
-import { revalidatePath } from 'next/cache'
-import { eq } from 'drizzle-orm'
-import * as z from 'zod'
 import { utapi } from '@/server/uploadthing'
-import { FileEsque, UploadFileResult } from 'uploadthing/types'
-import { themes } from '@/constants'
+import { eq } from 'drizzle-orm'
+import { revalidatePath } from 'next/cache'
+import { UploadFileResult } from 'uploadthing/types'
+import * as z from 'zod'
+import { linkSchema, LinkValues } from './add-link-schema'
 
 export async function addUserLink(values: LinkValues) {
     'use server'
@@ -126,5 +125,43 @@ export async function updateUserTheme(theme: string) {
         revalidatePath('/profile/customize')
     } catch (e) {
         return 'An error occurred'
+    }
+}
+
+export async function addIntegration(
+    type: 'youtube' | 'instagram' | 'x' | 'tiktok'
+) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+        const userAccountLinks = await db.query.accountLinks.findMany({
+            where: eq(accountLinks.userId, session.user.id),
+        })
+        const tiktokAccountLinkIndex = userAccountLinks.findIndex(
+            (accountLink) => accountLink.type === type
+        )
+        const typeTitleCase = type.charAt(0).toUpperCase() + type.slice(1)
+        if (tiktokAccountLinkIndex !== -1) {
+            return `You already have a ${typeTitleCase} account linked`
+        }
+        await db.insert(accountLinks).values({
+            userId: session.user.id,
+            type,
+        })
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'Error adding integration'
+    }
+}
+
+export async function deleteIntegration(id: string) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
+        await db.delete(accountLinks).where(eq(accountLinks.id, id))
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'Error deleting integration'
     }
 }

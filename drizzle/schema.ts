@@ -29,6 +29,7 @@ export const accountLinkTypeEnum = pgEnum('accountLinkType', [
     'tiktok',
     'instagram',
     'x',
+    'youtube',
 ])
 
 export const accountLinks = pgTable('accountLinks', {
@@ -39,10 +40,10 @@ export const accountLinks = pgTable('accountLinks', {
         .notNull()
         .references(() => users.id, { onDelete: 'cascade' }),
     type: accountLinkTypeEnum('type').notNull(),
-    accessToken: text('accessToken').notNull(),
+    accessToken: text('accessToken'),
     expiresAt: timestamp('expiresAt', {
         mode: 'date',
-    }).notNull(),
+    }),
     refreshToken: text('refreshToken'),
     refreshExpiresAt: timestamp('refreshExpiresAt', {
         mode: 'date',

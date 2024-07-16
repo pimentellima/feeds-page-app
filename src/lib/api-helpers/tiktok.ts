@@ -7,10 +7,10 @@ export interface TiktokVideo {
     duration: number
     cover_image_url: string
     embed_link: string
-    create_time: number,
-    comment_count: number,
-    share_count: number,
-    view_count: number,
+    create_time: number
+    comment_count: number
+    share_count: number
+    view_count: number
     share_url: string
 }
 
@@ -50,36 +50,30 @@ interface UserApiResponse {
 }
 
 export async function getTiktokProfileAndMedia(accessToken: string) {
-    try {
-        const profileUrl =
-            'https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,profile_deep_link,username'
-        const mediaUrl =
-            'https://open.tiktokapis.com/v2/video/list/?fields=id,title,video_description,duration,cover_image_url,embed_link,create_time,share_url,comment_count,share_count,view_count'
+    const profileUrl =
+        'https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,profile_deep_link,username'
+    const mediaUrl =
+        'https://open.tiktokapis.com/v2/video/list/?fields=id,title,video_description,duration,cover_image_url,embed_link,create_time,share_url,comment_count,share_count,view_count'
 
-        const userResponse = await fetch(profileUrl, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
-        const userResponseJson = (await userResponse.json()) as UserApiResponse
+    const userResponse = await fetch(profileUrl, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    })
+    const userResponseJson = (await userResponse.json()) as UserApiResponse
 
-        const mediaResponse = await fetch(mediaUrl, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-            },
-        })
-        const mediaResponseJson =
-            (await mediaResponse.json()) as MediaApiResponse
-        const videoIds = mediaResponseJson.data.videos.map((video) => video.id)
+    const mediaResponse = await fetch(mediaUrl, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    })
+    const mediaResponseJson = (await mediaResponse.json()) as MediaApiResponse
 
-        return {
-            profileData: userResponseJson.data,
-            mediaData: mediaResponseJson.data,
-        }
-    } catch (e) {
-        return null
+    return {
+        profileData: userResponseJson.data,
+        mediaData: mediaResponseJson.data,
     }
 }

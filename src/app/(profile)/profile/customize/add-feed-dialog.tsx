@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -16,24 +15,53 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { InstagramIcon, PlusIcon, XIcon, YoutubeIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import {
+    InstagramIcon,
+    LoaderIcon,
+    PlusIcon,
+    XIcon,
+    YoutubeIcon,
+} from 'lucide-react'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { addIntegration as addFeedIntegration } from './actions'
 
-type IntegrationType = 'youtube' | 'instagram' | 'x' | 'tiktok'
+type IntegrationType = 'youtube' | 'instagram' | 'x' | 'tiktok' | ''
 
-export default function AddIntegrationDialog() {
-    const router = useRouter()
+export default function AddFeedDialog() {
     const [open, setOpen] = useState(false)
-    const [error, setError] = useState('')
-    const [integration, setIntegration] = useState<IntegrationType>()
+
+    const {
+        setError,
+        handleSubmit,
+        register,
+        setValue,
+        reset,
+        clearErrors,
+        watch,
+        formState: { errors, isSubmitting },
+    } = useForm<{ type: IntegrationType }>({
+        defaultValues: {
+            type: '',
+        },
+    })
+
+    const onSubmit = async (values: { type: IntegrationType }) => {
+        if (!values.type) return
+        const error = await addFeedIntegration(values.type)
+        if (error) {
+            setError('root', { message: error })
+            return
+        }
+        setOpen(false)
+    }
 
     return (
         <Dialog
             onOpenChange={(open) => {
                 setOpen(open)
                 if (open) {
-                    setIntegration(undefined)
+                    reset()
                 }
             }}
             open={open}
@@ -41,22 +69,23 @@ export default function AddIntegrationDialog() {
             <DialogTrigger asChild>
                 <Button variant={'secondary'}>
                     <PlusIcon className="h-5 w-5 mr-1" />
-                    Add integration
+                    Add feed
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add integration</DialogTitle>
+                    <DialogTitle>Add feed</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     <Select
-                        value={integration}
-                        onValueChange={(value) =>
-                            setIntegration(value as IntegrationType)
-                        }
+                        value={watch('type')}
+                        onValueChange={(value) => {
+                            setValue('type', value as IntegrationType)
+                            clearErrors()
+                        }}
                     >
                         <SelectTrigger>
-                            <SelectValue placeholder="Select an integration type" />
+                            <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="youtube">
@@ -85,36 +114,31 @@ export default function AddIntegrationDialog() {
                             </SelectItem>
                         </SelectContent>
                     </Select>
-                    {integration === 'tiktok' && (
-                        <Button
-                            onClick={async () => {
-                                try {
-                                    const res = await fetch('/api/tiktok', {
-                                        method: 'POST',
-                                    })
-                                    const data = await res.json()
-                                    const url = data.url as string
-                                    router.push(url)
-                                } catch {
-                                    setError(
-                                        'Error linking account. Please try again.'
-                                    )
-                                }
-                            }}
-                        >
-                            Connect your TikTok account
-                        </Button>
+                    {!!errors.root && (
+                        <p className="mt-1 text-destructive text-sm">
+                            {errors.root.message}
+                        </p>
                     )}
-                </div>
-                <DialogFooter className="flex justify-end gap-1">
-                    <Button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        variant={'outline'}
-                    >
-                        Cancel
-                    </Button>
-                </DialogFooter>
+                    <div className="flex justify-end gap-1">
+                        <Button
+                            type="button"
+                            onClick={() => setOpen(false)}
+                            variant={'outline'}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className="flex gap-1 items-center"
+                            disabled={isSubmitting}
+                            type="submit"
+                        >
+                            {isSubmitting && (
+                                <LoaderIcon className="h-4 w-4 animate-spin" />
+                            )}
+                            Add feed
+                        </Button>
+                    </div>
+                </form>
             </DialogContent>
         </Dialog>
     )
