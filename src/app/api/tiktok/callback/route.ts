@@ -80,19 +80,21 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 .update(accountLinks)
                 .set({
                     accessToken: data.access_token,
-                    expiresIn: data.expires_in,
+                    expiresAt: new Date(Date.now() + data.expires_in),
                     refreshToken: data.refresh_token,
-                    refresh_expires_in: data.refresh_expires_in,
-                    type: 'tiktok',
-                    userId,
+                    refreshExpiresAt: new Date(
+                        Date.now() + data.refresh_expires_in
+                    ),
                 })
                 .where(eq(accountLinks.id, accountLinkId))
         } else {
             await db.insert(accountLinks).values({
                 accessToken: data.access_token,
-                expiresIn: data.expires_in,
+                expiresAt: new Date(Date.now() + data.expires_in),
                 refreshToken: data.refresh_token,
-                refresh_expires_in: data.refresh_expires_in,
+                refreshExpiresAt: new Date(
+                    Date.now() + data.refresh_expires_in
+                ),
                 type: 'tiktok',
                 userId,
             })

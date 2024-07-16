@@ -40,9 +40,13 @@ export const accountLinks = pgTable('accountLinks', {
         .references(() => users.id, { onDelete: 'cascade' }),
     type: accountLinkTypeEnum('type').notNull(),
     accessToken: text('accessToken').notNull(),
-    expiresIn: integer('expiresIn').notNull(),
+    expiresAt: timestamp('expiresAt', {
+        mode: 'date',
+    }).notNull(),
     refreshToken: text('refreshToken'),
-    refresh_expires_in: integer('refresh_expiresIn'),
+    refreshExpiresAt: timestamp('refreshExpiresAt', {
+        mode: 'date',
+    }),
 })
 
 export const userLinks = pgTable('userLinks', {

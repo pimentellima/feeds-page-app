@@ -114,7 +114,6 @@ export default function AddIntegrationDialog() {
                     >
                         Cancel
                     </Button>
-                    <Button disabled={!integration}>Continue</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
