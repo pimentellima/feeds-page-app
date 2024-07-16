@@ -1,7 +1,7 @@
 import { db } from '@/drizzle/index'
 import { accountLinks, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -68,37 +68,24 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
             )
         }
-        const userAccountLinks = await db.query.accountLinks.findMany({
-            where: eq(accountLinks.userId, userId),
-        })
-        const tiktokAccountLinkIndex = userAccountLinks.findIndex(
-            (accountLink) => accountLink.type === 'tiktok'
-        )
-        if (tiktokAccountLinkIndex !== -1) {
-            const accountLinkId = userAccountLinks[tiktokAccountLinkIndex].id
-            await db
-                .update(accountLinks)
-                .set({
-                    accessToken: data.access_token,
-                    expiresAt: new Date(Date.now() + data.expires_in),
-                    refreshToken: data.refresh_token,
-                    refreshExpiresAt: new Date(
-                        Date.now() + data.refresh_expires_in
-                    ),
-                })
-                .where(eq(accountLinks.id, accountLinkId))
-        } else {
-            await db.insert(accountLinks).values({
+        const accountLink = await db
+            .update(accountLinks)
+            .set({
                 accessToken: data.access_token,
-                expiresAt: new Date(Date.now() + data.expires_in),
+                expiresAt: new Date(Date.now() + data.expires_in * 1000),
                 refreshToken: data.refresh_token,
                 refreshExpiresAt: new Date(
-                    Date.now() + data.refresh_expires_in
+                    Date.now() + data.refresh_expires_in * 1000
                 ),
                 type: 'tiktok',
                 userId,
             })
-        }
+            .where(
+                and(
+                    eq(accountLinks.userId, userId),
+                    eq(accountLinks.type, 'tiktok')
+                )
+            )
 
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`
