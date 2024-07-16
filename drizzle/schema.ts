@@ -1,5 +1,14 @@
 import { relations, sql } from 'drizzle-orm'
-import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import {
+    boolean,
+    numeric,
+    pgEnum,
+    pgTable,
+    serial,
+    text,
+    timestamp,
+    integer,
+} from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
     id: text('id')
@@ -15,6 +24,25 @@ export const users = pgTable('users', {
     instagramAccessToken: text('instagramAccessToken'),
     createdAt: timestamp('created_at').defaultNow(),
     imageUrl: text('imageUrl'),
+})
+export const accountLinkTypeEnum = pgEnum('accountLinkType', [
+    'tiktok',
+    'instagram',
+    'x',
+])
+
+export const accountLinks = pgTable('accountLinks', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    userId: text('userId')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+    type: accountLinkTypeEnum('type').notNull(),
+    accessToken: text('accessToken').notNull(),
+    expiresIn: integer('expiresIn').notNull(),
+    refreshToken: text('refreshToken'),
+    refresh_expires_in: integer('refresh_expiresIn'),
 })
 
 export const userLinks = pgTable('userLinks', {
@@ -42,11 +70,19 @@ export const refreshTokens = pgTable('refreshTokens', {
 
 export const usersRelations = relations(users, ({ many }) => ({
     links: many(userLinks),
+    accountLinks: many(accountLinks),
 }))
 
 export const userLinksRelations = relations(userLinks, ({ one }) => ({
     user: one(users, {
         fields: [userLinks.userId],
+        references: [users.id],
+    }),
+}))
+
+export const accountLinksRelations = relations(accountLinks, ({ one }) => ({
+    user: one(users, {
+        fields: [accountLinks.userId],
         references: [users.id],
     }),
 }))

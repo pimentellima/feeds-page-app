@@ -7,6 +7,7 @@ import { AuthOptions } from 'next-auth'
 import { getServerSession } from 'next-auth/next'
 import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
+import TiktokProvider from 'next-auth/providers/github'
 import Credentials from 'next-auth/providers/credentials'
 import * as z from 'zod'
 import { eq } from 'drizzle-orm'
@@ -37,7 +38,7 @@ export const authOptions = {
             }
             const [newUser] = await db
                 .insert(users)
-                .values({ id: user.id, email: user.email })
+                .values({ email: user.email })
                 .returning()
             user.id = newUser.id
             return true
@@ -115,6 +116,10 @@ export const authOptions = {
         GithubProvider({
             clientId: process.env.GITHUB_CLIENT_ID!,
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        }),
+        TiktokProvider({
+            clientId: process.env.TIKTOK_CLIENT_ID!,
+            clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
         }),
     ],
 } satisfies AuthOptions

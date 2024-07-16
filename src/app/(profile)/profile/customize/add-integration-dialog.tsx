@@ -1,4 +1,5 @@
 'use client'
+import TiktokIcon from '@/components/tiktok-icon'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -16,12 +17,15 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { InstagramIcon, PlusIcon, XIcon, YoutubeIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-type IntegrationType = 'youtube' | 'instagram' | 'x'
+type IntegrationType = 'youtube' | 'instagram' | 'x' | 'tiktok'
 
 export default function AddIntegrationDialog() {
+    const router = useRouter()
     const [open, setOpen] = useState(false)
+    const [error, setError] = useState('')
     const [integration, setIntegration] = useState<IntegrationType>()
 
     return (
@@ -69,11 +73,38 @@ export default function AddIntegrationDialog() {
                             </SelectItem>
                             <SelectItem value="x">
                                 <p className="flex items-center gap-1">
-                                    <XIcon className="text-foreground h-5 w-5" />X
+                                    <XIcon className="text-foreground h-5 w-5" />
+                                    X
+                                </p>
+                            </SelectItem>
+                            <SelectItem value="tiktok">
+                                <p className="flex items-center gap-1">
+                                    <TiktokIcon className="fill-foreground h-5 w-5" />
+                                    Tiktok
                                 </p>
                             </SelectItem>
                         </SelectContent>
                     </Select>
+                    {integration === 'tiktok' && (
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    const res = await fetch('/api/tiktok', {
+                                        method: 'POST',
+                                    })
+                                    const data = await res.json()
+                                    const url = data.url as string
+                                    router.push(url)
+                                } catch {
+                                    setError(
+                                        'Error linking account. Please try again.'
+                                    )
+                                }
+                            }}
+                        >
+                            Connect your TikTok account
+                        </Button>
+                    )}
                 </div>
                 <DialogFooter className="flex justify-end gap-1">
                     <Button

@@ -43,6 +43,27 @@
       "when": 1720890866893,
       "tag": "0005_simple_quasar",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1721137022708,
+      "tag": "0006_even_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1721137587965,
+      "tag": "0007_amazing_maverick",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1721137805963,
+      "tag": "0008_abnormal_sinister_six",
+      "breakpoints": true
     }
   ]
 }
