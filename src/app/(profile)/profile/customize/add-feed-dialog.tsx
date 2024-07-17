@@ -100,16 +100,16 @@ export default function AddFeedDialog() {
                                     Instagram
                                 </p>
                             </SelectItem>
-                            <SelectItem value="x">
-                                <p className="flex items-center gap-1">
-                                    <XIcon className="text-foreground h-5 w-5" />
-                                    X
-                                </p>
-                            </SelectItem>
                             <SelectItem value="tiktok">
                                 <p className="flex items-center gap-1">
                                     <TiktokIcon className="fill-foreground h-5 w-5" />
                                     Tiktok
+                                </p>
+                            </SelectItem>
+                            <SelectItem disabled value="x">
+                                <p className="flex items-center gap-1">
+                                    <XIcon className="text-foreground h-5 w-5" />
+                                    X (Coming soon)
                                 </p>
                             </SelectItem>
                         </SelectContent>
