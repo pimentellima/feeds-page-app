@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/index'
-import { accountLinks, users } from '@/drizzle/schema'
+import { accountLinks } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { encodeBody } from '@/lib/encode-body'
 import { and, eq } from 'drizzle-orm'
@@ -30,50 +30,68 @@ const handler = async (req: NextRequest, res: NextResponse) => {
         if (!code)
             return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
 
-        const response = await fetch(
-            'https://open.tiktokapis.com/v2/oauth/token/',
+        const shortLivedTokenResponse = await fetch(
+            'https://api.instagram.com/oauth/access_token',
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: encodeBody({
-                    client_key: process.env.TIKTOK_CLIENT_ID!,
-                    client_secret: process.env.TIKTOK_CLIENT_SECRET!,
+                    client_id: process.env.INSTAGRAM_APP_ID!,
+                    client_secret: process.env.INSTAGRAM_APP_SECRET!,
                     code,
                     grant_type: 'authorization_code',
-                    redirect_uri: `${process.env.NEXT_PUBLIC_URL}/api/tiktok/callback`,
+                    redirect_uri: `${process.env.NEXT_PUBLIC_URL}/api/ig/callback`,
                 }),
             }
         )
-        const data = (await response.json()) as {
+        const shortLivedTokenJson = (await shortLivedTokenResponse.json()) as {
             access_token: string
-            expires_in: number
-            open_id: string
-            refresh_expires_in: number
-            refresh_token: string
-            scope: string
-            token_type: string
         }
-        if (!data.access_token) {
+
+        console.log('short', shortLivedTokenJson)
+        if (!shortLivedTokenJson.access_token) {
             return NextResponse.redirect(
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
             )
         }
+
+        const longLivedTokenResponse = await fetch(
+            `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${encodeURIComponent(
+                process.env.INSTAGRAM_APP_SECRET!
+            )}&access_token=${encodeURIComponent(
+                shortLivedTokenJson.access_token
+            )}`,
+            {
+                method: 'GET',
+            }
+        )
+        
+        const longLivedTokenJson = (await longLivedTokenResponse.json()) as {
+            access_token: string
+            expires_in: number
+        }
+        console.log('long', longLivedTokenJson)
+
+        if (!longLivedTokenJson.access_token) {
+            return NextResponse.redirect(
+                `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
+            )
+        }
+
         await db
             .update(accountLinks)
             .set({
-                accessToken: data.access_token,
-                expiresAt: new Date(Date.now() + data.expires_in * 1000),
-                refreshToken: data.refresh_token,
-                refreshExpiresAt: new Date(
-                    Date.now() + data.refresh_expires_in * 1000
+                accessToken: longLivedTokenJson.access_token,
+                expiresAt: new Date(
+                    Date.now() + longLivedTokenJson.expires_in * 1000
                 ),
             })
             .where(
                 and(
                     eq(accountLinks.userId, userId),
-                    eq(accountLinks.type, 'tiktok')
+                    eq(accountLinks.type, 'instagram')
                 )
             )
 

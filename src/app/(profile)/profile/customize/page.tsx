@@ -3,10 +3,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { accountLinks, userLinks, users } from '@/drizzle/schema'
-import {
-    getUserInstagramMedia,
-    getUserInstagramProfile,
-} from '@/lib/api-helpers/instagram'
+import { getInstagramProfileAndMedia } from '@/lib/api-helpers/instagram'
 import { getTiktokProfileAndMedia } from '@/lib/api-helpers/tiktok'
 import { auth } from '@/lib/auth'
 import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
@@ -15,7 +12,6 @@ import { getUser } from '@/services/user'
 import { format, formatDistanceToNow } from 'date-fns'
 import { InferSelectModel } from 'drizzle-orm'
 import {
-    EllipsisIcon,
     EyeIcon,
     InstagramIcon,
     LinkIcon,
@@ -31,16 +27,11 @@ import { redirect } from 'next/navigation'
 import AddFeedDialog from './add-feed-dialog'
 import AddLinkDialog from './add-link-dialog'
 import ChangeImageDialog from './change-image-dialog'
+import DeleteIntegrationPopover from './delete-integration-popover'
 import EditProfileDialog from './edit-profile-dialog'
 import LogoutButton from './logout-button'
-import { ThemeDropdown } from './theme-dropdown'
 import PairAccountButton from './pair-account-button'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@radix-ui/react-popover'
-import DeleteIntegrationButton from './delete-integration-button'
+import { ThemeDropdown } from './theme-dropdown'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -64,9 +55,7 @@ export default async function CustomizePage() {
                     </div>
                     <EditProfileDialog user={user} />
                 </div>
-
                 <TiktokWidget user={user} />
-
                 <InstagramWidget user={user} />
                 {user.links.length > 0 &&
                     user.links.map((socialLink) => (
@@ -151,18 +140,11 @@ async function TiktokWidget({
             >
                 <div className="flex justify-between w-full">
                     <div />
-                    <p className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center">
                         <TiktokIcon className="fill-foreground w-4 h-4" />
                         <p>Tiktok Feed</p>
-                    </p>
-                    <Popover>
-                        <PopoverTrigger>
-                            <EllipsisIcon className="text-foreground h-5 w-5" />
-                        </PopoverTrigger>
-                        <PopoverContent>
-                            <DeleteIntegrationButton id={accountLink.id} />
-                        </PopoverContent>
-                    </Popover>
+                    </div>
+                    <DeleteIntegrationPopover id={accountLink.id} />
                 </div>
                 <PairAccountButton
                     label="Click to pair your TikTok account"
@@ -185,25 +167,16 @@ async function TiktokWidget({
             >
                 <div className="flex justify-between w-full">
                     <div />
-                    <p className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center">
                         <TiktokIcon className="fill-foreground w-4 h-4" />
                         <p>Tiktok Feed</p>
-                    </p>
-                    <Popover>
-                        <PopoverTrigger>
-                            <EllipsisIcon className="text-foreground h-5 w-5" />
-                        </PopoverTrigger>
-                        <PopoverContent>
-                            <DeleteIntegrationButton id={accountLink.id} />
-                        </PopoverContent>
-                    </Popover>
+                    </div>
+                    <DeleteIntegrationPopover id={accountLink.id} />
                 </div>
-                <Button asChild>
-                    <Link href={'/api/tiktok'}>
-                        Your TikTok account has been disconnected. Click to
-                        reconnect
-                    </Link>
-                </Button>
+                <PairAccountButton
+                    label="Your TikTok account has been disconnected. Click to reconnect"
+                    link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+                />
             </div>
         )
 
@@ -217,7 +190,8 @@ async function TiktokWidget({
             className="rounded-md bg-card text-card-foreground text-sm
             tracking-tight leading-none border p-3 "
         >
-            <div className="mb-3">
+            <div className="flex justify-between w-full mb-3">
+                <div />
                 <Link
                     className="flex gap-2 justify-center"
                     href={tiktokUser.profile_deep_link}
@@ -225,6 +199,7 @@ async function TiktokWidget({
                     <TiktokIcon className="fill-foreground w-4 h-4" />
                     {tiktokUser.username}
                 </Link>
+                <DeleteIntegrationPopover id={accountLink.id} />
             </div>
             <ScrollArea className="h-80">
                 <div className="grid gap-2">
@@ -248,7 +223,7 @@ async function TiktokWidget({
                                 <Image
                                     className="rounded-md h-56 w-48 opacity-80"
                                     src={video.cover_image_url}
-                                    alt="Instagram image"
+                                    alt="Tiktok video cover image"
                                     width={500}
                                     height={500}
                                 />
@@ -290,33 +265,66 @@ async function TiktokWidget({
 async function InstagramWidget({
     user,
 }: {
-    user: InferSelectModel<typeof users>
+    user: InferSelectModel<typeof users> & {
+        accountLinks: InferSelectModel<typeof accountLinks>[]
+    }
 }) {
-    const instagramAccessToken = user?.instagramAccessToken
+    const accountLink = user.accountLinks.find(
+        (link) => link.type === 'instagram'
+    )
 
-    const media = instagramAccessToken
-        ? await getUserInstagramMedia(instagramAccessToken)
-        : undefined
+    if (!accountLink) return null
 
-    const profile = instagramAccessToken
-        ? await getUserInstagramProfile(instagramAccessToken)
-        : undefined
-
-    if (!user.instagramAccessToken)
+    if (!accountLink.accessToken)
         return (
             <div
-                className="rounded-md bg-card text-card-foreground
-                text-sm tracking-tight leading-none border p-3"
+                className="rounded-md bg-card text-card-foreground text-sm
+                tracking-tight leading-none border p-3
+                flex flex-col items-center justify-center gap-4"
             >
-                <Button asChild>
-                    <Link href={'/api/instagram'}>
-                        Connect your Instagram account
-                    </Link>
-                </Button>
+                <div className="flex justify-between w-full">
+                    <div />
+                    <div className="flex gap-2 items-center">
+                        <InstagramIcon className="text-pink-500 w-4 h-4" />
+                        <p>Instagram Feed</p>
+                    </div>
+                    <DeleteIntegrationPopover id={accountLink.id} />
+                </div>
+                <PairAccountButton
+                    label="Click to pair your Instagram account"
+                    link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                />
             </div>
         )
 
-    if (!profile || !media) return null
+    const accessToken =
+        accountLink.expiresAt && new Date() > accountLink.expiresAt
+            ? (await refreshAccountLinkAccessToken(accountLink))?.accessToken
+            : accountLink.accessToken
+
+    if (!accessToken)
+        return (
+            <div
+                className="rounded-md bg-card text-card-foreground text-sm
+                    tracking-tight leading-none border p-3
+                    flex flex-col items-center justify-center gap-4"
+            >
+                <div className="flex justify-between w-full">
+                    <div />
+                    <div className="flex gap-2 items-center">
+                        <InstagramIcon className="text-pink-500 w-4 h-4" />
+                        <p>Instagram Feed</p>
+                    </div>
+                    <DeleteIntegrationPopover id={accountLink.id} />
+                </div>
+                <PairAccountButton
+                    label="Your Instagram account has been disconnected. Click to reconnect"
+                    link={process.env.NEXT_PUBLIC_URL! + '/api/instagram'}
+                />
+            </div>
+        )
+
+    const { media, profile } = await getInstagramProfileAndMedia(accessToken)
 
     return (
         <div

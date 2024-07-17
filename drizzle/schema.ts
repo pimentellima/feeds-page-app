@@ -1,13 +1,10 @@
 import { relations, sql } from 'drizzle-orm'
 import {
     boolean,
-    numeric,
     pgEnum,
     pgTable,
-    serial,
     text,
-    timestamp,
-    integer,
+    timestamp
 } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
@@ -21,7 +18,6 @@ export const users = pgTable('users', {
     theme: text('theme'),
     email: text('email'),
     password: text('password'),
-    instagramAccessToken: text('instagramAccessToken'),
     createdAt: timestamp('created_at').defaultNow(),
     imageUrl: text('imageUrl'),
 })

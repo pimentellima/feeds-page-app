@@ -8,16 +8,21 @@ export interface InstagramPost {
     permalink?: string
 }
 
-export async function getUserInstagramMedia(accessToken: string) {
-    try {
-        const response = await fetch(
-            `https://graph.instagram.com/me/media?fields=caption,media_url,media_type,thumbnail_url,timestamp,permalink&access_token=${accessToken}`
-        )
-        const data = await response.json()
-        return data.data as InstagramPost[]
-    } catch (e) {
-        console.log(e)
-        return null
+export async function getInstagramProfileAndMedia(accessToken: string) {
+    const mediaResponse = await fetch(
+        `https://graph.instagram.com/me/media?fields=caption,media_url,media_type,thumbnail_url,timestamp,permalink&access_token=${accessToken}`
+    )
+    const mediaResponseJson = (await mediaResponse.json())
+        .data as InstagramPost[]
+    const profileResponse = await fetch(
+        `https://graph.instagram.com/me?fields=username,media_count,account_type&access_token=${accessToken}`
+    )
+    const profileResponseJson =
+        (await profileResponse.json()) as InstagramProfile
+
+    return {
+        profile: profileResponseJson,
+        media: mediaResponseJson,
     }
 }
 
@@ -25,16 +30,4 @@ export interface InstagramProfile {
     username: string
     media_count: number
     account_type: 'BUSINESS' | 'MEDIA_CREATOR' | 'PERSONAL'
-}
-
-export async function getUserInstagramProfile(accessToken: string) {
-    try {
-        const response = await fetch(
-            `https://graph.instagram.com/me?fields=username,media_count,account_type&access_token=${accessToken}`
-        )
-        const data = await response.json()
-        return data as InstagramProfile
-    } catch (e) {
-        return null
-    }
 }
