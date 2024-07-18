@@ -13,7 +13,7 @@ import {
 import { deleteWidget } from './actions'
 
 export default function DeleteWidgetPopover({
-    label = 'Delete feed',
+    label = 'Delete widget',
     id,
 }: {
     label?: string

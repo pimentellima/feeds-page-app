@@ -14,6 +14,9 @@ import InstagramWidget from './instagram-widget'
 import LogoutButton from './logout-button'
 import { ThemeDropdown } from './theme-dropdown'
 import TiktokWidget from './tiktok-widget'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import DeleteWidgetPopover from './delete-widget-popover'
+import Widget from './widget'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -36,7 +39,8 @@ export default async function CustomizePage() {
                 {user.widgets.map((widget) => {
                     if (widget.link) {
                         return (
-                            <SocialLink
+                            <LinkWidget
+                                widgetId={widget.id}
                                 link={widget.link}
                                 key={widget.id}
                             />
@@ -73,35 +77,48 @@ export default async function CustomizePage() {
     )
 }
 
-function SocialLink({ link }: { link: InferSelectModel<typeof links> }) {
+function LinkWidget({
+    widgetId,
+    link,
+}: {
+    widgetId: string
+    link: InferSelectModel<typeof links>
+}) {
     const type = getUrlType(link.url)
 
     return (
-        <EditSocialLinkWrapper link={link}>
-            <>
-                {type === 'youtube' && (
-                    <YoutubeIcon className="text-red-500 h-5 w-5" />
-                )}
-                {type === 'instagram' && (
-                    <InstagramIcon className="text-pink-500 h-5 w-5" />
-                )}
-                {(type === 'twitter' || type === 'x') && (
-                    <XIcon className="h-5 w-5 text-foreground" />
-                )}
-                {type === 'other' && (
-                    <LinkIcon className="h-5 w-5 text-gray-500" />
-                )}
-                {link.title}
-                {link.showThumbnail && (
+        <Widget
+            widgetId={widgetId}
+            content={
+                link.showThumbnail ? (
                     <Image
                         className="rounded-md border"
                         src={getYoutubeThumbnailFromUrl(link.url)}
                         alt="Thumbnail image"
-                        width={150}
-                        height={150}
+                        width={200}
+                        height={200}
                     />
-                )}
-            </>
-        </EditSocialLinkWrapper>
+                ) : undefined
+            }
+            header={
+                <EditSocialLinkWrapper link={link}>
+                    <div className="flex flex-col gap-1 items-center">
+                        {type === 'youtube' && (
+                            <YoutubeIcon className="text-red-500 h-5 w-5" />
+                        )}
+                        {type === 'instagram' && (
+                            <InstagramIcon className="text-pink-500 h-5 w-5" />
+                        )}
+                        {(type === 'twitter' || type === 'x') && (
+                            <XIcon className="h-5 w-5 text-foreground" />
+                        )}
+                        {type === 'other' && (
+                            <LinkIcon className="h-5 w-5 text-gray-500" />
+                        )}
+                        {link.title}
+                    </div>
+                </EditSocialLinkWrapper>
+            }
+        />
     )
 }

@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/index'
-import { accountLinks } from '@/drizzle/schema'
+import { integrationTokens, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { encodeBody } from '@/lib/encode-body'
 import { and, eq } from 'drizzle-orm'
@@ -50,7 +50,6 @@ const handler = async (req: NextRequest, res: NextResponse) => {
             access_token: string
         }
 
-        console.log('short', shortLivedTokenJson)
         if (!shortLivedTokenJson.access_token) {
             return NextResponse.redirect(
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
@@ -67,31 +66,33 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 method: 'GET',
             }
         )
-        
+
         const longLivedTokenJson = (await longLivedTokenResponse.json()) as {
             access_token: string
             expires_in: number
         }
-        console.log('long', longLivedTokenJson)
 
         if (!longLivedTokenJson.access_token) {
             return NextResponse.redirect(
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
             )
         }
-
-        await db
-            .update(accountLinks)
-            .set({
+        const [integrationToken] = await db
+            .insert(integrationTokens)
+            .values({
                 accessToken: longLivedTokenJson.access_token,
                 expiresAt: new Date(
                     Date.now() + longLivedTokenJson.expires_in * 1000
                 ),
             })
+            .returning()
+        await db
+            .update(widgets)
+            .set({ integrationTokenId: integrationToken.id })
             .where(
                 and(
-                    eq(accountLinks.userId, userId),
-                    eq(accountLinks.type, 'instagram')
+                    eq(widgets.userId, userId),
+                    eq(widgets.type, 'instagramIntegration')
                 )
             )
 

@@ -58,7 +58,7 @@ export const integrationTokens = pgTable('integrationTokens', {
     id: text('id')
         .default(sql`gen_random_uuid()`)
         .primaryKey(),
-    accessToken: text('accessToken'),
+    accessToken: text('accessToken').notNull(),
     expiresAt: timestamp('expiresAt', {
         mode: 'date',
     }),

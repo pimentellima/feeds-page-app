@@ -7,11 +7,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
+import { links } from '@/drizzle/schema'
+import { InferSelectModel } from 'drizzle-orm'
 import { ReactNode, useState } from 'react'
 import AddLinkForm from './add-link-form'
-import { Button } from '@/components/ui/button'
-import { InferSelectModel } from 'drizzle-orm'
-import { links } from '@/drizzle/schema'
 
 export function EditSocialLinkWrapper({
     children,
@@ -27,17 +26,10 @@ export function EditSocialLinkWrapper({
             open={linkDialogOpen}
             onOpenChange={(open) => setLinkDialogOpen(open)}
         >
-            <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="bg-card hover:bg-card flex flex-col h-full gap-1 items-center"
-                >
-                    {children}
-                </Button>
-            </DialogTrigger>
+            <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add social link</DialogTitle>
+                    <DialogTitle>Edit social link</DialogTitle>
                 </DialogHeader>
                 <AddLinkForm
                     link={link}

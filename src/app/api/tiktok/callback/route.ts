@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/index'
-import { accountLinks, users } from '@/drizzle/schema'
+import { integrationTokens, users, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { encodeBody } from '@/lib/encode-body'
 import { and, eq } from 'drizzle-orm'
@@ -60,9 +60,9 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
             )
         }
-        await db
-            .update(accountLinks)
-            .set({
+        const [integrationToken] = await db
+            .insert(integrationTokens)
+            .values({
                 accessToken: data.access_token,
                 expiresAt: new Date(Date.now() + data.expires_in * 1000),
                 refreshToken: data.refresh_token,
@@ -70,10 +70,14 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                     Date.now() + data.refresh_expires_in * 1000
                 ),
             })
+            .returning()
+        await db
+            .update(widgets)
+            .set({ integrationTokenId: integrationToken.id })
             .where(
                 and(
-                    eq(accountLinks.userId, userId),
-                    eq(accountLinks.type, 'tiktok')
+                    eq(widgets.userId, userId),
+                    eq(widgets.type, 'tiktokIntegration')
                 )
             )
 
