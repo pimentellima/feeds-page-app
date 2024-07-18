@@ -1,4 +1,4 @@
-import { links } from '@/drizzle/schema'
+import { links, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
 import { getUser } from '@/services/user'
@@ -26,12 +26,7 @@ export default async function CustomizePage() {
     return (
         <div className="bg-gradient flex justify-center items-center min-h-screen py-8">
             <div className="grid items-center gap-5 w-1/2">
-                <div className="grid justify-center items-center text-center p-3 bg-card border rounded-md">
-                    <div className="flex justify-center">
-                        <ChangeImageDialog imageUrl={user?.imageUrl || ''} />
-                    </div>
-                    <EditProfileDialog user={user} />
-                </div>
+                <EditProfileBox user={user} />
                 {user.widgets.map((widget) => {
                     if (widget.link) {
                         return (
@@ -112,5 +107,16 @@ function LinkWidget({
                 </EditSocialLinkWrapper>
             }
         />
+    )
+}
+
+function EditProfileBox({ user }: { user: InferSelectModel<typeof users> }) {
+    return (
+        <div className="grid justify-center items-center text-center">
+            <div className="flex justify-center">
+                <ChangeImageDialog imageUrl={user?.imageUrl || ''} />
+            </div>
+            <EditProfileDialog user={user} />
+        </div>
     )
 }

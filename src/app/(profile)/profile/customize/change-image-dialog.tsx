@@ -12,6 +12,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { updateUserImage } from './actions'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
     const [open, setOpen] = useState(false)
@@ -21,17 +22,12 @@ export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
                 <button>
-                    {imageUrl ? (
-                        <Image
-                            className="h-28 w-28 rounded-full p-1"
-                            height={150}
-                            width={150}
-                            src={imageUrl}
-                            alt="profile image"
-                        />
-                    ) : (
-                        <UserIcon className="h-28 w-28 rounded-full bg-background p-1" />
-                    )}
+                    <Avatar className="h-28 w-28">
+                        <AvatarImage src={imageUrl} alt="Avatar image" />
+                        <AvatarFallback>
+                            <UserIcon className="h-28 w-28 p-3" />
+                        </AvatarFallback>
+                    </Avatar>
                 </button>
             </DialogTrigger>
             <DialogContent>
@@ -80,6 +76,7 @@ export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
                     )}
                     <div className="mt-3 flex gap-1 justify-center">
                         <Button
+                            type="button"
                             onClick={() => setOpen(false)}
                             variant={'outline'}
                         >
