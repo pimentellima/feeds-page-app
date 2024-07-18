@@ -4,17 +4,12 @@ import { users } from '@/drizzle/schema'
 import { eq } from 'drizzle-orm'
 
 export async function getUser(userId: string) {
-    try {
-        const user = await db.query.users.findFirst({
-            where: eq(users.id, userId),
-            with: { links: true, accountLinks: true },
-        })
-
-        if (!user) return null
-        return user
-    } catch {
-        return null
-    }
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        with: { links: true, accountLinks: true },
+    })
+    if (!user) throw new Error('User not found')
+    return user
 }
 
 export async function updateUserImage(userId: string, url: string) {
