@@ -6,16 +6,12 @@ import { InferSelectModel } from 'drizzle-orm'
 import { InstagramIcon, LinkIcon, XIcon, YoutubeIcon } from 'lucide-react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
-import { AddWidgetPopover } from './add-widget-popover'
+import { ActionsDropdown } from './actions-dropdown'
 import ChangeImageDialog from './change-image-dialog'
 import EditProfileDialog from './edit-profile-dialog'
 import { EditSocialLinkWrapper } from './edit-social-link-wrapper'
 import InstagramWidget from './instagram-widget'
-import LogoutButton from './logout-button'
-import { ThemeDropdown } from './theme-dropdown'
 import TiktokWidget from './tiktok-widget'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import DeleteWidgetPopover from './delete-widget-popover'
 import Widget from './widget'
 
 export default async function CustomizePage() {
@@ -28,7 +24,7 @@ export default async function CustomizePage() {
     const user = await getUser(session.user.id)
 
     return (
-        <div className="bg-gradient flex justify-center items-center min-h-screen pt-10 pb-24">
+        <div className="bg-gradient flex justify-center items-center min-h-screen py-8">
             <div className="grid items-center gap-5 w-1/2">
                 <div className="grid justify-center items-center text-center p-3 bg-card border rounded-md">
                     <div className="flex justify-center">
@@ -66,12 +62,8 @@ export default async function CustomizePage() {
                     }
                 })}
             </div>
-            <div className="shadow-md rounded-md fixed bottom-5 p-3 bg-card text-card-foreground flex gap-1">
-                <LogoutButton />
-                <AddWidgetPopover />
-            </div>
-            <div className="fixed top-5 right-5">
-                <ThemeDropdown />
+            <div className="fixed left-14 top-5">
+                <ActionsDropdown />
             </div>
         </div>
     )
