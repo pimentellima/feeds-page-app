@@ -4,14 +4,14 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DialogFooter } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { userLinks } from '@/drizzle/schema'
+import { links } from '@/drizzle/schema'
 import { getYoutubeThumbnailFromUrl } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { InferSelectModel } from 'drizzle-orm'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { addUserLink, deleteUserLink } from './actions'
+import { addUserLink } from './actions'
 import { linkSchema, LinkValues } from './add-link-schema'
 
 export default function AddLinkForm({
@@ -19,7 +19,7 @@ export default function AddLinkForm({
     onSubmitForm,
     onCancelForm,
 }: {
-    link?: InferSelectModel<typeof userLinks>
+    link?: InferSelectModel<typeof links>
     onSubmitForm?: () => void
     onCancelForm?: () => void
 }) {
@@ -147,20 +147,6 @@ export default function AddLinkForm({
                 >
                     Cancel
                 </Button>
-                {link && (
-                    <Button
-                        type="button"
-                        onClick={async () => {
-                            try {
-                                await deleteUserLink(link?.id)
-                                onCancelForm?.()
-                            } catch {}
-                        }}
-                        variant={'destructive'}
-                    >
-                        Delete
-                    </Button>
-                )}
                 <Button disabled={isSubmitting} type="submit">
                     Save
                 </Button>

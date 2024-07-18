@@ -4,15 +4,15 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 
 import { EllipsisIcon, LoaderIcon } from 'lucide-react'
-import { deleteIntegration } from './actions'
 import { useState } from 'react'
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover'
+import { deleteWidget } from './actions'
 
-export default function DeleteIntegrationPopover({
+export default function DeleteWidgetPopover({
     label = 'Delete feed',
     id,
 }: {
@@ -22,12 +22,13 @@ export default function DeleteIntegrationPopover({
     const { toast } = useToast()
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
+
     return (
         <Popover open={open} onOpenChange={(open) => setOpen(open)}>
             <PopoverTrigger>
                 <EllipsisIcon className="text-foreground h-5 w-5" />
             </PopoverTrigger>
-            <PopoverContent className='w-min'>
+            <PopoverContent className="w-min">
                 <Button
                     disabled={loading}
                     variant={'destructive'}
@@ -35,17 +36,17 @@ export default function DeleteIntegrationPopover({
                     onClick={async () => {
                         try {
                             setLoading(true)
-                            const error = await deleteIntegration(id)
+                            const error = await deleteWidget(id)
                             if (error)
                                 toast({
-                                    title: 'An error occurred while deleting the feed.',
+                                    title: 'An error occurred while deleting the item.',
                                     description: error,
                                     variant: 'destructive',
                                 })
                             setOpen(false)
                         } catch (e) {
                             toast({
-                                title: 'An error occurred while deleting the feed.',
+                                title: 'An error occurred while deleting the item.',
                                 variant: 'destructive',
                             })
                         } finally {

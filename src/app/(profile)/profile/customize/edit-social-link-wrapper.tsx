@@ -10,15 +10,15 @@ import {
 import { ReactNode, useState } from 'react'
 import AddLinkForm from './add-link-form'
 import { Button } from '@/components/ui/button'
-import { userLinks } from '@/drizzle/schema'
 import { InferSelectModel } from 'drizzle-orm'
+import { links } from '@/drizzle/schema'
 
 export function EditSocialLinkWrapper({
     children,
     link,
 }: {
     children: ReactNode
-    link: InferSelectModel<typeof userLinks>
+    link: InferSelectModel<typeof links>
 }) {
     const [linkDialogOpen, setLinkDialogOpen] = useState(false)
 
@@ -42,7 +42,7 @@ export function EditSocialLinkWrapper({
                 <AddLinkForm
                     link={link}
                     onCancelForm={() => setLinkDialogOpen(false)}
-                    onSubmitForm={() => setLinkDialogOpen(true)}
+                    onSubmitForm={() => setLinkDialogOpen(false)}
                 />
             </DialogContent>
         </Dialog>

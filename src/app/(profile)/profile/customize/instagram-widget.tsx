@@ -1,32 +1,24 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { accountLinks, users } from '@/drizzle/schema'
+import { integrationTokens } from '@/drizzle/schema'
 import { getInstagramProfileAndMedia } from '@/lib/api-helpers/instagram'
-import { refreshAccountLinkAccessToken } from '@/services/accountLinks'
 import { formatDistanceToNow } from 'date-fns'
 import { InferSelectModel } from 'drizzle-orm'
-import {
-    InstagramIcon
-} from 'lucide-react'
+import { InstagramIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import DeleteIntegrationPopover from './delete-integration-popover'
+import DeleteWidgetPopover from './delete-widget-popover'
 import PairAccountButton from './pair-account-button'
+import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'
 
 export default async function InstagramWidget({
-    user,
+    widgetId,
+    token,
 }: {
-    user: InferSelectModel<typeof users> & {
-        accountLinks: InferSelectModel<typeof accountLinks>[]
-    }
+    widgetId: string
+    token?: InferSelectModel<typeof integrationTokens> | null
 }) {
-    const accountLink = user.accountLinks.find(
-        (link) => link.type === 'instagram'
-    )
-
-    if (!accountLink) return null
-
-    if (!accountLink.accessToken)
+    if (!token)
         return (
             <div
                 className="rounded-md bg-card text-card-foreground text-sm
@@ -39,7 +31,7 @@ export default async function InstagramWidget({
                         <InstagramIcon className="text-pink-500 w-4 h-4" />
                         <p>Instagram Feed</p>
                     </div>
-                    <DeleteIntegrationPopover id={accountLink.id} />
+                    <DeleteWidgetPopover id={widgetId} />
                 </div>
                 <PairAccountButton
                     label="Click to pair your Instagram account"
@@ -49,9 +41,14 @@ export default async function InstagramWidget({
         )
 
     const accessToken =
-        accountLink.expiresAt && new Date() > accountLink.expiresAt
-            ? (await refreshAccountLinkAccessToken(accountLink))?.accessToken
-            : accountLink.accessToken
+        token.expiresAt && new Date() > token.expiresAt
+            ? (
+                  await refreshIntegrationAccessTokens(
+                      token,
+                      'instagramIntegration'
+                  )
+              )?.accessToken
+            : token.accessToken
 
     if (!accessToken)
         return (
@@ -66,7 +63,7 @@ export default async function InstagramWidget({
                         <InstagramIcon className="text-pink-500 w-4 h-4" />
                         <p>Instagram Feed</p>
                     </div>
-                    <DeleteIntegrationPopover id={accountLink.id} />
+                    <DeleteWidgetPopover id={token.id} />
                 </div>
                 <PairAccountButton
                     label="Your Instagram account has been disconnected. Click to reconnect"

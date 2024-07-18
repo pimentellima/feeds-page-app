@@ -1,1 +1,0 @@
-ALTER TYPE "accountLinkType" ADD VALUE 'x';

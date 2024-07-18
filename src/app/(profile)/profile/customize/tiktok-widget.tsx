@@ -1,29 +1,25 @@
 import TiktokIcon from '@/components/tiktok-icon'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { accountLinks, users } from '@/drizzle/schema'
+import { integrationTokens, users } from '@/drizzle/schema'
 import { getTiktokProfileAndMedia } from '@/lib/api-helpers/tiktok'
-import { refreshAccountLinkAccessToken } from '@/services/accountLinks'
+import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'
 import { format, formatDistanceToNow } from 'date-fns'
 import { InferSelectModel } from 'drizzle-orm'
 import { EyeIcon, MessageCircleIcon, PlayIcon, RepeatIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import DeleteIntegrationPopover from './delete-integration-popover'
+import DeleteWidgetPopover from './delete-widget-popover'
 import PairAccountButton from './pair-account-button'
 
 export default async function TiktokWidget({
-    user,
+    widgetId,
+    token,
 }: {
-    user: InferSelectModel<typeof users> & {
-        accountLinks: InferSelectModel<typeof accountLinks>[]
-    }
+    widgetId: string
+    token?: InferSelectModel<typeof integrationTokens> | null
 }) {
-    const accountLink = user.accountLinks.find((link) => link.type === 'tiktok')
-
-    if (!accountLink) return null
-
-    if (!accountLink.accessToken)
+    if (!token)
         return (
             <div
                 className="rounded-md bg-card text-card-foreground text-sm
@@ -36,7 +32,7 @@ export default async function TiktokWidget({
                         <TiktokIcon className="fill-foreground w-4 h-4" />
                         <p>Tiktok Feed</p>
                     </div>
-                    <DeleteIntegrationPopover id={accountLink.id} />
+                    <DeleteWidgetPopover id={widgetId} />
                 </div>
                 <PairAccountButton
                     label="Click to pair your TikTok account"
@@ -46,9 +42,10 @@ export default async function TiktokWidget({
         )
 
     const accessToken =
-        accountLink.expiresAt && new Date() > accountLink.expiresAt
-            ? (await refreshAccountLinkAccessToken(accountLink))?.accessToken
-            : accountLink.accessToken
+        token.expiresAt && new Date() > token.expiresAt
+            ? (await refreshIntegrationAccessTokens(token, 'tiktokIntegration'))
+                  ?.accessToken
+            : token.accessToken
 
     if (!accessToken)
         return (
@@ -63,7 +60,7 @@ export default async function TiktokWidget({
                         <TiktokIcon className="fill-foreground w-4 h-4" />
                         <p>Tiktok Feed</p>
                     </div>
-                    <DeleteIntegrationPopover id={accountLink.id} />
+                    <DeleteWidgetPopover id={token.id} />
                 </div>
                 <PairAccountButton
                     label="Your TikTok account has been disconnected. Click to reconnect"
@@ -91,7 +88,7 @@ export default async function TiktokWidget({
                     <TiktokIcon className="fill-foreground w-4 h-4" />
                     {tiktokUser.username}
                 </Link>
-                <DeleteIntegrationPopover id={accountLink.id} />
+                <DeleteWidgetPopover id={token.id} />
             </div>
             <ScrollArea className="h-80">
                 <div className="grid gap-2">

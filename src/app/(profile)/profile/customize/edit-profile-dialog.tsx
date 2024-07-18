@@ -8,14 +8,13 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { PencilIcon } from 'lucide-react'
-import { useFormState, useFormStatus } from 'react-dom'
-import { updateUsernameAndBio } from './actions'
+import { useFormStatus } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { InferSelectModel } from 'drizzle-orm'
 import { users } from '@/drizzle/schema'
 import { Textarea } from '@/components/ui/textarea'
+import { updateUsernameAndBio } from './actions'
 
 export default function EditProfileDialog({
     user,

@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/button'
-import { userLinks } from '@/drizzle/schema'
+import { links } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
 import { getUser } from '@/services/user'
@@ -7,23 +6,14 @@ import { InferSelectModel } from 'drizzle-orm'
 import { InstagramIcon, LinkIcon, XIcon, YoutubeIcon } from 'lucide-react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
-import AddFeedDialog from './add-feed-dialog'
-import AddLinkForm from './add-link-form'
+import { AddWidgetPopover } from './add-widget-popover'
 import ChangeImageDialog from './change-image-dialog'
 import EditProfileDialog from './edit-profile-dialog'
+import { EditSocialLinkWrapper } from './edit-social-link-wrapper'
 import InstagramWidget from './instagram-widget'
 import LogoutButton from './logout-button'
 import { ThemeDropdown } from './theme-dropdown'
 import TiktokWidget from './tiktok-widget'
-import { AddWidgetPopover } from './add-widget-popover'
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog'
-import { EditSocialLinkWrapper } from './edit-social-link-wrapper'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -43,15 +33,34 @@ export default async function CustomizePage() {
                     </div>
                     <EditProfileDialog user={user} />
                 </div>
-                <TiktokWidget user={user} />
-                <InstagramWidget user={user} />
-                {user.links.length > 0 &&
-                    user.links.map((socialLink) => (
-                        <SocialLink
-                            socialLink={socialLink}
-                            key={socialLink.id}
-                        />
-                    ))}
+                {user.widgets.map((widget) => {
+                    if (widget.link) {
+                        return (
+                            <SocialLink
+                                link={widget.link}
+                                key={widget.id}
+                            />
+                        )
+                    }
+                    if (widget.type === 'tiktokIntegration') {
+                        return (
+                            <TiktokWidget
+                                widgetId={widget.id}
+                                token={widget.integrationToken}
+                                key={widget.id}
+                            />
+                        )
+                    }
+                    if (widget.type === 'instagramIntegration') {
+                        return (
+                            <InstagramWidget
+                                widgetId={widget.id}
+                                token={widget.integrationToken}
+                                key={widget.id}
+                            />
+                        )
+                    }
+                })}
             </div>
             <div className="shadow-md rounded-md fixed bottom-5 p-3 bg-card text-card-foreground flex gap-1">
                 <LogoutButton />
@@ -64,15 +73,11 @@ export default async function CustomizePage() {
     )
 }
 
-function SocialLink({
-    socialLink,
-}: {
-    socialLink: InferSelectModel<typeof userLinks>
-}) {
-    const type = getUrlType(socialLink.url)
+function SocialLink({ link }: { link: InferSelectModel<typeof links> }) {
+    const type = getUrlType(link.url)
 
     return (
-        <EditSocialLinkWrapper link={socialLink}>
+        <EditSocialLinkWrapper link={link}>
             <>
                 {type === 'youtube' && (
                     <YoutubeIcon className="text-red-500 h-5 w-5" />
@@ -86,11 +91,11 @@ function SocialLink({
                 {type === 'other' && (
                     <LinkIcon className="h-5 w-5 text-gray-500" />
                 )}
-                {socialLink.title}
-                {socialLink.showThumbnail && (
+                {link.title}
+                {link.showThumbnail && (
                     <Image
                         className="rounded-md border"
-                        src={getYoutubeThumbnailFromUrl(socialLink.url)}
+                        src={getYoutubeThumbnailFromUrl(link.url)}
                         alt="Thumbnail image"
                         width={150}
                         height={150}

@@ -1,12 +1,13 @@
 import { db } from '@/drizzle/index'
-import { accountLinks } from '@/drizzle/schema'
+import { integrationTokens, widgets } from '@/drizzle/schema'
 import { encodeBody } from '@/lib/encode-body'
 import { eq, InferSelectModel } from 'drizzle-orm'
 
-export async function refreshAccountLinkAccessToken(
-    token: InferSelectModel<typeof accountLinks>
+export async function refreshIntegrationAccessTokens(
+    token: InferSelectModel<typeof integrationTokens>,
+    type: InferSelectModel<typeof widgets>['type']
 ) {
-    if (token.type === 'tiktok') {
+    if (type === 'tiktokIntegration') {
         const response = await fetch(
             'https://open.tiktokapis.com/v2/oauth/token/',
             {
@@ -35,19 +36,19 @@ export async function refreshAccountLinkAccessToken(
         const refreshExpiresInMs = responseJson.refresh_expires_in * 1000
 
         const [newToken] = await db
-            .update(accountLinks)
+            .update(integrationTokens)
             .set({
                 accessToken: responseJson.access_token,
                 expiresAt: new Date(Date.now() + expiresInMs),
                 refreshToken: responseJson.refresh_token,
                 refreshExpiresAt: new Date(Date.now() + refreshExpiresInMs),
             })
-            .where(eq(accountLinks.id, token.id))
+            .where(eq(integrationTokens.id, token.id))
             .returning()
         return newToken
     }
 
-    if (token.type === 'instagram') {
+    if (type === 'instagramIntegration') {
         const response = await fetch(
             'https://graph.instagram.com/refresh_access_token',
             {
@@ -67,14 +68,14 @@ export async function refreshAccountLinkAccessToken(
             expires_in: number
         }
         const [newToken] = await db
-            .update(accountLinks)
+            .update(integrationTokens)
             .set({
                 accessToken: responseJson.access_token,
                 expiresAt: new Date(
                     Date.now() + responseJson.expires_in * 1000
                 ),
             })
-            .where(eq(accountLinks.id, token.id))
+            .where(eq(integrationTokens.id, token.id))
             .returning()
         return newToken
     }

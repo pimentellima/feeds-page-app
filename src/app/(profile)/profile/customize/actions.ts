@@ -1,9 +1,9 @@
 'use server'
 import { db } from '@/drizzle/index'
-import { accountLinks, userLinks, users } from '@/drizzle/schema'
+import { integrationTokens, links, users, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { utapi } from '@/server/uploadthing'
-import { eq } from 'drizzle-orm'
+import { eq, InferSelectModel } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
 import * as z from 'zod'
@@ -22,19 +22,29 @@ export async function addUserLink(values: LinkValues) {
 
         if (values.id) {
             await db
-                .update(userLinks)
+                .update(links)
                 .set({
                     title: values.title,
                     url: values.url,
                     showThumbnail: values.showThumbnail,
                 })
-                .where(eq(userLinks.id, values.id))
+                .where(eq(links.id, values.id))
         } else {
-            await db.insert(userLinks).values({
-                userId: session.user.id,
-                title: values.title,
-                url: values.url,
-                showThumbnail: values.showThumbnail,
+            await db.transaction(async (tx) => {
+                const [insertedLink] = await tx
+                    .insert(links)
+                    .values({
+                        title: values.title,
+                        url: values.url,
+                        showThumbnail: values.showThumbnail,
+                    })
+                    .returning()
+
+                await tx.insert(widgets).values({
+                    type: 'socialLink',
+                    userId: session.user.id,
+                    linkId: insertedLink.id,
+                })
             })
         }
         revalidatePath('/profile/customize')
@@ -44,7 +54,7 @@ export async function addUserLink(values: LinkValues) {
 }
 
 export async function deleteUserLink(linkId: string) {
-    await db.delete(userLinks).where(eq(userLinks.id, linkId))
+    await db.delete(links).where(eq(links.id, linkId))
     revalidatePath('/profile/customize')
 }
 
@@ -129,22 +139,12 @@ export async function updateUserTheme(theme: string) {
 }
 
 export async function addIntegration(
-    type: 'youtube' | 'instagram' | 'x' | 'tiktok'
+    type: InferSelectModel<typeof widgets>['type']
 ) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
-        const userAccountLinks = await db.query.accountLinks.findMany({
-            where: eq(accountLinks.userId, session.user.id),
-        })
-        const tiktokAccountLinkIndex = userAccountLinks.findIndex(
-            (accountLink) => accountLink.type === type
-        )
-        const typeTitleCase = type.charAt(0).toUpperCase() + type.slice(1)
-        if (tiktokAccountLinkIndex !== -1) {
-            return `You already have a ${typeTitleCase} account linked`
-        }
-        await db.insert(accountLinks).values({
+        await db.insert(widgets).values({
             userId: session.user.id,
             type,
         })
@@ -154,14 +154,25 @@ export async function addIntegration(
     }
 }
 
-export async function deleteIntegration(id: string) {
+export async function deleteWidget(id: string) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
 
-        await db.delete(accountLinks).where(eq(accountLinks.id, id))
+        const widget = await db.query.widgets.findFirst({
+            where: eq(widgets.id, id),
+        })
+        if (widget?.linkId) {
+            await db.delete(links).where(eq(links.id, widget.linkId))
+        } else if (widget?.integrationTokenId) {
+            await db
+                .delete(integrationTokens)
+                .where(eq(integrationTokens.id, widget.integrationTokenId))
+        } else {
+            await db.delete(widgets).where(eq(widgets.id, id))
+        }
         revalidatePath('/profile/customize')
     } catch {
-        return 'Error deleting integration'
+        return 'Error deleting widget'
     }
 }

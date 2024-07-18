@@ -1,13 +1,24 @@
 'use client'
 
+import SpotifyIcon from '@/components/spotify-icon'
+import TiktokIcon from '@/components/tiktok-icon'
+import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useToast } from '@/components/ui/use-toast'
+import { widgets } from '@/drizzle/schema'
+import { InferInsertModel } from 'drizzle-orm'
 import {
     InstagramIcon,
     LinkIcon,
@@ -16,26 +27,16 @@ import {
     YoutubeIcon,
 } from 'lucide-react'
 import { useState } from 'react'
-import AddLinkForm from './add-link-form'
-import { Button } from '@/components/ui/button'
-import TiktokIcon from '@/components/tiktok-icon'
 import { addIntegration } from './actions'
-import { useToast } from '@/components/ui/use-toast'
-import SpotifyIcon from '@/components/spotify-icon'
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
+import AddLinkForm from './add-link-form'
+
+type IntegrationType = InferInsertModel<typeof widgets>['type'] | ''
 
 export function AddWidgetPopover() {
     const [linkDialogOpen, setLinkDialogOpen] = useState(false)
     const { toast } = useToast()
 
-    const onClickIntegration = async (
-        value: 'youtube' | 'instagram' | 'x' | 'tiktok'
-    ) => {
+    const onClickIntegration = async (value: IntegrationType) => {
         if (!value) return
         const error = await addIntegration(value)
         if (error) {
@@ -69,21 +70,23 @@ export function AddWidgetPopover() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                        onClick={() => onClickIntegration('youtube')}
+                        onClick={() => onClickIntegration('youtubeIntegration')}
                         className="flex gap-2 items-center"
                     >
                         <YoutubeIcon className="text-red-500 w-5 h-5" />
                         Youtube videos
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={() => onClickIntegration('instagram')}
+                        onClick={() =>
+                            onClickIntegration('instagramIntegration')
+                        }
                         className="flex gap-2 items-center"
                     >
                         <InstagramIcon className="text-pink-500 h-5 w-5" />
                         Instagram media
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        onClick={() => onClickIntegration('tiktok')}
+                        onClick={() => onClickIntegration('tiktokIntegration')}
                         className="flex gap-2 items-center"
                     >
                         <TiktokIcon className="fill-foreground h-5 w-5" />
@@ -106,6 +109,7 @@ export function AddWidgetPopover() {
                 </DropdownMenuContent>
             </DropdownMenu>
             <Dialog
+                key="add-link-dialog"
                 open={linkDialogOpen}
                 onOpenChange={(open) => setLinkDialogOpen(open)}
             >
@@ -115,7 +119,7 @@ export function AddWidgetPopover() {
                     </DialogHeader>
                     <AddLinkForm
                         onCancelForm={() => setLinkDialogOpen(false)}
-                        onSubmitForm={() => setLinkDialogOpen(true)}
+                        onSubmitForm={() => setLinkDialogOpen(false)}
                     />
                 </DialogContent>
             </Dialog>

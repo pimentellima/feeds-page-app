@@ -1,10 +1,12 @@
 import { relations, sql } from 'drizzle-orm'
 import {
     boolean,
+    integer,
     pgEnum,
     pgTable,
+    serial,
     text,
-    timestamp
+    timestamp,
 } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
@@ -28,14 +30,34 @@ export const accountLinkTypeEnum = pgEnum('accountLinkType', [
     'youtube',
 ])
 
-export const accountLinks = pgTable('accountLinks', {
+export const widgetTypeEnum = pgEnum('accountLinkType', [
+    'tiktokIntegration',
+    'instagramIntegration',
+    'xIntegration',
+    'youtubeIntegration',
+    'socialLink',
+])
+
+export const widgets = pgTable('widgets', {
     id: text('id')
         .default(sql`gen_random_uuid()`)
         .primaryKey(),
     userId: text('userId')
         .notNull()
         .references(() => users.id, { onDelete: 'cascade' }),
-    type: accountLinkTypeEnum('type').notNull(),
+    type: widgetTypeEnum('type').notNull(),
+    pos: serial('pos').notNull(),
+    linkId: text('linkId').references(() => links.id, { onDelete: 'cascade' }),
+    integrationTokenId: text('integrationTokenId').references(
+        () => integrationTokens.id,
+        { onDelete: 'cascade' }
+    ),
+})
+
+export const integrationTokens = pgTable('integrationTokens', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
     accessToken: text('accessToken'),
     expiresAt: timestamp('expiresAt', {
         mode: 'date',
@@ -46,13 +68,10 @@ export const accountLinks = pgTable('accountLinks', {
     }),
 })
 
-export const userLinks = pgTable('userLinks', {
+export const links = pgTable('links', {
     id: text('id')
         .default(sql`gen_random_uuid()`)
         .primaryKey(),
-    userId: text('userId')
-        .notNull()
-        .references(() => users.id, { onDelete: 'cascade' }),
     title: text('title').notNull(),
     showThumbnail: boolean('showThumbnail'),
     url: text('url').notNull(),
@@ -70,20 +89,20 @@ export const refreshTokens = pgTable('refreshTokens', {
 })
 
 export const usersRelations = relations(users, ({ many }) => ({
-    links: many(userLinks),
-    accountLinks: many(accountLinks),
+    widgets: many(widgets),
 }))
 
-export const userLinksRelations = relations(userLinks, ({ one }) => ({
+export const widgetRelations = relations(widgets, ({ one }) => ({
     user: one(users, {
-        fields: [userLinks.userId],
+        fields: [widgets.userId],
         references: [users.id],
     }),
-}))
-
-export const accountLinksRelations = relations(accountLinks, ({ one }) => ({
-    user: one(users, {
-        fields: [accountLinks.userId],
-        references: [users.id],
+    link: one(links, {
+        fields: [widgets.linkId],
+        references: [links.id],
+    }),
+    integrationToken: one(integrationTokens, {
+        fields: [widgets.integrationTokenId],
+        references: [integrationTokens.id],
     }),
 }))
