@@ -1,77 +1,41 @@
-import TiktokIcon from '@/components/tiktok-icon'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
-import { integrationTokens } from '@/drizzle/schema'
+import DeleteWidgetPopover from '@/app/(profile)/profile/customize/delete-widget-popover'
 import { getTiktokProfileAndMedia } from '@/lib/api-helpers/tiktok'
-import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'
 import { format, formatDistanceToNow } from 'date-fns'
-import { InferSelectModel } from 'drizzle-orm'
 import { EyeIcon, MessageCircleIcon, PlayIcon, RepeatIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import PairAccountButton from './pair-account-button'
-import Widget from './widget'
+import TiktokIcon from './tiktok-icon'
+import { Card, CardContent, CardHeader } from './ui/card'
+import { ScrollArea } from './ui/scroll-area'
+import { Separator } from './ui/separator'
 
 export default async function TiktokWidget({
+    accessToken,
     widgetId,
-    token,
 }: {
-    widgetId: string
-    token?: InferSelectModel<typeof integrationTokens> | null
+    accessToken: string
+    widgetId?: string
 }) {
-    if (!token)
-        return (
-            <Widget
-                widgetId={widgetId}
-                content={
-                    <PairAccountButton
-                        label="Click to pair your TikTok account"
-                        link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
-                    />
-                }
-                header={
-                    <>
-                        <TiktokIcon className="fill-foreground w-5 h-5" />
-                        <p>Tiktok Feed</p>
-                    </>
-                }
-            />
-        )
-
-    const accessToken =
-        token.expiresAt && new Date() > token.expiresAt
-            ? (await refreshIntegrationAccessTokens(token, 'tiktokIntegration'))
-                  ?.accessToken
-            : token.accessToken
-
-    if (!accessToken)
-        return (
-            <Widget
-                widgetId={widgetId}
-                content={
-                    <PairAccountButton
-                        label="Your TikTok account has been disconnected. Click to reconnect"
-                        link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
-                    />
-                }
-                header={
-                    <>
-                        <TiktokIcon className="fill-foreground w-5 h-5" />
-                        <p>Tiktok Feed</p>
-                    </>
-                }
-            />
-        )
-
     const {
         mediaData: { videos },
         profileData: { user: tiktokUser },
     } = await getTiktokProfileAndMedia(accessToken)
 
     return (
-        <Widget
-            widgetId={widgetId}
-            content={
+        <Card className="text-sm">
+            <CardHeader className="grid grid-cols-3">
+                <Link
+                    href={tiktokUser.profile_deep_link}
+                    className="col-start-2 flex flex-col gap-1 items-center"
+                >
+                    <TiktokIcon className="fill-foreground w-5 h-5" />
+                    <p>{tiktokUser.username}</p>
+                </Link>
+                <div className="justify-self-end">
+                    {widgetId && <DeleteWidgetPopover id={widgetId} />}
+                </div>
+            </CardHeader>
+            <CardContent>
                 <ScrollArea className="h-80">
                     <div className="grid gap-2">
                         {videos.map((video) => (
@@ -129,18 +93,7 @@ export default async function TiktokWidget({
                         ))}
                     </div>
                 </ScrollArea>
-            }
-            header={
-                <>
-                    <Link
-                        href={tiktokUser.profile_deep_link}
-                        className="flex flex-col gap-1 items-center"
-                    >
-                        <TiktokIcon className="fill-foreground w-5 h-5" />
-                        <p>{tiktokUser.username}</p>
-                    </Link>
-                </>
-            }
-        />
+            </CardContent>
+        </Card>
     )
 }

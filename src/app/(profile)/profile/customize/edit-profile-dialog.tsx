@@ -15,6 +15,7 @@ import { InferSelectModel } from 'drizzle-orm'
 import { users } from '@/drizzle/schema'
 import { Textarea } from '@/components/ui/textarea'
 import { updateUsernameAndBio } from './actions'
+import UserProfileInfo from '@/components/user-profile-info'
 
 export default function EditProfileDialog({
     user,
@@ -29,7 +30,7 @@ export default function EditProfileDialog({
             <DialogTrigger>
                 <div
                     className="mt-1 rounded-md font-medium group transition-colors
-                        px-4 py-2 max-w-96"
+                    px-4 py-2 max-w-96"
                 >
                     <p className="group-hover:underline underline-offset-4 w-full">
                         {user.username || 'No username'}

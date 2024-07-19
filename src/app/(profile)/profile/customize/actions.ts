@@ -3,7 +3,7 @@ import { db } from '@/drizzle/index'
 import { integrationTokens, links, users, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { utapi } from '@/server/uploadthing'
-import { eq, InferSelectModel } from 'drizzle-orm'
+import { and, eq, InferSelectModel } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
 import * as z from 'zod'
@@ -144,12 +144,21 @@ export async function addIntegration(
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
+        const existingWidget = await db.query.widgets.findFirst({
+            where: and(
+                eq(widgets.userId, session.user.id),
+                eq(widgets.type, type)
+            ),
+        })
+        if (existingWidget)
+            return 'Only one integration of the same type is allowed.'
         await db.insert(widgets).values({
             userId: session.user.id,
             type,
         })
         revalidatePath('/profile/customize')
-    } catch {
+    } catch (e) {
+        console.log(e)
         return 'Error adding integration'
     }
 }

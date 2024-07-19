@@ -3,6 +3,22 @@ import { users } from '@/drizzle/schema'
 import { eq } from 'drizzle-orm'
 import 'server-only'
 
+export async function getUserByUsername(username: string) {
+    const user = await db.query.users.findFirst({
+        where: eq(users.username, username),
+        with: {
+            widgets: {
+                with: {
+                    link: true,
+                    integrationToken: true,
+                },
+            },
+        },
+    })
+    if (!user) throw new Error('')
+    return user
+}
+
 export async function getUser(userId: string) {
     const user = await db.query.users.findFirst({
         where: eq(users.id, userId),

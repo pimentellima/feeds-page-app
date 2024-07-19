@@ -8,6 +8,13 @@
       "when": 1721287650948,
       "tag": "0000_daily_giant_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1721353734435,
+      "tag": "0001_dizzy_amazoness",
+      "breakpoints": true
     }
   ]
 }

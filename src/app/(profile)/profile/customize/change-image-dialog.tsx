@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { updateUserImage } from './actions'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import UserAvatar from '@/components/user-avatar'
 
 export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
     const [open, setOpen] = useState(false)
@@ -22,12 +23,7 @@ export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
                 <button>
-                    <Avatar className="h-28 w-28">
-                        <AvatarImage src={imageUrl} alt="Avatar image" />
-                        <AvatarFallback>
-                            <UserIcon className="h-28 w-28 p-3" />
-                        </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar imageUrl={imageUrl} />
                 </button>
             </DialogTrigger>
             <DialogContent>

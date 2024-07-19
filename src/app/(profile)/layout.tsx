@@ -3,7 +3,7 @@ import NextThemesProvider from '../next-themes-provider'
 import { getUser } from '@/services/user'
 import { redirect } from 'next/navigation'
 
-export default async function RootLayout({
+export default async function Layout({
     children,
 }: Readonly<{
     children: React.ReactNode

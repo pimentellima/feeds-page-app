@@ -48,8 +48,6 @@ import { themes } from '@/constants'
 import { useTheme } from 'next-themes'
 import { signOut } from 'next-auth/react'
 
-type IntegrationType = InferInsertModel<typeof widgets>['type'] | ''
-
 export function ActionsDropdown() {
     const [linkDialogOpen, setLinkDialogOpen] = useState(false)
 
@@ -112,7 +110,6 @@ export function ActionsDropdown() {
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
                     </DropdownMenuGroup>
-
                     <DropdownMenuSeparator />
                     <DropdownMenuLabel>Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
@@ -198,7 +195,7 @@ function AddIntegrationMenuItem({
     value,
 }: {
     children: React.ReactNode
-    value: IntegrationType
+    value: InferInsertModel<typeof widgets>['type'] | ''
 }) {
     const { toast } = useToast()
 

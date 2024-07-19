@@ -7,6 +7,7 @@ import {
     serial,
     text,
     timestamp,
+    uniqueIndex,
 } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
@@ -38,21 +39,32 @@ export const widgetTypeEnum = pgEnum('accountLinkType', [
     'socialLink',
 ])
 
-export const widgets = pgTable('widgets', {
-    id: text('id')
-        .default(sql`gen_random_uuid()`)
-        .primaryKey(),
-    userId: text('userId')
-        .notNull()
-        .references(() => users.id, { onDelete: 'cascade' }),
-    type: widgetTypeEnum('type').notNull(),
-    pos: serial('pos').notNull(),
-    linkId: text('linkId').references(() => links.id, { onDelete: 'cascade' }),
-    integrationTokenId: text('integrationTokenId').references(
-        () => integrationTokens.id,
-        { onDelete: 'cascade' }
-    ),
-})
+export const widgets = pgTable(
+    'widgets',
+    {
+        id: text('id')
+            .default(sql`gen_random_uuid()`)
+            .primaryKey(),
+        userId: text('userId')
+            .notNull()
+            .references(() => users.id, { onDelete: 'cascade' }),
+        type: widgetTypeEnum('type').notNull(),
+        pos: serial('pos').notNull(),
+        linkId: text('linkId').references(() => links.id, {
+            onDelete: 'cascade',
+        }),
+        integrationTokenId: text('integrationTokenId').references(
+            () => integrationTokens.id,
+            { onDelete: 'cascade' }
+        ),
+    },
+    (widgets) => ({
+        userWidgetTypeIndex: uniqueIndex('userWidgetTypeIndex').on(
+            widgets.userId,
+            widgets.type
+        ),
+    })
+)
 
 export const integrationTokens = pgTable('integrationTokens', {
     id: text('id')
