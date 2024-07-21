@@ -1,9 +1,9 @@
 'use client'
 import { getInstagramMedia } from '@/app/actions/get-instagram-media'
 import { getTiktokMedia } from '@/app/actions/get-tiktok-media'
-import InstagramMediaScroll from '@/components/instagram-feed'
+import InstagramScroll from '@/components/instagram-scroll'
 import TiktokIcon from '@/components/tiktok-icon'
-import TiktokVideosScroll from '@/components/tiktok-videos-scroll'
+import TiktokScroll from '@/components/tiktok-scroll'
 import {
     Select,
     SelectContent,
@@ -361,7 +361,7 @@ function TiktokWidgetFeed({ userId }: { userId: string }) {
             {isLoading ? (
                 <Loader className="h-4 w-4 animate-spin" />
             ) : media ? (
-                <TiktokVideosScroll videos={media.videos} />
+                <TiktokScroll videos={media.videos} />
             ) : (
                 <PairAccountButton
                     label={'Click to connect your Tiktok account'}
@@ -410,7 +410,7 @@ function InstagramWidgetFeed({ userId }: { userId: string }) {
             {isLoading ? (
                 <Loader className="h-4 w-4 animate-spin" />
             ) : media ? (
-                <InstagramMediaScroll media={media.media} />
+                <InstagramScroll media={media.media} />
             ) : (
                 <PairAccountButton
                     label={'Click to connect your Instagram account'}
@@ -442,7 +442,6 @@ function InstagramWidgetTitle({ userId }: { userId: string }) {
     ) : (
         <div className="flex items-center">
             <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
-            <p>Instagram media</p>
         </div>
     )
 }

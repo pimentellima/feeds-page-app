@@ -6,9 +6,9 @@ import Link from 'next/link'
 import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
-export default function TiktokVideosScroll({ videos }: { videos: TiktokVideo[] }) {
+export default function TiktokScroll({ videos }: { videos: TiktokVideo[] }) {
     return (
-        <ScrollArea className="h-96 w-full">
+        <ScrollArea className="h-96 w-full pb-4">
             <div className="grid gap-2">
                 {videos.map((video) => (
                     <Link

@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
-export default function InstagramMediaScroll({ media }: { media: InstagramPost[] }) {
+export default function InstagramScroll({ media }: { media: InstagramPost[] }) {
     return (
-        <ScrollArea className="h-96 w-full">
+        <ScrollArea className="h-96 w-full pb-4">
             <div className="grid gap-2">
                 {media
                     .filter(
