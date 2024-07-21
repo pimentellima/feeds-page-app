@@ -25,7 +25,7 @@ export default async function CustomizePage() {
 
     return (
         <>
-            <div className="fixed top-5 right-14 flex items-center gap-1">
+            <div className="absolute top-5 right-14 flex items-center gap-1">
                 <ChangeThemeSelect />
                 <AccountSettingsDropdown />
             </div>

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS "uniqueWidgetPos" ON "widgets" USING btree ("userId","pos");

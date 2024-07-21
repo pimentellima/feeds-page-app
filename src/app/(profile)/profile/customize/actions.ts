@@ -144,27 +144,38 @@ export async function updateWidgetPosition(
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
+        const widget = await db.query.widgets.findFirst({
+            where: eq(widgets.id, widgetId),
+            columns: { pos: true },
+        })
+        if (!widget) return 'Widget not found'
 
         if (!widgetId) return 'Widget not found'
         await db.transaction(async (db) => {
-            await db
-                .update(widgets)
-                .set({ pos: sql`${widgets.pos} + 1` })
-                .where(
-                    and(
-                        eq(widgets.userId, session.user.id),
-                        sql`${widgets.pos} >= ${newPosition}`
+            if (newPosition === widget.pos) return
+            if (newPosition < widget.pos) {
+                await db
+                    .update(widgets)
+                    .set({ pos: sql`${widgets.pos} + 1` })
+                    .where(
+                        and(
+                            eq(widgets.userId, session.user.id),
+                            sql`${widgets.pos} >= ${newPosition}`
+                        )
                     )
-                )
-            await db
-                .update(widgets)
-                .set({ pos: sql`${widgets.pos} - 1` })
-                .where(
-                    and(
-                        eq(widgets.userId, session.user.id),
-                        sql`${widgets.pos} <= ${newPosition}`
+            }
+
+            if (newPosition > widget.pos) {
+                await db
+                    .update(widgets)
+                    .set({ pos: sql`${widgets.pos} - 1` })
+                    .where(
+                        and(
+                            eq(widgets.userId, session.user.id),
+                            sql`${widgets.pos} <= ${newPosition}`
+                        )
                     )
-                )
+            }
             await db
                 .update(widgets)
                 .set({ pos: newPosition })

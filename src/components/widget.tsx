@@ -1,16 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DraggableAttributes } from '@dnd-kit/core'
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
 
-import { EllipsisIcon, Trash2Icon } from 'lucide-react'
-import { ReactNode } from 'react'
-import { Button } from './ui/button'
+import { GripIcon, Trash2Icon } from 'lucide-react'
+import { forwardRef, ReactNode } from 'react'
 
-export function Widget({ children }: { children: ReactNode }) {
-    return (
-        <Card className="text-sm h-min hover:bg-card/70 transition-colors">
-            {children}
-        </Card>
-    )
-}
+export const Widget = forwardRef<
+    HTMLDivElement,
+    React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <Card
+        ref={ref}
+        className="text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4"
+        {...props}
+    />
+))
 
 export function WidgetHeader({ children }: { children: ReactNode }) {
     return (
@@ -20,18 +24,25 @@ export function WidgetHeader({ children }: { children: ReactNode }) {
     )
 }
 export function WidgetTitle({ children }: { children: ReactNode }) {
-    return (
-        <CardTitle className="col-start-2 text-base">
-            {children}
-        </CardTitle>
-    )
+    return <CardTitle className="col-start-2 text-base">{children}</CardTitle>
 }
 
-export function DeleteWidgetButton({ onDelete }: { onDelete: () => void }) {
+export function WidgetOptions({
+    onClickDelete,
+    listeners,
+    attributes,
+}: {
+    onClickDelete: () => void
+    listeners: SyntheticListenerMap | undefined
+    attributes: DraggableAttributes
+}) {
     return (
-        <div className="justify-self-end">
-            <button title='Delete widget' onClick={onDelete}>
-                <Trash2Icon className="text-foreground h-4 w-4" />
+        <div className="justify-self-end flex gap-2 items-center">
+            <button {...listeners} {...attributes} title="Drag widget">
+                <GripIcon className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button title="Delete widget" onClick={onClickDelete}>
+                <Trash2Icon className="text-destructive h-4 w-4" />
             </button>
         </div>
     )
@@ -39,7 +50,7 @@ export function DeleteWidgetButton({ onDelete }: { onDelete: () => void }) {
 
 export function WidgetContent({ children }: { children: ReactNode }) {
     return (
-        <CardContent className="flex justify-center w-full h-96 pt-2 items-center">
+        <CardContent className="flex justify-center w-full h-96 items-center">
             {children}
         </CardContent>
     )

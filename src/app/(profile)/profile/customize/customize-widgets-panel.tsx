@@ -14,15 +14,30 @@ import {
 } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import {
-    DeleteWidgetButton,
-    Widget as OptimisticWidget,
+    Widget,
     WidgetContent,
     WidgetHeader,
+    WidgetOptions,
     WidgetTitle,
 } from '@/components/widget'
 import { widgets } from '@/drizzle/schema'
 import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
 import { TiktokUser, TiktokVideo } from '@/lib/api-helpers/tiktok'
+import {
+    closestCenter,
+    DndContext,
+    DragEndEvent,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core'
+import {
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 import {
@@ -35,13 +50,20 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useOptimistic } from 'react'
-import { createWidget, deleteWidget, setWidgetType } from './actions'
+import {
+    createWidget,
+    deleteWidget,
+    setWidgetType,
+    updateWidgetPosition,
+} from './actions'
 import PairAccountButton from './pair-account-button'
+import { Button } from '@/components/ui/button'
 
-type OptimisticWidget = {
+type Widget = {
     id: string
     pos: number
     type?: InferSelectModel<typeof widgets>['type']
+    action?: 'changeType' | 'delete' | 'create' | 'move'
 }
 
 interface CustomizeWidgetsPanelProps {
@@ -54,18 +76,46 @@ export function CustomizeWidgetsPanel({
     userWidgets,
 }: CustomizeWidgetsPanelProps) {
     const { toast } = useToast()
-    const [optimisticWidgets, addWidget] = useOptimistic<
-        OptimisticWidget[],
-        OptimisticWidget
-    >(userWidgets, (state, newWidget) => {
-        if (newWidget.pos === -1) {
-            return state.filter((w) => w.id !== newWidget.id)
+    const [optimisticWidgets, addWidget] = useOptimistic<Widget[], Widget>(
+        userWidgets,
+        (state, newWidget) => {
+            if (newWidget.action === 'delete') {
+                const widgetIndex = state.findIndex(
+                    (w) => w.id === newWidget.id
+                )
+                if (widgetIndex === -1) return state
+                const newState = [...state]
+                newState.splice(widgetIndex, 1)
+                return newState
+            }
+            if (newWidget.action === 'changeType') {
+                const oldWidgetIndex = state.findIndex(
+                    (w) => w.id === newWidget.id
+                )
+                if (oldWidgetIndex === -1) return state
+                const newState = [...state]
+                newState.splice(oldWidgetIndex, 1, newWidget)
+                return newState
+            }
+            if (newWidget.action === 'move') {
+                const fromPos = state.find((w) => w.id === newWidget.id)?.pos
+                if (!fromPos) return state
+                const newState = moveItem(state, fromPos, newWidget.pos)
+                if (!newState) return state
+                return newState
+            }
+            return [...state, newWidget]
         }
-        if (state.find((w) => w.id === newWidget.id)) {
-            return state.map((w) => (w.id === newWidget.id ? newWidget : w))
-        }
-        return [...state, newWidget]
-    })
+    )
+
+    const sortedWidgets = optimisticWidgets.sort((a, b) => a.pos - b.pos)
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    )
 
     const updateWidgetType = async (
         id: string,
@@ -76,6 +126,7 @@ export function CustomizeWidgetsPanel({
         addWidget({
             ...oldWidget,
             type,
+            action: 'changeType',
         })
         const error = await setWidgetType(id, type)
         if (error) {
@@ -88,7 +139,13 @@ export function CustomizeWidgetsPanel({
 
     const addNewWidget = async () => {
         const id = crypto.randomUUID()
-        addWidget({ id, pos: optimisticWidgets.length })
+        addWidget({
+            id,
+            pos: sortedWidgets.length
+                ? sortedWidgets[sortedWidgets.length - 1].pos + 1
+                : 1,
+            action: 'create',
+        })
         const error = await createWidget(id)
         if (error) {
             toast({
@@ -99,7 +156,7 @@ export function CustomizeWidgetsPanel({
     }
 
     const removeWidget = async (id: string) => {
-        addWidget({ id, pos: -1 })
+        addWidget({ id, action: 'delete', pos: -1 })
         const error = await deleteWidget(id)
         if (error) {
             toast({
@@ -109,11 +166,36 @@ export function CustomizeWidgetsPanel({
         }
     }
 
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event
+        if (active.id !== over?.id) {
+            const activeWidget = optimisticWidgets.find(
+                (w) => w.id === active.id
+            )
+            const overWidget = optimisticWidgets.find((w) => w.id === over?.id)
+            if (
+                activeWidget?.pos === undefined ||
+                overWidget?.pos === undefined
+            ) {
+                return
+            }
+            addWidget({
+                action: 'move',
+                id: activeWidget.id,
+                pos: overWidget.pos,
+            })
+            await updateWidgetPosition(activeWidget.id, overWidget.pos)
+        }
+    }
+
     return (
-        <>
-            {optimisticWidgets
-                .sort((a, b) => a.pos - b.pos)
-                .map((widget) => (
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+        >
+            <SortableContext items={optimisticWidgets}>
+                {sortedWidgets.map((widget) => (
                     <EditWidget
                         widget={widget}
                         deleteWidget={removeWidget}
@@ -122,8 +204,11 @@ export function CustomizeWidgetsPanel({
                         key={widget.id}
                     />
                 ))}
-            <NewWidgetButton createWidget={addNewWidget} />
-        </>
+            </SortableContext>
+            <div className="flex justify-center items-center">
+                <NewWidgetButton createWidget={addNewWidget} />
+            </div>
+        </DndContext>
     )
 }
 
@@ -133,14 +218,14 @@ function NewWidgetButton({
     createWidget: () => Promise<void>
 }) {
     return (
-        <button
+        <Button
+            className="flex flex-col gap-1 h-30 w-30"
+            variant="ghost"
             onClick={createWidget}
-            className="rounded-lg border bg-card text-card-foreground shadow-sm
-                flex flex-col justify-center items-center hover:bg-card/70 transition-colors"
         >
-            <PlusIcon className="h-24 w-24" />
+            <PlusIcon className="h-16 w-16" />
             Add feed
-        </button>
+        </Button>
     )
 }
 
@@ -150,7 +235,7 @@ function EditWidget({
     updateWidgetType,
     deleteWidget,
 }: {
-    widget: OptimisticWidget
+    widget: Widget
     userId: string
     updateWidgetType: (
         id: string,
@@ -160,8 +245,16 @@ function EditWidget({
 }) {
     const selectedFeed = widget.type
 
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id: widget.id })
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
+
     return (
-        <OptimisticWidget>
+        <Widget ref={setNodeRef} style={style}>
             <WidgetHeader>
                 <WidgetTitle>
                     {selectedFeed === 'tiktokIntegration' ? (
@@ -172,8 +265,10 @@ function EditWidget({
                         'New widget'
                     )}
                 </WidgetTitle>
-                <DeleteWidgetButton
-                    onDelete={async () => deleteWidget(widget.id)}
+                <WidgetOptions
+                    attributes={attributes}
+                    listeners={listeners}
+                    onClickDelete={() => deleteWidget(widget.id)}
                 />
             </WidgetHeader>
             <WidgetContent>
@@ -190,7 +285,7 @@ function EditWidget({
                     />
                 )}
             </WidgetContent>
-        </OptimisticWidget>
+        </Widget>
     )
 }
 
@@ -288,7 +383,7 @@ function TiktokWidgetTitle({ userId }: { userId: string }) {
     })
 
     return media?.user.username ? (
-        <Link className="flex items-center" href={media.user.username}>
+        <Link className="flex items-center" href={media.user.profile_deep_link}>
             <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />
             <p>{media?.user.username}</p>
         </Link>
@@ -337,7 +432,10 @@ function InstagramWidgetTitle({ userId }: { userId: string }) {
     })
 
     return media?.profile.username ? (
-        <Link className="flex items-center" href={media.profile.username}>
+        <Link
+            className="flex items-center"
+            href={'https://instagram.com/' + media.profile.username}
+        >
             <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
             <p>{media.profile.username}</p>
         </Link>
@@ -347,4 +445,32 @@ function InstagramWidgetTitle({ userId }: { userId: string }) {
             <p>Instagram media</p>
         </div>
     )
+}
+
+function moveItem(widgets: Widget[], fromPos: number, toPos: number) {
+    const updatedWidgets = [...widgets]
+
+    const itemToMove = updatedWidgets.find((item) => item.pos === fromPos)
+
+    if (!itemToMove) {
+        return
+    }
+
+    const direction = toPos > fromPos ? 1 : -1
+
+    updatedWidgets.forEach((item) => {
+        if (direction === 1) {
+            if (item.pos > fromPos && item.pos <= toPos) {
+                item.pos -= 1
+            }
+        } else {
+            if (item.pos < fromPos && item.pos >= toPos) {
+                item.pos += 1
+            }
+        }
+    })
+
+    itemToMove.pos = toPos
+
+    return updatedWidgets
 }
