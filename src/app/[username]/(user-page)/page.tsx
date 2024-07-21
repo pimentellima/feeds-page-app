@@ -1,10 +1,12 @@
-import InstagramWidget from '@/components/instagram-widget'
-import TiktokWidget from '@/components/tiktok-widget'
+import { getInstagramMedia } from '@/app/actions/get-instagram-media'
+import { getTiktokMedia } from '@/app/actions/get-tiktok-media'
+import InstagramMediaScroll from '@/components/instagram-feed'
+import TiktokVideosScroll from '@/components/tiktok-videos-scroll'
+import TiktokIcon from '@/components/tiktok-icon'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import UserAvatar from '@/components/user-avatar'
 import { links } from '@/drizzle/schema'
 import { getUrlType, getYoutubeThumbnailFromUrl } from '@/lib/utils'
-import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'
 import { getUserByUsername } from '@/services/user'
 import { InferSelectModel } from 'drizzle-orm'
 import { InstagramIcon, LinkIcon, XIcon, YoutubeIcon } from 'lucide-react'
@@ -38,55 +40,49 @@ export default async function UserPage({
                     </div>
                 </div>
                 {user.widgets.map(async (widget) => {
-                    if (widget.link) {
-                        return <LinkWidget link={widget.link} key={widget.id} />
-                    }
-                    if (
-                        widget.type === 'tiktokIntegration' &&
-                        widget.integrationToken
-                    ) {
-                        const accessToken =
-                            widget.integrationToken.expiresAt &&
-                            new Date() > widget.integrationToken.expiresAt
-                                ? (
-                                      await refreshIntegrationAccessTokens(
-                                          widget.integrationToken,
-                                          'tiktokIntegration'
-                                      )
-                                  )?.accessToken
-                                : widget.integrationToken.accessToken
+                    if (widget.type === 'tiktokIntegration') {
+                        const media = await getTiktokMedia(user.id)
 
-                        if (!accessToken) return null
+                        if (!media) return null
 
                         return (
-                            <TiktokWidget
-                                accessToken={accessToken}
-                                key={widget.id}
-                            />
+                            <Card className="text-sm">
+                                <CardHeader className="grid grid-cols-3">
+                                    <div
+                                        className="col-start-2 justify-self-center 
+                                            flex flex-col items-center gap-1"
+                                    >
+                                        <TiktokIcon className="fill-foreground w-5 h-5" />
+                                        <p>{media.user.username}</p>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <TiktokVideosScroll videos={media.videos} />
+                                </CardContent>
+                            </Card>
                         )
                     }
-                    if (
-                        widget.type === 'instagramIntegration' &&
-                        widget.integrationToken
-                    ) {
-                        const accessToken =
-                            widget.integrationToken.expiresAt &&
-                            new Date() > widget.integrationToken.expiresAt
-                                ? (
-                                      await refreshIntegrationAccessTokens(
-                                          widget.integrationToken,
-                                          'instagramIntegration'
-                                      )
-                                  )?.accessToken
-                                : widget.integrationToken.accessToken
 
-                        if (!accessToken) return null
+                    if (widget.type === 'instagramIntegration') {
+                        const media = await getInstagramMedia(user.id)
+
+                        if (!media) return null
 
                         return (
-                            <InstagramWidget
-                                accessToken={accessToken}
-                                key={widget.id}
-                            />
+                            <Card className="text-sm">
+                                <CardHeader className="grid grid-cols-3">
+                                    <div
+                                        className="col-start-2 justify-self-center 
+                                            flex flex-col items-center gap-1"
+                                    >
+                                        <InstagramIcon className="text-pink-500 w-5 h-5" />
+                                        <p>{media.profile.username}</p>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <InstagramMediaScroll media={media.media} />
+                                </CardContent>
+                            </Card>
                         )
                     }
                 })}

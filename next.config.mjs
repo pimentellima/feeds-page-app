@@ -6,6 +6,7 @@ const nextConfig = {
             { hostname: 'img.youtube.com' },
             { hostname: 'utfs.io' },
             { hostname: '*-sign-va.tiktokcdn.com' },
+            { hostname: 'scontent-*.cdninstagram.com' },
         ],
     },
 }

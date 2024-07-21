@@ -13,8 +13,10 @@ export default function PairAccountButton({
 }) {
     const router = useRouter()
     const { toast } = useToast()
+
     return (
         <Button
+            variant={'secondary'}
             onClick={async () => {
                 try {
                     const res = await fetch(link, { method: 'POST' })

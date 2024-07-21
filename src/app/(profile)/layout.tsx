@@ -12,10 +12,10 @@ export default async function Layout({
 
     if (!session?.user) redirect('/sign-in')
 
-    const defaultTheme = (await getUser(session.user.id))?.theme ?? 'undefined'
+    const defaultTheme = (await getUser(session.user.id))?.theme ?? undefined
 
     return (
-        <NextThemesProvider attribute='class' forcedTheme={defaultTheme}>
+        <NextThemesProvider attribute="class" defaultTheme={defaultTheme}>
             {children}
         </NextThemesProvider>
     )

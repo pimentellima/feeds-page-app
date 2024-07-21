@@ -84,6 +84,8 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 expiresAt: new Date(
                     Date.now() + longLivedTokenJson.expires_in * 1000
                 ),
+                type: 'instagramIntegration',
+                userId: session.user.id,
             })
             .returning()
         await db

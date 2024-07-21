@@ -14,7 +14,7 @@ export interface TiktokVideo {
     share_url: string
 }
 
-interface VideoData {
+export interface VideoData {
     videos: TiktokVideo[]
     cursor: number
     has_more: boolean
@@ -40,7 +40,7 @@ export interface TiktokUser {
     display_name: string
 }
 
-interface UserData {
+export interface UserData {
     user: TiktokUser
 }
 

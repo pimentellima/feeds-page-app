@@ -1,5 +1,5 @@
 {
-  "id": "c1ff6102-5ccc-4fc0-9c89-67aabb50d538",
+  "id": "a4b15da7-6701-48df-812b-aecc840550cc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -19,13 +19,26 @@
           "name": "accessToken",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "expiresAt": {
           "name": "expiresAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "integrationType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         },
         "refreshToken": {
           "name": "refreshToken",
@@ -41,7 +54,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "integrationTokens_userId_users_id_fk": {
+          "name": "integrationTokens_userId_users_id_fk",
+          "tableFrom": "integrationTokens",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -208,7 +235,7 @@
         },
         "type": {
           "name": "type",
-          "type": "accountLinkType",
+          "type": "integrationType",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -218,12 +245,6 @@
           "type": "serial",
           "primaryKey": false,
           "notNull": true
-        },
-        "linkId": {
-          "name": "linkId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "integrationTokenId": {
           "name": "integrationTokenId",
@@ -240,19 +261,6 @@
           "tableTo": "users",
           "columnsFrom": [
             "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "widgets_linkId_links_id_fk": {
-          "name": "widgets_linkId_links_id_fk",
-          "tableFrom": "widgets",
-          "tableTo": "links",
-          "columnsFrom": [
-            "linkId"
           ],
           "columnsTo": [
             "id"
@@ -279,8 +287,8 @@
     }
   },
   "enums": {
-    "public.accountLinkType": {
-      "name": "accountLinkType",
+    "public.integrationType": {
+      "name": "integrationType",
       "schema": "public",
       "values": [
         "tiktokIntegration",
@@ -288,6 +296,16 @@
         "xIntegration",
         "youtubeIntegration",
         "socialLink"
+      ]
+    },
+    "public.socialLinksEnum": {
+      "name": "socialLinksEnum",
+      "schema": "public",
+      "values": [
+        "tiktok",
+        "instagram",
+        "x",
+        "youtube"
       ]
     }
   },

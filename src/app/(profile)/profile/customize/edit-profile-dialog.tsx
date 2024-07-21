@@ -14,13 +14,12 @@ import { useState } from 'react'
 import { InferSelectModel } from 'drizzle-orm'
 import { users } from '@/drizzle/schema'
 import { Textarea } from '@/components/ui/textarea'
-import { updateUsernameAndBio } from './actions'
-import UserProfileInfo from '@/components/user-profile-info'
+import { updateUsernameAndBio as updateProfile } from './actions'
 
 export default function EditProfileDialog({
     user,
 }: {
-    user: Pick<InferSelectModel<typeof users>, 'bio' | 'username'>
+    user: Pick<InferSelectModel<typeof users>, 'bio' | 'name'>
 }) {
     const [error, setError] = useState('')
     const [open, setOpen] = useState(false)
@@ -29,25 +28,25 @@ export default function EditProfileDialog({
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger>
                 <div
-                    className="mt-1 rounded-md font-medium group transition-colors
-                    px-4 py-2 max-w-96"
+                    className="mt-1 rounded-md font-medium transition-colors
+                    py-2 max-w-96 leading-loose text-left"
                 >
-                    <p className="group-hover:underline underline-offset-4 w-full">
-                        {user.username || 'No username'}
+                    <p className="w-full text-4xl font-bold font-sans">
+                        {user.name || 'No name set'}
                     </p>
-                    <p className="group-hover:underline overflow-hidden whitespace-nowrap text-ellipsis">
+                    <p className="overflow-hidden whitespace-nowrap text-ellipsis">
                         {user.bio || 'No bio'}
                     </p>
                 </div>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit username and bio</DialogTitle>
+                    <DialogTitle>Edit profile</DialogTitle>
                 </DialogHeader>
                 <form
                     className="grid gap-4"
                     action={async (formData) => {
-                        const error = await updateUsernameAndBio(formData)
+                        const error = await updateProfile(formData)
                         if (error) {
                             setError(error)
                             return
@@ -57,11 +56,11 @@ export default function EditProfileDialog({
                     }}
                 >
                     <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="username">Username</Label>
+                        <Label htmlFor="name">Name</Label>
                         <Input
-                            defaultValue={user.username || ''}
-                            name="username"
-                            id="username"
+                            defaultValue={user.name || ''}
+                            name="name"
+                            id="name"
                             maxLength={25}
                             placeholder="Type here..."
                         />

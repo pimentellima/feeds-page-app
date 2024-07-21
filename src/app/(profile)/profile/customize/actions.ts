@@ -40,11 +40,7 @@ export async function addUserLink(values: LinkValues) {
                     })
                     .returning()
 
-                await tx.insert(widgets).values({
-                    type: 'socialLink',
-                    userId: session.user.id,
-                    linkId: insertedLink.id,
-                })
+              
             })
         }
         revalidatePath('/profile/customize')
@@ -64,33 +60,28 @@ export async function updateUsernameAndBio(formData: FormData) {
         if (!session?.user) return 'Unauthenticated'
         const validation = z
             .object({
-                username: z
+                name: z
                     .string()
-                    .max(25, {
-                        message: 'Username must be 25 characters or less',
+                    .max(20, {
+                        message: 'Name must be 20 characters or less',
                     })
-                    .min(1, { message: 'Username is required' }),
+                    .min(1, { message: 'Name is required' }),
                 bio: z
                     .string()
                     .max(150, { message: 'Bio must be 150 characters or less' })
                     .optional(),
             })
             .safeParse({
-                username: formData.get('username'),
+                name: formData.get('name'),
                 bio: formData.get('bio'),
             })
         if (validation.error) return validation.error.issues[0].message
 
-        const { username, bio } = validation.data
-        const existingUser = await db.query.users.findFirst({
-            where: eq(users.username, username),
-        })
-        if (!!existingUser && existingUser.id !== session.user.id)
-            return 'Username already exists'
+        const { name, bio } = validation.data
 
         await db
             .update(users)
-            .set({ bio, username })
+            .set({ bio, name })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
     } catch (e) {
@@ -171,9 +162,7 @@ export async function deleteWidget(id: string) {
         const widget = await db.query.widgets.findFirst({
             where: eq(widgets.id, id),
         })
-        if (widget?.linkId) {
-            await db.delete(links).where(eq(links.id, widget.linkId))
-        } else if (widget?.integrationTokenId) {
+        if (widget?.integrationTokenId) {
             await db
                 .delete(integrationTokens)
                 .where(eq(integrationTokens.id, widget.integrationTokenId))
