@@ -45,12 +45,8 @@ export const widgets = pgTable('widgets', {
     userId: text('userId')
         .notNull()
         .references(() => users.id, { onDelete: 'cascade' }),
-    type: integrationTypeEnum('type').notNull(),
+    type: integrationTypeEnum('type'),
     pos: serial('pos').notNull(),
-    integrationTokenId: text('integrationTokenId').references(
-        () => integrationTokens.id,
-        { onDelete: 'cascade' }
-    ),
 })
 
 export const integrationTokens = pgTable('integrationTokens', {
@@ -100,9 +96,5 @@ export const widgetRelations = relations(widgets, ({ one }) => ({
     user: one(users, {
         fields: [widgets.userId],
         references: [users.id],
-    }),
-    integrationToken: one(integrationTokens, {
-        fields: [widgets.integrationTokenId],
-        references: [integrationTokens.id],
     }),
 }))

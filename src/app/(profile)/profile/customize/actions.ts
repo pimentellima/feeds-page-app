@@ -1,53 +1,12 @@
 'use server'
 import { db } from '@/drizzle/index'
-import { integrationTokens, links, users, widgets } from '@/drizzle/schema'
+import { links, users, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { utapi } from '@/server/uploadthing'
-import { and, eq, InferSelectModel } from 'drizzle-orm'
+import { and, eq, InferInsertModel, sql } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
 import * as z from 'zod'
-import { linkSchema, LinkValues } from './add-link-schema'
-
-export async function addUserLink(values: LinkValues) {
-    'use server'
-    try {
-        const session = await auth()
-        if (!session?.user) return 'Unauthenticated'
-
-        const validation = linkSchema.safeParse(values)
-        if (validation.error) {
-            return 'Error validating form values.'
-        }
-
-        if (values.id) {
-            await db
-                .update(links)
-                .set({
-                    title: values.title,
-                    url: values.url,
-                    showThumbnail: values.showThumbnail,
-                })
-                .where(eq(links.id, values.id))
-        } else {
-            await db.transaction(async (tx) => {
-                const [insertedLink] = await tx
-                    .insert(links)
-                    .values({
-                        title: values.title,
-                        url: values.url,
-                        showThumbnail: values.showThumbnail,
-                    })
-                    .returning()
-
-              
-            })
-        }
-        revalidatePath('/profile/customize')
-    } catch {
-        return 'An error occurred while saving the link.'
-    }
-}
 
 export async function deleteUserLink(linkId: string) {
     await db.delete(links).where(eq(links.id, linkId))
@@ -129,24 +88,36 @@ export async function updateUserTheme(theme: string) {
     }
 }
 
-export async function addIntegration(
-    type: InferSelectModel<typeof widgets>['type']
+export async function createWidget(id: string) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
+        await db.insert(widgets).values({
+            id,
+            userId: session.user.id,
+        })
+        revalidatePath('/profile/customize')
+    } catch (e) {
+        console.log(e)
+        return 'Error adding integration'
+    }
+}
+
+export async function setWidgetType(
+    id: string,
+    type: InferInsertModel<typeof widgets>['type']
 ) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
-        const existingWidget = await db.query.widgets.findFirst({
-            where: and(
-                eq(widgets.userId, session.user.id),
-                eq(widgets.type, type)
-            ),
-        })
-        if (existingWidget)
-            return 'Only one integration of the same type is allowed.'
-        await db.insert(widgets).values({
-            userId: session.user.id,
-            type,
-        })
+
+        await db
+            .update(widgets)
+            .set({
+                type,
+            })
+            .where(eq(widgets.id, id))
         revalidatePath('/profile/customize')
     } catch (e) {
         console.log(e)
@@ -159,18 +130,48 @@ export async function deleteWidget(id: string) {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
 
-        const widget = await db.query.widgets.findFirst({
-            where: eq(widgets.id, id),
-        })
-        if (widget?.integrationTokenId) {
-            await db
-                .delete(integrationTokens)
-                .where(eq(integrationTokens.id, widget.integrationTokenId))
-        } else {
-            await db.delete(widgets).where(eq(widgets.id, id))
-        }
+        await db.delete(widgets).where(eq(widgets.id, id))
         revalidatePath('/profile/customize')
     } catch {
         return 'Error deleting widget'
+    }
+}
+
+export async function updateWidgetPosition(
+    widgetId: string,
+    newPosition: number
+) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
+        if (!widgetId) return 'Widget not found'
+        await db.transaction(async (db) => {
+            await db
+                .update(widgets)
+                .set({ pos: sql`${widgets.pos} + 1` })
+                .where(
+                    and(
+                        eq(widgets.userId, session.user.id),
+                        sql`${widgets.pos} >= ${newPosition}`
+                    )
+                )
+            await db
+                .update(widgets)
+                .set({ pos: sql`${widgets.pos} - 1` })
+                .where(
+                    and(
+                        eq(widgets.userId, session.user.id),
+                        sql`${widgets.pos} <= ${newPosition}`
+                    )
+                )
+            await db
+                .update(widgets)
+                .set({ pos: newPosition })
+                .where(eq(widgets.id, widgetId))
+        })
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'Error updating widget position'
     }
 }

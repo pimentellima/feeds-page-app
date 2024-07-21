@@ -8,6 +8,20 @@
       "when": 1721514777078,
       "tag": "0000_melted_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1721540120948,
+      "tag": "0001_stormy_quasimodo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1721540337364,
+      "tag": "0002_melted_dark_beast",
+      "breakpoints": true
     }
   ]
 }

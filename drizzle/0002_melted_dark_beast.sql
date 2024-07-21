@@ -1,0 +1,1 @@
+ALTER TABLE "widgets" ALTER COLUMN "type" DROP NOT NULL;

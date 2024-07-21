@@ -1,8 +1,9 @@
 'use client'
+import { getInstagramMedia } from '@/app/actions/get-instagram-media'
 import { getTiktokMedia } from '@/app/actions/get-tiktok-media'
-import TiktokVideosScroll from '@/components/tiktok-videos-scroll'
+import InstagramMediaScroll from '@/components/instagram-feed'
 import TiktokIcon from '@/components/tiktok-icon'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import TiktokVideosScroll from '@/components/tiktok-videos-scroll'
 import {
     Select,
     SelectContent,
@@ -11,17 +12,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
 import {
-    Widget,
+    DeleteWidgetButton,
+    Widget as OptimisticWidget,
     WidgetContent,
     WidgetHeader,
-    DeleteWidgetButton,
     WidgetTitle,
 } from '@/components/widget'
-import { links, widgets } from '@/drizzle/schema'
+import { widgets } from '@/drizzle/schema'
+import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
 import { TiktokUser, TiktokVideo } from '@/lib/api-helpers/tiktok'
 import { useQuery } from '@tanstack/react-query'
-import { InferSelectModel } from 'drizzle-orm'
+import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 import {
     FacebookIcon,
     InstagramIcon,
@@ -31,22 +34,18 @@ import {
     YoutubeIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useOptimistic } from 'react'
+import { createWidget, deleteWidget, setWidgetType } from './actions'
 import PairAccountButton from './pair-account-button'
-import { getInstagramMedia } from '@/app/actions/get-instagram-media'
-import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
-import InstagramMediaScroll from '@/components/instagram-feed'
 
-type Widget = {
+type OptimisticWidget = {
     id: string
     pos: number
     type?: InferSelectModel<typeof widgets>['type']
-    link?: InferSelectModel<typeof links> | null
-    integrationToken?: { id: string } | null
 }
 
 interface CustomizeWidgetsPanelProps {
-    userWidgets: Widget[]
+    userWidgets: InferSelectModel<typeof widgets>[]
     userId: string
 }
 
@@ -54,38 +53,88 @@ export function CustomizeWidgetsPanel({
     userId,
     userWidgets,
 }: CustomizeWidgetsPanelProps) {
-    const [widgets, setWidgets] = useState(userWidgets)
+    const { toast } = useToast()
+    const [optimisticWidgets, addWidget] = useOptimistic<
+        OptimisticWidget[],
+        OptimisticWidget
+    >(userWidgets, (state, newWidget) => {
+        if (newWidget.pos === -1) {
+            return state.filter((w) => w.id !== newWidget.id)
+        }
+        if (state.find((w) => w.id === newWidget.id)) {
+            return state.map((w) => (w.id === newWidget.id ? newWidget : w))
+        }
+        return [...state, newWidget]
+    })
 
-    const sortedWidgets = widgets.sort((a, b) => a.pos - b.pos)
+    const updateWidgetType = async (
+        id: string,
+        type: InferInsertModel<typeof widgets>['type']
+    ) => {
+        const oldWidget = optimisticWidgets.find((w) => w.id === id)
+        if (!oldWidget) return
+        addWidget({
+            ...oldWidget,
+            type,
+        })
+        const error = await setWidgetType(id, type)
+        if (error) {
+            toast({
+                title: 'Error updating widget',
+                variant: 'destructive',
+            })
+        }
+    }
+
+    const addNewWidget = async () => {
+        const id = crypto.randomUUID()
+        addWidget({ id, pos: optimisticWidgets.length })
+        const error = await createWidget(id)
+        if (error) {
+            toast({
+                title: 'Error adding widget',
+                variant: 'destructive',
+            })
+        }
+    }
+
+    const removeWidget = async (id: string) => {
+        addWidget({ id, pos: -1 })
+        const error = await deleteWidget(id)
+        if (error) {
+            toast({
+                title: 'Error removing widget',
+                variant: 'destructive',
+            })
+        }
+    }
 
     return (
         <>
-            {sortedWidgets.map((widget) => (
-                <EditWidget
-                    setWidgets={setWidgets}
-                    userId={userId}
-                    widgetId={widget.id}
-                    key={widget.id}
-                />
-            ))}
-            <NewWidgetButton setWidgets={setWidgets} />
+            {optimisticWidgets
+                .sort((a, b) => a.pos - b.pos)
+                .map((widget) => (
+                    <EditWidget
+                        widget={widget}
+                        deleteWidget={removeWidget}
+                        updateWidgetType={updateWidgetType}
+                        userId={userId}
+                        key={widget.id}
+                    />
+                ))}
+            <NewWidgetButton createWidget={addNewWidget} />
         </>
     )
 }
 
 function NewWidgetButton({
-    setWidgets,
+    createWidget,
 }: {
-    setWidgets: Dispatch<SetStateAction<Widget[]>>
+    createWidget: () => Promise<void>
 }) {
     return (
         <button
-            onClick={() =>
-                setWidgets((prev) => [
-                    ...prev,
-                    { id: crypto.randomUUID(), pos: 0 },
-                ])
-            }
+            onClick={createWidget}
             className="rounded-lg border bg-card text-card-foreground shadow-sm
                 flex flex-col justify-center items-center hover:bg-card/70 transition-colors"
         >
@@ -96,73 +145,83 @@ function NewWidgetButton({
 }
 
 function EditWidget({
-    widgetId,
-    setWidgets,
+    widget,
     userId,
+    updateWidgetType,
+    deleteWidget,
 }: {
-    widgetId: string
-    setWidgets: Dispatch<SetStateAction<Widget[]>>
+    widget: OptimisticWidget
     userId: string
+    updateWidgetType: (
+        id: string,
+        type: InferInsertModel<typeof widgets>['type']
+    ) => Promise<void>
+    deleteWidget: (id: string) => Promise<void>
 }) {
-    const [selectedFeed, setSelectedFeed] = useState<string | undefined>()
+    const selectedFeed = widget.type
 
     return (
-        <Widget>
+        <OptimisticWidget>
             <WidgetHeader>
                 <WidgetTitle>
-                    {selectedFeed === 'tiktok' ? (
+                    {selectedFeed === 'tiktokIntegration' ? (
                         <TiktokWidgetTitle userId={userId} />
-                    ) : selectedFeed === 'instagram' ? (
+                    ) : selectedFeed === 'instagramIntegration' ? (
                         <InstagramWidgetTitle userId={userId} />
                     ) : (
                         'New widget'
                     )}
                 </WidgetTitle>
                 <DeleteWidgetButton
-                    onDelete={() =>
-                        setWidgets((widgets) =>
-                            widgets.filter((w) => w.id !== widgetId)
-                        )
-                    }
+                    onDelete={async () => deleteWidget(widget.id)}
                 />
             </WidgetHeader>
             <WidgetContent>
-                {selectedFeed === 'tiktok' ? (
+                {selectedFeed === 'tiktokIntegration' ? (
                     <TiktokWidgetFeed userId={userId} />
-                ) : selectedFeed === 'instagram' ? (
+                ) : selectedFeed === 'instagramIntegration' ? (
                     <InstagramWidgetFeed userId={userId} />
                 ) : (
                     <WidgetTypeSelect
-                        setValue={setSelectedFeed}
-                        value={selectedFeed}
+                        onChangeType={(type) =>
+                            updateWidgetType(widget.id, type)
+                        }
+                        widgetType={widget.type}
                     />
                 )}
             </WidgetContent>
-        </Widget>
+        </OptimisticWidget>
     )
 }
 
 function WidgetTypeSelect({
-    value,
-    setValue,
+    widgetType,
+    onChangeType,
 }: {
-    value: string | undefined
-    setValue: (value: string) => void
+    widgetType: InferInsertModel<typeof widgets>['type']
+    onChangeType: (
+        type: InferInsertModel<typeof widgets>['type']
+    ) => Promise<void>
 }) {
     return (
-        <Select value={value} onValueChange={(value) => setValue(value)}>
+        <Select
+            value={widgetType || undefined}
+            onValueChange={(value) =>
+                onChangeType(value as InferInsertModel<typeof widgets>['type'])
+            }
+        >
             <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a feed type" />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectItem value="tiktok">
+                    <SelectItem value="tiktokIntegration">
                         <div className="flex items-center">
                             <TiktokIcon className="mr-1 fill-foreground w-4 h-4" />
                             Tiktok videos
                         </div>
                     </SelectItem>
-                    <SelectItem value="instagram">
+                    <SelectItem value="instagramIntegration">
                         <div className="flex items-center">
                             <InstagramIcon className="mr-1 text-pink-400 w-4 h-4" />
                             Instagram media
@@ -285,7 +344,7 @@ function InstagramWidgetTitle({ userId }: { userId: string }) {
     ) : (
         <div className="flex items-center">
             <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
-            <p>Instagram feed</p>
+            <p>Instagram media</p>
         </div>
     )
 }

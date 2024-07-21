@@ -7,11 +7,7 @@ export async function getUserByUsername(username: string) {
     const user = await db.query.users.findFirst({
         where: eq(users.username, username),
         with: {
-            widgets: {
-                with: {
-                    integrationToken: true,
-                },
-            },
+            widgets: true,
         },
     })
     if (!user) throw new Error('')
@@ -22,11 +18,7 @@ export async function getUser(userId: string) {
     const user = await db.query.users.findFirst({
         where: eq(users.id, userId),
         with: {
-            widgets: {
-                with: {
-                    integrationToken: true,
-                },
-            },
+            widgets: true,
         },
     })
     if (!user) throw new Error('')
