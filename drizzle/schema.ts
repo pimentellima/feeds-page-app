@@ -24,47 +24,34 @@ export const users = pgTable('users', {
     createdAt: timestamp('created_at').defaultNow(),
     imageUrl: text('imageUrl'),
 })
-export const accountLinkTypeEnum = pgEnum('accountLinkType', [
+export const socialLinksEnum = pgEnum('socialLinksEnum', [
     'tiktok',
     'instagram',
     'x',
     'youtube',
 ])
 
-export const widgetTypeEnum = pgEnum('accountLinkType', [
+export const integrationTypeEnum = pgEnum('integrationType', [
     'tiktokIntegration',
     'instagramIntegration',
     'xIntegration',
     'youtubeIntegration',
-    'socialLink',
 ])
 
-export const widgets = pgTable(
-    'widgets',
-    {
-        id: text('id')
-            .default(sql`gen_random_uuid()`)
-            .primaryKey(),
-        userId: text('userId')
-            .notNull()
-            .references(() => users.id, { onDelete: 'cascade' }),
-        type: widgetTypeEnum('type').notNull(),
-        pos: serial('pos').notNull(),
-        linkId: text('linkId').references(() => links.id, {
-            onDelete: 'cascade',
-        }),
-        integrationTokenId: text('integrationTokenId').references(
-            () => integrationTokens.id,
-            { onDelete: 'cascade' }
-        ),
-    },
-    (widgets) => ({
-        userWidgetTypeIndex: uniqueIndex('userWidgetTypeIndex').on(
-            widgets.userId,
-            widgets.type
-        ),
-    })
-)
+export const widgets = pgTable('widgets', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    userId: text('userId')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+    type: integrationTypeEnum('type').notNull(),
+    pos: serial('pos').notNull(),
+    integrationTokenId: text('integrationTokenId').references(
+        () => integrationTokens.id,
+        { onDelete: 'cascade' }
+    ),
+})
 
 export const integrationTokens = pgTable('integrationTokens', {
     id: text('id')
@@ -74,6 +61,10 @@ export const integrationTokens = pgTable('integrationTokens', {
     expiresAt: timestamp('expiresAt', {
         mode: 'date',
     }),
+    userId: text('userId')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+    type: integrationTypeEnum('type').notNull(),
     refreshToken: text('refreshToken'),
     refreshExpiresAt: timestamp('refreshExpiresAt', {
         mode: 'date',
@@ -102,16 +93,13 @@ export const refreshTokens = pgTable('refreshTokens', {
 
 export const usersRelations = relations(users, ({ many }) => ({
     widgets: many(widgets),
+    integrationTokens: many(integrationTokens),
 }))
 
 export const widgetRelations = relations(widgets, ({ one }) => ({
     user: one(users, {
         fields: [widgets.userId],
         references: [users.id],
-    }),
-    link: one(links, {
-        fields: [widgets.linkId],
-        references: [links.id],
     }),
     integrationToken: one(integrationTokens, {
         fields: [widgets.integrationTokenId],

@@ -11,7 +11,6 @@ import { InferSelectModel } from 'drizzle-orm'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { addUserLink } from './actions'
 import { linkSchema, LinkValues } from './add-link-schema'
 
 export default function AddLinkForm({
@@ -20,7 +19,7 @@ export default function AddLinkForm({
     onCancelForm,
 }: {
     link?: InferSelectModel<typeof links>
-    onSubmitForm?: () => void
+    onSubmitForm: (values: LinkValues) => void
     onCancelForm?: () => void
 }) {
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
@@ -34,7 +33,7 @@ export default function AddLinkForm({
         setValue,
         setError,
         watch,
-        formState: { errors, isSubmitting, defaultValues },
+        formState: { errors },
     } = useForm<LinkValues>({
         resolver: zodResolver(linkSchema),
         defaultValues: {
@@ -54,17 +53,8 @@ export default function AddLinkForm({
         })
     }, [link])
 
-    const onSubmit = async (values: LinkValues) => {
-        const error = await addUserLink(values)
-        if (error) {
-            setError('root', { message: error })
-            return
-        }
-        onSubmitForm?.()
-    }
-
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+        <form onSubmit={handleSubmit(onSubmitForm)} className="grid gap-4">
             <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -147,9 +137,7 @@ export default function AddLinkForm({
                 >
                     Cancel
                 </Button>
-                <Button disabled={isSubmitting} type="submit">
-                    Save
-                </Button>
+                <Button type="submit">Save</Button>
             </DialogFooter>
         </form>
     )

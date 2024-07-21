@@ -1,4 +1,4 @@
-import InstagramWidget from '@/components/instagram-widget'
+import InstagramWidget from '@/components/instagram-feed'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { integrationTokens } from '@/drizzle/schema'
 import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'

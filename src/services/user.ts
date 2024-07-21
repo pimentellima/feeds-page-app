@@ -9,7 +9,6 @@ export async function getUserByUsername(username: string) {
         with: {
             widgets: {
                 with: {
-                    link: true,
                     integrationToken: true,
                 },
             },
@@ -25,7 +24,6 @@ export async function getUser(userId: string) {
         with: {
             widgets: {
                 with: {
-                    link: true,
                     integrationToken: true,
                 },
             },

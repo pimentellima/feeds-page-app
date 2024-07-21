@@ -1,13 +1,21 @@
 DO $$ BEGIN
- CREATE TYPE "public"."accountLinkType" AS ENUM('tiktokIntegration', 'instagramIntegration', 'xIntegration', 'youtubeIntegration', 'socialLink');
+ CREATE TYPE "public"."integrationType" AS ENUM('tiktokIntegration', 'instagramIntegration', 'xIntegration', 'youtubeIntegration', 'socialLink');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."socialLinksEnum" AS ENUM('tiktok', 'instagram', 'x', 'youtube');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "integrationTokens" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"accessToken" text,
+	"accessToken" text NOT NULL,
 	"expiresAt" timestamp,
+	"userId" text NOT NULL,
+	"type" "integrationType" NOT NULL,
 	"refreshToken" text,
 	"refreshExpiresAt" timestamp
 );
@@ -40,11 +48,16 @@ CREATE TABLE IF NOT EXISTS "users" (
 CREATE TABLE IF NOT EXISTS "widgets" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"userId" text NOT NULL,
-	"type" "accountLinkType" NOT NULL,
+	"type" "integrationType" NOT NULL,
 	"pos" serial NOT NULL,
-	"linkId" text,
 	"integrationTokenId" text
 );
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "integrationTokens" ADD CONSTRAINT "integrationTokens_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "refreshTokens" ADD CONSTRAINT "refreshTokens_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
@@ -54,12 +67,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "widgets" ADD CONSTRAINT "widgets_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "widgets" ADD CONSTRAINT "widgets_linkId_links_id_fk" FOREIGN KEY ("linkId") REFERENCES "public"."links"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

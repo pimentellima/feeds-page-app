@@ -69,6 +69,8 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 refreshExpiresAt: new Date(
                     Date.now() + data.refresh_expires_in * 1000
                 ),
+                type: 'tiktokIntegration',
+                userId: session.user.id,
             })
             .returning()
         await db
