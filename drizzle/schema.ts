@@ -96,8 +96,19 @@ export const refreshTokens = pgTable('refreshTokens', {
     expires: timestamp('expires', { mode: 'date' }).notNull(),
 })
 
+export const integrationTokenRelations = relations(
+    integrationTokens,
+    ({ one }) => ({
+        user: one(users, {
+            fields: [integrationTokens.userId],
+            references: [users.id],
+        }),
+    })
+)
+
 export const usersRelations = relations(users, ({ many }) => ({
     widgets: many(widgets),
+    integrationTokens: many(integrationTokens),
 }))
 
 export const widgetRelations = relations(widgets, ({ one }) => ({

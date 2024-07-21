@@ -1,9 +1,11 @@
 'use server'
 
 import { db } from '@/drizzle/index'
-import { integrationTokens, widgets } from '@/drizzle/schema'
+import { integrationTokens } from '@/drizzle/schema'
 import { getInstagramProfileAndMedia } from '@/lib/api-helpers/instagram'
-import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'
+import {
+    getUserIntegrationAccessToken
+} from '@/services/integration-tokens'
 import { and, eq } from 'drizzle-orm'
 
 export async function getInstagramMedia(userId: string) {
@@ -16,13 +18,9 @@ export async function getInstagramMedia(userId: string) {
         })
         if (!token) return null
 
-        const accessToken =
-            token.expiresAt && new Date() > token.expiresAt
-                ? await refreshIntegrationAccessTokens(
-                      token,
-                      'instagramIntegration'
-                  )
-                : token.accessToken
+        const accessToken = getUserIntegrationAccessToken(
+            'instagramIntegration'
+        )
 
         if (!accessToken) return null
 

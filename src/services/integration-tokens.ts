@@ -1,13 +1,33 @@
 import { db } from '@/drizzle/index'
 import { integrationTokens, widgets } from '@/drizzle/schema'
+import { auth } from '@/lib/auth'
 import { encodeBody } from '@/lib/encode-body'
-import { eq, InferSelectModel } from 'drizzle-orm'
+import { and, eq, InferSelectModel } from 'drizzle-orm'
+
+export async function getUserIntegrationAccessToken(
+    type: InferSelectModel<typeof integrationTokens>['type']
+) {
+    const session = await auth()
+    if (!session?.user.id) return null
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, type),
+            eq(integrationTokens.userId, session.user.id)
+        ),
+    })
+    if (!token) return null
+    if (token.expiresAt && token.expiresAt < new Date()) {
+        const newToken = await refreshIntegrationAccessTokens(token)
+        if (!newToken) return null
+        return newToken.accessToken
+    }
+    return token.accessToken
+}
 
 export async function refreshIntegrationAccessTokens(
-    token: InferSelectModel<typeof integrationTokens>,
-    type: InferSelectModel<typeof widgets>['type']
+    token: InferSelectModel<typeof integrationTokens>
 ) {
-    if (type === 'tiktokIntegration') {
+    if (token.type === 'tiktokIntegration') {
         const response = await fetch(
             'https://open.tiktokapis.com/v2/oauth/token/',
             {
@@ -48,7 +68,7 @@ export async function refreshIntegrationAccessTokens(
         return newToken
     }
 
-    if (type === 'instagramIntegration') {
+    if (token.type === 'instagramIntegration') {
         const response = await fetch(
             'https://graph.instagram.com/refresh_access_token',
             {

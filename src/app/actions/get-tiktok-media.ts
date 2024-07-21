@@ -1,9 +1,11 @@
 'use server'
 
 import { db } from '@/drizzle/index'
-import { integrationTokens, widgets } from '@/drizzle/schema'
+import { integrationTokens } from '@/drizzle/schema'
 import { getTiktokProfileAndMedia } from '@/lib/api-helpers/tiktok'
-import { refreshIntegrationAccessTokens } from '@/services/integration-tokens'
+import {
+    getUserIntegrationAccessToken
+} from '@/services/integration-tokens'
 import { and, eq } from 'drizzle-orm'
 
 export async function getTiktokMedia(userId: string) {
@@ -15,10 +17,7 @@ export async function getTiktokMedia(userId: string) {
     })
     if (!token) return null
 
-    const accessToken =
-        token.expiresAt && new Date() > token.expiresAt
-            ? await refreshIntegrationAccessTokens(token, 'tiktokIntegration')
-            : token.accessToken
+    const accessToken = getUserIntegrationAccessToken('tiktokIntegration')
 
     if (!accessToken) return null
 

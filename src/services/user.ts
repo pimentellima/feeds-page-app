@@ -8,6 +8,7 @@ export async function getUserByUsername(username: string) {
         where: eq(users.username, username),
         with: {
             widgets: true,
+            integrationTokens: true
         },
     })
     if (!user) throw new Error('')
