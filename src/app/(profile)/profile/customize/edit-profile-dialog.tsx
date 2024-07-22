@@ -1,4 +1,13 @@
 'use client'
+import { Button } from '@/components/ui/button'
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command'
 import {
     Dialog,
     DialogContent,
@@ -8,78 +17,141 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useFormStatus } from 'react-dom'
-import { Button } from '@/components/ui/button'
-import { ReactNode, useState } from 'react'
-import { InferSelectModel } from 'drizzle-orm'
-import { users } from '@/drizzle/schema'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
-import { updateUserProfile } from './actions'
+import { users } from '@/drizzle/schema'
+import { cn } from '@/lib/utils'
+import { useQuery } from '@tanstack/react-query'
+import { InferSelectModel } from 'drizzle-orm'
+import { Check, ChevronsUpDown, Loader } from 'lucide-react'
+import { ReactNode, useState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { getCityByName, updateUserProfile } from './actions'
+import { profileSchema, ProfileValues } from './edit-profile-schema'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export default function EditProfileDialog({
     user,
     trigger,
 }: {
-    user: Pick<InferSelectModel<typeof users>, 'bio' | 'name' | 'username'>
-    trigger?: ReactNode
+    user: Pick<
+        InferSelectModel<typeof users>,
+        'bio' | 'name' | 'username' | 'location'
+    >
+    trigger: ReactNode
 }) {
-    const [error, setError] = useState('')
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState<boolean>(false)
+    const {
+        register,
+        handleSubmit,
+        setError,
+        setValue,
+        watch,
+        reset,
+        formState: { isValid, isSubmitting, errors },
+    } = useForm<ProfileValues>({
+        defaultValues: {
+            bio: user.bio || '',
+            name: user.name || '',
+            username: user.username || '',
+            location: user.location || '',
+        },
+        resolver: zodResolver(profileSchema),
+        mode: 'onSubmit',
+    })
+
+    const onSubmit = async (data: ProfileValues) => {
+        const error = await updateUserProfile(data)
+        if (error === 'Username not available') {
+            setError('username', { message: error })
+            return
+        }
+        if (error) {
+            setError('root', { message: error })
+            return
+        }
+        setOpen(false)
+    }
 
     return (
-        <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
-            <DialogTrigger asChild>
-                {trigger ? trigger : <button>Open</button>}
-            </DialogTrigger>
+        <Dialog
+            open={open}
+            onOpenChange={(open) => {
+                if (open) reset()
+                setOpen(open)
+            }}
+        >
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit profile</DialogTitle>
                 </DialogHeader>
-                <form
-                    className="grid gap-4"
-                    action={async (formData) => {
-                        const error = await updateUserProfile(formData)
-                        if (error) {
-                            setError(error)
-                            return
-                        }
-                        setOpen(false)
-                        setError('')
-                    }}
-                >
-                    <div className="flex flex-col space-y-1.5">
+                <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="username">Username</Label>
                         <Input
-                            defaultValue={user.username || ''}
-                            name="username"
+                            {...register('username')}
                             id="username"
-                            maxLength={25}
+                            className="col-span-3"
                             placeholder="Type here..."
                         />
                     </div>
-                    <div className="flex flex-col space-y-1.5">
+                    {!!errors.username?.message && (
+                        <p className="text-right text-destructive text-sm">
+                            {errors.username.message}
+                        </p>
+                    )}
+                    <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name">Name</Label>
                         <Input
-                            defaultValue={user.name || ''}
-                            name="name"
+                            {...register('name')}
                             id="name"
-                            maxLength={25}
+                            className="col-span-3"
                             placeholder="Type here..."
                         />
                     </div>
-                    <div className="flex flex-col space-y-1.5">
+                    {!!errors.name?.message && (
+                        <p className="text-right text-destructive text-sm">
+                            {errors.name.message}
+                        </p>
+                    )}
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="location">Location</Label>
+                        <div className="col-span-3">
+                            <LocationCombobox
+                                value={watch('location') || undefined}
+                                setValue={(val) => setValue('location', val)}
+                            />
+                        </div>
+                    </div>
+                    {!!errors.location?.message && (
+                        <p className="text-right text-destructive text-sm">
+                            {errors.location.message}
+                        </p>
+                    )}
+                    <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="bio">Bio</Label>
                         <Textarea
-                            defaultValue={user.bio || ''}
-                            name="bio"
+                            {...register('bio')}
                             id="bio"
+                            className="col-span-3"
                             maxLength={150}
                             placeholder="Type here..."
                         />
                     </div>
-                    {!!error && (
+                    {!!errors.bio?.message && (
                         <p className="text-right text-destructive text-sm">
-                            {error}
+                            {errors.bio.message}
+                        </p>
+                    )}
+                    {!!errors.root?.message && (
+                        <p className="text-right text-destructive text-sm">
+                            {errors.root.message}
                         </p>
                     )}
                     <div className="flex gap-1 justify-end mt-3">
@@ -90,7 +162,9 @@ export default function EditProfileDialog({
                         >
                             Cancel
                         </Button>
-                        <SubmitButton />
+                        <Button disabled={isSubmitting} type="submit">
+                            Save
+                        </Button>
                     </div>
                 </form>
             </DialogContent>
@@ -98,11 +172,81 @@ export default function EditProfileDialog({
     )
 }
 
-function SubmitButton() {
-    const status = useFormStatus()
+function LocationCombobox({
+    value,
+    setValue,
+}: {
+    value?: string
+    setValue: (value: string) => void
+}) {
+    const [open, setOpen] = useState(false)
+    const [search, setSearch] = useState('')
+
+    const { data, isFetching, isError } = useQuery<string[]>({
+        queryFn: async () => getCityByName(search),
+        queryKey: ['locations', search],
+        enabled: search.length >= 3,
+        initialData: [],
+        placeholderData: [],
+    })
+
     return (
-        <Button disabled={status.pending} type="submit">
-            Save
-        </Button>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="justify-between w-full"
+                >
+                    {value || 'Select city...'}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+                <Command>
+                    <CommandInput
+                        id="location"
+                        onValueChange={(search) => setSearch(search)}
+                        placeholder="Search city..."
+                    />
+                    <CommandEmpty>
+                        {isFetching ? (
+                            <div className="flex justify-center">
+                                <Loader className="animate-spin h-4 w-4" />
+                            </div>
+                        ) : isError ? (
+                            <p>An error occured</p>
+                        ) : search.length < 3 ? (
+                            <p>Type more to search</p>
+                        ) : (
+                            <p>No results found</p>
+                        )}
+                    </CommandEmpty>
+                    <CommandList>
+                        {data?.map((cityName) => (
+                            <CommandItem
+                                onSelect={(newValue) => {
+                                    setValue(newValue === value ? '' : newValue)
+                                    setOpen(false)
+                                }}
+                                key={cityName}
+                                value={cityName}
+                            >
+                                <Check
+                                    className={cn(
+                                        'mr-2 h-4 w-4',
+                                        value === cityName
+                                            ? 'opacity-100'
+                                            : 'opacity-0'
+                                    )}
+                                />
+                                {cityName}
+                            </CommandItem>
+                        ))}
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { socialLinks } from '@/drizzle/schema'
+import { socialLinks, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { getUser } from '@/services/user'
 import { InferSelectModel } from 'drizzle-orm'
-import { CircleCheckIcon, SquareArrowRightIcon } from 'lucide-react'
+import { CircleCheckIcon, MapPinIcon, SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { AccountSettingsDropdown } from './account-settings-dropdown'
@@ -29,56 +29,8 @@ export default async function CustomizePage() {
                 <AccountSettingsDropdown />
             </div>
             <div className="grid grid-cols-[4fr,10fr] gap-44 min-h-screen bg-background">
-                <div className="fixed top-0 mt-20 pb-32 h-full ">
-                    <div className="flex flex-col ">
-                        <div className="pl-14">
-                            <ChangeImageDialog
-                                imageUrl={user?.imageUrl || ''}
-                            />
-                        </div>
-                        <div className="pl-10 mt-1">
-                            <EditProfileDialog
-                                user={user}
-                                trigger={
-                                    <button
-                                        title="Edit profile"
-                                        className="rounded-md transition-colors w-96
-                                        p-3 text-left hover:bg-accent hover:text-accent-foreground"
-                                    >
-                                        <p className="w-full text-4xl font-bold">
-                                            {user.name || 'No name set'}
-                                        </p>
-                                        <p className="mt-2 line-clamp-4 text-lg font-normal">
-                                            {user.bio || 'No bio'}
-                                        </p>
-                                    </button>
-                                }
-                            />
-                        </div>
-                    </div>
-                    <div className="mt-10 pl-10">
-                        <ShortLinks userLinks={user.socialLinks} />
-                    </div>
-                    <div className="mt-10 pl-10">
-                        {user.username ? (
-                            <Button variant={'secondary'} asChild>
-                                <Link href={'/' + user.username}>
-                                    <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
-                                    Visit your page
-                                </Link>
-                            </Button>
-                        ) : (
-                            <EditProfileDialog
-                                user={user}
-                                trigger={
-                                    <Button variant={'secondary'}>
-                                        <CircleCheckIcon className="h-4 w-4 mr-1" />
-                                        Claim username
-                                    </Button>
-                                }
-                            />
-                        )}
-                    </div>
+                <div className="fixed top-0 mt-20 h-[80vh]">
+                    <ProfileSection user={user} />
                 </div>
                 <div className="col-start-2 grid grid-cols-2 grid-rows-2 gap-4 pt-20 pb-10 pr-16">
                     <CustomizeWidgetsPanel
@@ -88,6 +40,77 @@ export default async function CustomizePage() {
                 </div>
             </div>
         </>
+    )
+}
+
+function ProfileSection({
+    user,
+}: {
+    user: Omit<InferSelectModel<typeof users>, 'password'> & {
+        socialLinks: InferSelectModel<typeof socialLinks>[]
+    }
+}) {
+    return (
+        <div className=" flex flex-col h-full">
+            <div className="flex flex-col ">
+                <div className="pl-14">
+                    <ChangeImageDialog imageUrl={user?.imageUrl || ''} />
+                </div>
+                <div className="pl-10 mt-1">
+                    <EditProfileDialog
+                        user={{
+                            bio: user.bio,
+                            location: user.location,
+                            name: user.name,
+                            username: user.username,
+                        }}
+                        trigger={
+                            <button
+                                title="Edit profile"
+                                className="rounded-md transition-colors w-96
+                                p-3 text-left hover:bg-accent hover:text-accent-foreground"
+                            >
+                                <p className="w-full text-4xl font-bold">
+                                    {user.name || 'No name set'}
+                                </p>
+                                {user.location && (
+                                    <div className="mt-2 font-normal flex items-center">
+                                        <MapPinIcon className="mr-2 w-4 h-4" />
+                                        <p>{user.location}</p>
+                                    </div>
+                                )}
+                                <p className="mt-2 line-clamp-4 text-lg font-normal">
+                                    {user.bio || 'No bio'}
+                                </p>
+                            </button>
+                        }
+                    />
+                </div>
+            </div>
+            <div className="mt-4 pl-10">
+                <ShortLinks userLinks={user.socialLinks} />
+            </div>
+            <div className="pl-10 flex flex-col h-full justify-end items-start">
+                {user.username ? (
+                    <Button variant={'secondary'} asChild>
+                        <Link href={'/' + user.username}>
+                            <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
+                            Visit your page
+                        </Link>
+                    </Button>
+                ) : (
+                    <EditProfileDialog
+                        user={user}
+                        trigger={
+                            <Button variant={'secondary'}>
+                                <CircleCheckIcon className="h-4 w-4 mr-1" />
+                                Claim username
+                            </Button>
+                        }
+                    />
+                )}
+            </div>
+        </div>
     )
 }
 

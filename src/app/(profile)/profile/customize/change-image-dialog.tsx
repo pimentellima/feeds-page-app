@@ -7,15 +7,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { CameraIcon, UserIcon } from 'lucide-react'
+import { Label } from '@/components/ui/label'
+import UserAvatar from '@/components/user-avatar'
+import { CameraIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { removeUserImage, updateUserImage } from './actions'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import UserAvatar from '@/components/user-avatar'
-import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
 
 export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
     const [open, setOpen] = useState(false)

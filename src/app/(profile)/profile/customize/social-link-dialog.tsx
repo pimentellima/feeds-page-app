@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
 import { socialLinks } from '@/drizzle/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { InferSelectModel } from 'drizzle-orm'
@@ -26,7 +27,6 @@ import { useForm } from 'react-hook-form'
 import { createSocialLink, deleteSocialLink } from './actions'
 import { SocialLinkIcon } from './social-icons'
 import { schema, SocialLinkValues } from './social-link-schema'
-import { useToast } from '@/components/ui/use-toast'
 
 export function SocialLinkDialog({
     socialLink,
@@ -95,97 +95,32 @@ export function SocialLinkDialog({
                     </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
-                    <div className="flex flex-col space-y-1.5">
+                    <div className="grid grid-cols-4 items-center gap-4">
                         <Label>Type</Label>
-                        <Select
-                            value={watch('type')}
-                            onValueChange={(value) =>
-                                setValue(
-                                    'type',
-                                    value as SocialLinkValues['type']
-                                )
-                            }
-                        >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a link type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem
-                                    disabled={userLinks.some(
-                                        (l) => l.type === 'tiktok'
-                                    )}
-                                    value="tiktok"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <SocialLinkIcon linkType="tiktok" />
-                                        Tiktok
-                                    </div>
-                                </SelectItem>
-                                <SelectItem
-                                    disabled={userLinks.some(
-                                        (l) => l.type === 'instagram'
-                                    )}
-                                    value="instagram"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <SocialLinkIcon linkType="instagram" />
-                                        Instagram
-                                    </div>
-                                </SelectItem>
-                                <SelectItem
-                                    disabled={userLinks.some(
-                                        (l) => l.type === 'x'
-                                    )}
-                                    value="x"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <SocialLinkIcon linkType="x" />X
-                                    </div>
-                                </SelectItem>
-                                <SelectItem
-                                    disabled={userLinks.some(
-                                        (l) => l.type === 'linkedin'
-                                    )}
-                                    value="linkedin"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <SocialLinkIcon linkType="linkedin" />
-                                        LinkedIn
-                                    </div>
-                                </SelectItem>
-                                <SelectItem
-                                    disabled={userLinks.some(
-                                        (l) => l.type === 'github'
-                                    )}
-                                    value="github"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <SocialLinkIcon linkType="github" />
-                                        Github
-                                    </div>
-                                </SelectItem>
-                                <SelectItem
-                                    disabled={userLinks.some(
-                                        (l) => l.type === 'youtube'
-                                    )}
-                                    value="youtube"
-                                >
-                                    <div className="flex items-center gap-1">
-                                        <SocialLinkIcon linkType="youtube" />
-                                        Youtube
-                                    </div>
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <div className="col-span-3">
+                            <SelectSocialLinkField
+                                userLinks={userLinks}
+                                value={watch('type')}
+                                setValue={(value) =>
+                                    setValue(
+                                        'type',
+                                        value as InferSelectModel<
+                                            typeof socialLinks
+                                        >['type']
+                                    )
+                                }
+                            />
+                        </div>
                         {!!errors.type?.message && (
                             <p className="text-destructive text-sm">
                                 {errors.type.message}
                             </p>
                         )}
                     </div>
-                    <div className="flex flex-col space-y-1.5">
+                    <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="url">Url</Label>
                         <Input
+                            className="col-span-3"
                             placeholder="example@123.com"
                             {...register('url')}
                         />
@@ -237,5 +172,78 @@ export function SocialLinkDialog({
                 </form>
             </DialogContent>
         </Dialog>
+    )
+}
+
+function SelectSocialLinkField({
+    value,
+    setValue,
+    userLinks,
+}: {
+    value: string
+    setValue: (value: string) => void
+    userLinks: InferSelectModel<typeof socialLinks>[]
+}) {
+    return (
+        <Select value={value} onValueChange={setValue}>
+            <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a link type" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'tiktok')}
+                    value="tiktok"
+                >
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="tiktok" />
+                        Tiktok
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'instagram')}
+                    value="instagram"
+                >
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="instagram" />
+                        Instagram
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'x')}
+                    value="x"
+                >
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="x" />X
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'linkedin')}
+                    value="linkedin"
+                >
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="linkedin" />
+                        LinkedIn
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'github')}
+                    value="github"
+                >
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="github" />
+                        Github
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'youtube')}
+                    value="youtube"
+                >
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="youtube" />
+                        Youtube
+                    </div>
+                </SelectItem>
+            </SelectContent>
+        </Select>
     )
 }

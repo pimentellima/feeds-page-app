@@ -38,7 +38,7 @@ export function WidgetOptions({
 }) {
     return (
         <div className="justify-self-end flex gap-2 items-center">
-            <button {...listeners} {...attributes} title="Drag widget">
+            <button className='cursor-grab' {...listeners} {...attributes} title="Drag widget">
                 <GripIcon className="h-4 w-4 text-muted-foreground" />
             </button>
             <button title="Delete widget" onClick={onClickDelete}>

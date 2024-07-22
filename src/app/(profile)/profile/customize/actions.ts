@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
 import * as z from 'zod'
 import { schema, SocialLinkValues } from './social-link-schema'
+import { profileSchema, ProfileValues } from './edit-profile-schema'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -44,34 +45,13 @@ export async function deleteSocialLink(linkId: string) {
     }
 }
 
-export async function updateUserProfile(formData: FormData) {
+export async function updateUserProfile(values: ProfileValues) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
-        const validation = z
-            .object({
-                name: z
-                    .string()
-                    .max(20, {
-                        message: 'Name must be 20 characters or less',
-                    })
-                    .min(1, { message: 'Name is required' }),
-                bio: z
-                    .string()
-                    .max(150, { message: 'Bio must be 150 characters or less' })
-                    .optional(),
-                username: z.string().max(15, {
-                    message: 'Username must be 15 characters or less',
-                }),
-            })
-            .safeParse({
-                name: formData.get('name'),
-                bio: formData.get('bio'),
-                username: formData.get('username'),
-            })
-        if (validation.error) return validation.error.issues[0].message
+        const data = profileSchema.parse(values)
 
-        const { name, bio, username } = validation.data
+        const { name, bio, username, location } = data
 
         if (username) {
             const existingUsername = await db.query.users.findFirst({
@@ -85,35 +65,12 @@ export async function updateUserProfile(formData: FormData) {
 
         await db
             .update(users)
-            .set({ bio, name, username })
+            .set({ bio, name, username, location })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
     } catch (e) {
         console.log(e)
-        return 'An error occurred while saving the bio.'
-    }
-}
-
-export async function updateUsername(username: string) {
-    try {
-        const session = await auth()
-        if (!session?.user) return 'Unauthenticated'
-        if (!username) return 'Choose an username'
-        const existingUsername = await db.query.users.findFirst({
-            where: and(
-                eq(users.username, username),
-                ne(users.id, session.user.id)
-            ),
-        })
-        if (!!existingUsername) return 'Username not available'
-
-        await db
-            .update(users)
-            .set({ username })
-            .where(eq(users.id, session.user.id))
-        revalidatePath('/profile/customize')
-    } catch {
-        return 'An error occurred while updating the username.'
+        return 'Internal error'
     }
 }
 
@@ -269,4 +226,50 @@ export async function updateWidgetPosition(
     } catch {
         return 'Error updating widget position'
     }
+}
+
+interface AdminCodes {
+    ISO3166_2: string
+}
+
+interface Geoname {
+    adminCode1: string
+    lng: string
+    geonameId: number
+    toponymName: string
+    countryId: string
+    fcl: string
+    population: number
+    countryCode: string
+    name: string
+    fclName: string
+    adminCodes1: AdminCodes
+    countryName: string
+    fcodeName: string
+    adminName1: string
+    lat: string
+    fcode: string
+}
+
+interface GeoNamesResponse {
+    totalResultsCount: number
+    geonames: Geoname[]
+}
+
+export async function getCityByName(name: string) {
+    const res = await fetch(
+        `http://api.geonames.org/searchJSON?name=${name}&username=${process.env.GEONAMES_USERNAME}&maxRows=5`
+    )
+    if (!res.ok) {
+        throw new Error('')
+    }
+    const json = (await res.json()) as GeoNamesResponse
+    const uniqueCities = Array.from(
+        new Set(
+            json.geonames.map(
+                (geoname) => `${geoname.name}, ${geoname.countryName}`
+            )
+        )
+    )
+    return uniqueCities
 }
