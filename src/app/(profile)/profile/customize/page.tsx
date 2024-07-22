@@ -25,11 +25,17 @@ export default async function CustomizePage() {
                 <ChangeThemeSelect />
                 <AccountSettingsDropdown />
             </div>
-            <div className="grid grid-cols-[4fr,10fr] gap-4 min-h-screen bg-background">
+            <div className="grid grid-cols-[4fr,10fr] gap-44 min-h-screen bg-background">
                 <div className="fixed top-0 mt-20 pb-32 h-full ">
-                    <div className="flex flex-col pl-14">
-                        <ChangeImageDialog imageUrl={user?.imageUrl || ''} />
-                        <EditProfileDialog user={user} />
+                    <div className="flex flex-col ">
+                        <div className="pl-14">
+                            <ChangeImageDialog
+                                imageUrl={user?.imageUrl || ''}
+                            />
+                        </div>
+                        <div className="pl-10 mt-1">
+                            <EditProfileDialog user={user} />
+                        </div>
                     </div>
                     <div className="mt-10 pl-10">
                         <ShortLinks userLinks={user.socialLinks} />

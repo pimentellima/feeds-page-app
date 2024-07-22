@@ -26,18 +26,19 @@ export default function EditProfileDialog({
 
     return (
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
-            <DialogTrigger>
-                <div
-                    className="mt-1 rounded-md font-medium transition-colors
-                    py-2 max-w-96 leading-loose text-left"
+            <DialogTrigger asChild>
+                <button
+                    title="Edit profile"
+                    className="rounded-md transition-colors w-96
+                    p-3 text-left hover:bg-accent hover:text-accent-foreground"
                 >
-                    <p className="w-full text-4xl font-bold font-sans">
+                    <p className="w-full text-4xl font-semibold">
                         {user.name || 'No name set'}
                     </p>
-                    <p className="overflow-hidden whitespace-nowrap text-ellipsis">
+                    <p className="mt-2 line-clamp-4 text-lg">
                         {user.bio || 'No bio'}
                     </p>
-                </div>
+                </button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

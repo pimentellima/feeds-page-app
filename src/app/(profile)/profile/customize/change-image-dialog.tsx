@@ -22,7 +22,7 @@ export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
     return (
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
-                <button>
+                <button title='Change image'>
                     <UserAvatar imageUrl={imageUrl} />
                 </button>
             </DialogTrigger>
