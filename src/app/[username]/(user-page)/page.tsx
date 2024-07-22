@@ -40,45 +40,57 @@ export default async function UserPage({
     const user = await getUserByUsername(params.username)
 
     return (
-        <div className="grid grid-cols-[4fr,10fr] gap-44 min-h-screen bg-background">
-            <div className="fixed top-0 mt-20 h-[80vh]">
-                <ProfileSection>
-                    <ProfileSectionContent>
-                        <ProfileSectionImage>
-                            <UserAvatar imageUrl={user.imageUrl || undefined} />
-                        </ProfileSectionImage>
-                        <ProfileSectionInfoContainer>
-                            <ProfileSectionInfo user={user} />
-                        </ProfileSectionInfoContainer>
-                    </ProfileSectionContent>
-                    <ProfileSectionLinks>
-                        {user.socialLinks.map((link) => (
-                            <Button variant={'ghost'} asChild>
-                                <Link href={link.url}>
-                                    <SocialLinkIcon
-                                        className="h-6 w-6 text-foreground"
-                                        linkType={link.type}
-                                    />
+        <>
+            <div className="absolute top-5 right-14 flex items-center gap-1">
+                <Button asChild variant={'link'}>
+                    <Link href={'/sign-in'}>Sign in</Link>
+                </Button>
+                <Button asChild variant={'link'}>
+                    <Link href={'/sign-up'}>Create account</Link>
+                </Button>
+            </div>
+            <div className="grid grid-cols-[4fr,10fr] gap-44 min-h-screen bg-background">
+                <div className="fixed top-0 mt-20 h-[80vh]">
+                    <ProfileSection>
+                        <ProfileSectionContent>
+                            <ProfileSectionImage>
+                                <UserAvatar
+                                    imageUrl={user.imageUrl || undefined}
+                                />
+                            </ProfileSectionImage>
+                            <ProfileSectionInfoContainer>
+                                <ProfileSectionInfo user={user} />
+                            </ProfileSectionInfoContainer>
+                        </ProfileSectionContent>
+                        <ProfileSectionLinks>
+                            {user.socialLinks.map((link) => (
+                                <Button variant={'ghost'} asChild>
+                                    <Link href={link.url}>
+                                        <SocialLinkIcon
+                                            className="h-6 w-6 text-foreground"
+                                            linkType={link.type}
+                                        />
+                                    </Link>
+                                </Button>
+                            ))}
+                        </ProfileSectionLinks>
+                        <ProfileSectionFooter>
+                            <Button variant={'secondary'} asChild>
+                                <Link href={'/sign-in'}>
+                                    <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
+                                    Create your Feed Page
                                 </Link>
                             </Button>
-                        ))}
-                    </ProfileSectionLinks>
-                    <ProfileSectionFooter>
-                        <Button variant={'secondary'} asChild>
-                            <Link href={'/sign-in'}>
-                                <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
-                                Create your Feed Page
-                            </Link>
-                        </Button>
-                    </ProfileSectionFooter>
-                </ProfileSection>
+                        </ProfileSectionFooter>
+                    </ProfileSection>
+                </div>
+                <div className="col-start-2 grid grid-cols-2 gap-4 pt-20 pb-10 pr-16">
+                    {user.widgets.map((widget) => (
+                        <SocialWidget widget={widget} key={widget.id} />
+                    ))}
+                </div>
             </div>
-            <div className="col-start-2 grid grid-cols-2 gap-4 pt-20 pb-10 pr-16">
-                {user.widgets.map((widget) => (
-                    <SocialWidget widget={widget} key={widget.id} />
-                ))}
-            </div>
-        </div>
+        </>
     )
 }
 
