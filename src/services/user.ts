@@ -20,6 +20,7 @@ export async function getUser(userId: string) {
         where: eq(users.id, userId),
         with: {
             widgets: true,
+            socialLinks: true
         },
     })
     if (!user) throw new Error('')

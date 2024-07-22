@@ -1,16 +1,47 @@
 'use server'
 import { db } from '@/drizzle/index'
-import { links, users, widgets } from '@/drizzle/schema'
+import { socialLinks, users, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { utapi } from '@/server/uploadthing'
 import { and, eq, InferInsertModel, sql } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
 import * as z from 'zod'
+import { schema, SocialLinkValues } from './social-link-schema'
 
-export async function deleteUserLink(linkId: string) {
-    await db.delete(links).where(eq(links.id, linkId))
-    revalidatePath('/profile/customize')
+export async function createSocialLink(values: SocialLinkValues) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+        const { type, url } = schema.parse(values)
+
+        await db.insert(socialLinks).values({
+            userId: session.user.id,
+            type,
+            url,
+        })
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'Error adding link'
+    }
+}
+
+export async function deleteSocialLink(linkId: string) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+        await db
+            .delete(socialLinks)
+            .where(
+                and(
+                    eq(socialLinks.id, linkId),
+                    eq(socialLinks.userId, session.user.id)
+                )
+            )
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'Error deleting link'
+    }
 }
 
 export async function updateUsernameAndBio(formData: FormData) {

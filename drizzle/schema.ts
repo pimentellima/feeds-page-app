@@ -24,10 +24,13 @@ export const users = pgTable('users', {
     createdAt: timestamp('created_at').defaultNow(),
     imageUrl: text('imageUrl'),
 })
+
 export const socialLinksEnum = pgEnum('socialLinksEnum', [
     'tiktok',
     'instagram',
     'x',
+    'linkedin',
+    'github',
     'youtube',
 ])
 
@@ -37,6 +40,17 @@ export const integrationTypeEnum = pgEnum('integrationType', [
     'xIntegration',
     'youtubeIntegration',
 ])
+
+export const socialLinks = pgTable('socialLinks', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    type: socialLinksEnum('type').notNull(),
+    url: text('url').notNull(),
+    userId: text('userId')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+})
 
 export const widgets = pgTable(
     'widgets',
@@ -76,15 +90,6 @@ export const integrationTokens = pgTable('integrationTokens', {
     }),
 })
 
-export const links = pgTable('links', {
-    id: text('id')
-        .default(sql`gen_random_uuid()`)
-        .primaryKey(),
-    title: text('title').notNull(),
-    showThumbnail: boolean('showThumbnail'),
-    url: text('url').notNull(),
-})
-
 export const refreshTokens = pgTable('refreshTokens', {
     token: text('token')
         .notNull()
@@ -106,9 +111,17 @@ export const integrationTokenRelations = relations(
     })
 )
 
+export const socialLinkRelations = relations(socialLinks, ({ one }) => ({
+    user: one(users, {
+        fields: [socialLinks.userId],
+        references: [users.id],
+    }),
+}))
+
 export const usersRelations = relations(users, ({ many }) => ({
     widgets: many(widgets),
     integrationTokens: many(integrationTokens),
+    socialLinks: many(socialLinks),
 }))
 
 export const widgetRelations = relations(widgets, ({ one }) => ({
