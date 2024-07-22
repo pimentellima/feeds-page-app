@@ -141,6 +141,22 @@ export async function updateUserImage(formData: FormData) {
     }
 }
 
+export async function removeUserImage() {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
+        await db
+            .update(users)
+            .set({ imageUrl: null })
+            .where(eq(users.id, session.user.id))
+        revalidatePath('/profile/customize')
+    } catch (e) {
+        console.log(e)
+        return 'An error occurred'
+    }
+}
+
 export async function updateUserTheme(theme: string) {
     try {
         const session = await auth()
