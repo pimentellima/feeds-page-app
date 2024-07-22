@@ -177,6 +177,11 @@ export function SocialLinkDialog({
                                 </SelectItem>
                             </SelectContent>
                         </Select>
+                        {!!errors.type?.message && (
+                            <p className="text-destructive text-sm">
+                                {errors.type.message}
+                            </p>
+                        )}
                     </div>
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="url">Url</Label>
