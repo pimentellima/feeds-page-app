@@ -49,7 +49,7 @@ import {
     InstagramIcon,
     Loader,
     PlusIcon,
-    YoutubeIcon
+    YoutubeIcon,
 } from 'lucide-react'
 import { useOptimistic } from 'react'
 import {
@@ -59,6 +59,7 @@ import {
     updateWidgetPosition,
 } from './actions'
 import PairAccountButton from './pair-account-button'
+import { Card } from '@/components/ui/card'
 
 type Widget = {
     id: string
@@ -206,14 +207,15 @@ export function CustomizeWidgetsPanel({
                     />
                 ))}
             </SortableContext>
-            <Button
+            <Card
                 onClick={addNewWidget}
-                variant={'ghost'}
-                className="flex justify-center items-center h-[450px] flex-col"
+                className="text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4"
             >
-                <PlusIcon className="h-16 w-16" />
-                Add feed
-            </Button>
+                <button className='h-full w-full flex justify-center items-center flex-col'>
+                    <PlusIcon className="h-16 w-16" />
+                    Add feed
+                </button>
+            </Card>
         </DndContext>
     )
 }
@@ -234,8 +236,14 @@ function EditWidget({
 }) {
     const selectedFeed = widget.type
 
-    const { attributes, listeners, setNodeRef, transform, transition } =
-        useSortable({ id: widget.id })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: widget.id })
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -255,6 +263,7 @@ function EditWidget({
                     )}
                 </WidgetTitle>
                 <WidgetOptions
+                    isDragging={isDragging}
                     attributes={attributes}
                     listeners={listeners}
                     onClickDelete={() => deleteWidget(widget.id)}

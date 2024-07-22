@@ -35,23 +35,25 @@ export function WidgetOptions({
     onClickDelete,
     listeners,
     attributes,
+    isDragging,
 }: {
     onClickDelete: () => void
     listeners: SyntheticListenerMap | undefined
     attributes: DraggableAttributes
+    isDragging: boolean
 }) {
     return (
-        <div className="justify-self-end flex gap-2 items-center">
+        <div className="justify-self-end flex gap-3 items-center">
             <button
-                className="cursor-grab"
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
                 {...listeners}
                 {...attributes}
                 title="Drag widget"
             >
-                <GripIcon className="h-4 w-4 text-muted-foreground" />
+                <GripIcon className="h-5 w-5 text-muted-foreground" />
             </button>
             <button title="Delete widget" onClick={onClickDelete}>
-                <Trash2Icon className="text-destructive h-4 w-4" />
+                <Trash2Icon className="text-destructive h-5 w-5" />
             </button>
         </div>
     )
