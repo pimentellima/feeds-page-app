@@ -1,7 +1,10 @@
+import { Button } from '@/components/ui/button'
 import { socialLinks } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { getUser } from '@/services/user'
 import { InferSelectModel } from 'drizzle-orm'
+import { CircleCheckIcon, SquareArrowRightIcon } from 'lucide-react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { AccountSettingsDropdown } from './account-settings-dropdown'
 import ChangeImageDialog from './change-image-dialog'
@@ -34,11 +37,47 @@ export default async function CustomizePage() {
                             />
                         </div>
                         <div className="pl-10 mt-1">
-                            <EditProfileDialog user={user} />
+                            <EditProfileDialog
+                                user={user}
+                                trigger={
+                                    <button
+                                        title="Edit profile"
+                                        className="rounded-md transition-colors w-96
+                                        p-3 text-left hover:bg-accent hover:text-accent-foreground"
+                                    >
+                                        <p className="w-full text-4xl font-bold">
+                                            {user.name || 'No name set'}
+                                        </p>
+                                        <p className="mt-2 line-clamp-4 text-lg font-normal">
+                                            {user.bio || 'No bio'}
+                                        </p>
+                                    </button>
+                                }
+                            />
                         </div>
                     </div>
                     <div className="mt-10 pl-10">
                         <ShortLinks userLinks={user.socialLinks} />
+                    </div>
+                    <div className="mt-10 pl-10">
+                        {user.username ? (
+                            <Button variant={'secondary'} asChild>
+                                <Link href={'/' + user.username}>
+                                    <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
+                                    Visit your page
+                                </Link>
+                            </Button>
+                        ) : (
+                            <EditProfileDialog
+                                user={user}
+                                trigger={
+                                    <Button variant={'secondary'}>
+                                        <CircleCheckIcon className="h-4 w-4 mr-1" />
+                                        Claim username
+                                    </Button>
+                                }
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="col-start-2 grid grid-cols-2 grid-rows-2 gap-4 pt-20 pb-10 pr-16">

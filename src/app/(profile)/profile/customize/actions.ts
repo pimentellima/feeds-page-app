@@ -3,7 +3,7 @@ import { db } from '@/drizzle/index'
 import { socialLinks, users, widgets } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { utapi } from '@/server/uploadthing'
-import { and, eq, InferInsertModel, sql } from 'drizzle-orm'
+import { and, eq, InferInsertModel, ne, sql } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
 import * as z from 'zod'
@@ -44,7 +44,7 @@ export async function deleteSocialLink(linkId: string) {
     }
 }
 
-export async function updateUsernameAndBio(formData: FormData) {
+export async function updateUserProfile(formData: FormData) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
@@ -60,23 +60,60 @@ export async function updateUsernameAndBio(formData: FormData) {
                     .string()
                     .max(150, { message: 'Bio must be 150 characters or less' })
                     .optional(),
+                username: z.string().max(15, {
+                    message: 'Username must be 15 characters or less',
+                }),
             })
             .safeParse({
                 name: formData.get('name'),
                 bio: formData.get('bio'),
+                username: formData.get('username'),
             })
         if (validation.error) return validation.error.issues[0].message
 
-        const { name, bio } = validation.data
+        const { name, bio, username } = validation.data
+
+        if (username) {
+            const existingUsername = await db.query.users.findFirst({
+                where: and(
+                    eq(users.username, username),
+                    ne(users.id, session.user.id)
+                ),
+            })
+            if (!!existingUsername) return 'Username not available'
+        }
 
         await db
             .update(users)
-            .set({ bio, name })
+            .set({ bio, name, username })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
     } catch (e) {
         console.log(e)
         return 'An error occurred while saving the bio.'
+    }
+}
+
+export async function updateUsername(username: string) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+        if (!username) return 'Choose an username'
+        const existingUsername = await db.query.users.findFirst({
+            where: and(
+                eq(users.username, username),
+                ne(users.id, session.user.id)
+            ),
+        })
+        if (!!existingUsername) return 'Username not available'
+
+        await db
+            .update(users)
+            .set({ username })
+            .where(eq(users.id, session.user.id))
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'An error occurred while updating the username.'
     }
 }
 
