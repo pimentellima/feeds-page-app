@@ -1,6 +1,6 @@
 import { db } from '@/drizzle/index'
-import { users } from '@/drizzle/schema'
-import { eq } from 'drizzle-orm'
+import { users, widgets } from '@/drizzle/schema'
+import { asc, eq } from 'drizzle-orm'
 import 'server-only'
 
 export async function getUserByUsername(username: string) {
@@ -19,8 +19,11 @@ export async function getUserByUsername(username: string) {
             password: false,
         },
         with: {
-            widgets: true,
+            widgets: {
+                orderBy: [asc(widgets.pos)],
+            },
             integrationTokens: true,
+            socialLinks: true,
         },
     })
     if (!user) throw new Error('')

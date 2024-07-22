@@ -1,14 +1,13 @@
 import TiktokIcon from '@/components/tiktok-icon'
+import XTwitterIcon from '@/components/xtwitter-icon'
 import { socialLinks } from '@/drizzle/schema'
 import { cn } from '@/lib/utils'
 import { InferSelectModel } from 'drizzle-orm'
 import {
-    FacebookIcon,
     GithubIcon,
     InstagramIcon,
     LinkedinIcon,
-    XIcon,
-    YoutubeIcon,
+    YoutubeIcon
 } from 'lucide-react'
 import { SVGProps } from 'react'
 
@@ -35,7 +34,7 @@ export function SocialLinkIcon({
         )
     if (linkType === 'x')
         return (
-            <XIcon
+            <XTwitterIcon
                 className={cn('h-5 w-5 text-foreground', className)}
                 {...props}
             />

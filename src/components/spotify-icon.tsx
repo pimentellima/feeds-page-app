@@ -1,5 +1,3 @@
-'use client'
-
 import { SVGProps } from 'react'
 
 export default function SpotifyIcon(props: SVGProps<SVGSVGElement>) {

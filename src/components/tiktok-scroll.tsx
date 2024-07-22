@@ -1,4 +1,4 @@
-import { TiktokVideo } from '@/lib/api-helpers/tiktok'
+import { TiktokMedia } from '@/lib/api-helpers/tiktok'
 import { format, formatDistanceToNow } from 'date-fns'
 import { EyeIcon, MessageCircleIcon, PlayIcon, RepeatIcon } from 'lucide-react'
 import Image from 'next/image'
@@ -6,11 +6,11 @@ import Link from 'next/link'
 import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
-export default function TiktokScroll({ videos }: { videos: TiktokVideo[] }) {
+export default function TiktokScroll({ media }: { media: TiktokMedia[] }) {
     return (
         <ScrollArea className="h-96 w-full pb-4">
             <div className="grid gap-2">
-                {videos.map((video) => (
+                {media.map((video) => (
                     <Link
                         href={video.share_url || '/404'}
                         key={video.id}

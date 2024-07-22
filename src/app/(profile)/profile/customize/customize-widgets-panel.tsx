@@ -4,6 +4,7 @@ import { getTiktokMedia } from '@/app/actions/get-tiktok-media'
 import InstagramScroll from '@/components/instagram-scroll'
 import TiktokIcon from '@/components/tiktok-icon'
 import TiktokScroll from '@/components/tiktok-scroll'
+import { Button } from '@/components/ui/button'
 import {
     Select,
     SelectContent,
@@ -14,15 +15,18 @@ import {
 } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import {
+    InstagramTitle,
+    TiktokTitle,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
     WidgetTitle,
 } from '@/components/widget'
+import XTwitterIcon from '@/components/xtwitter-icon'
 import { widgets } from '@/drizzle/schema'
 import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
-import { TiktokUser, TiktokVideo } from '@/lib/api-helpers/tiktok'
+import { TiktokMedia, TiktokUser } from '@/lib/api-helpers/tiktok'
 import {
     closestCenter,
     DndContext,
@@ -45,10 +49,8 @@ import {
     InstagramIcon,
     Loader,
     PlusIcon,
-    XIcon,
-    YoutubeIcon,
+    YoutubeIcon
 } from 'lucide-react'
-import Link from 'next/link'
 import { useOptimistic } from 'react'
 import {
     createWidget,
@@ -57,7 +59,6 @@ import {
     updateWidgetPosition,
 } from './actions'
 import PairAccountButton from './pair-account-button'
-import { Button } from '@/components/ui/button'
 
 type Widget = {
     id: string
@@ -205,27 +206,15 @@ export function CustomizeWidgetsPanel({
                     />
                 ))}
             </SortableContext>
-            <div className="flex justify-center items-center">
-                <NewWidgetButton createWidget={addNewWidget} />
-            </div>
+            <Button
+                onClick={addNewWidget}
+                variant={'ghost'}
+                className="flex justify-center items-center h-[450px] flex-col"
+            >
+                <PlusIcon className="h-16 w-16" />
+                Add feed
+            </Button>
         </DndContext>
-    )
-}
-
-function NewWidgetButton({
-    createWidget,
-}: {
-    createWidget: () => Promise<void>
-}) {
-    return (
-        <Button
-            className="flex flex-col gap-1 h-30 w-30"
-            variant="ghost"
-            onClick={createWidget}
-        >
-            <PlusIcon className="h-16 w-16" />
-            Add feed
-        </Button>
     )
 }
 
@@ -336,8 +325,8 @@ function WidgetTypeSelect({
                     </SelectItem>
                     <SelectItem disabled value="x">
                         <div className="flex items-center">
-                            <XIcon className="mr-1 fill-foreground w-4 h-4" />X
-                            posts
+                            <XTwitterIcon className="mr-1 fill-foreground w-4 h-4" />
+                            X posts
                         </div>
                     </SelectItem>
                 </SelectGroup>
@@ -348,7 +337,7 @@ function WidgetTypeSelect({
 
 function TiktokWidgetFeed({ userId }: { userId: string }) {
     const { data: media, isLoading } = useQuery<{
-        videos: TiktokVideo[]
+        videos: TiktokMedia[]
         user: TiktokUser
     } | null>({
         queryFn: () => getTiktokMedia(userId),
@@ -356,25 +345,21 @@ function TiktokWidgetFeed({ userId }: { userId: string }) {
         refetchOnWindowFocus: false,
     })
 
-    return (
-        <WidgetContent>
-            {isLoading ? (
-                <Loader className="h-4 w-4 animate-spin" />
-            ) : media ? (
-                <TiktokScroll videos={media.videos} />
-            ) : (
-                <PairAccountButton
-                    label={'Click to connect your Tiktok account'}
-                    link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
-                />
-            )}
-        </WidgetContent>
+    return isLoading ? (
+        <Loader className="h-4 w-4 animate-spin" />
+    ) : media ? (
+        <TiktokScroll media={media.videos} />
+    ) : (
+        <PairAccountButton
+            label={'Click to connect your Tiktok account'}
+            link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+        />
     )
 }
 
 function TiktokWidgetTitle({ userId }: { userId: string }) {
     const { data: media } = useQuery<{
-        videos: TiktokVideo[]
+        videos: TiktokMedia[]
         user: TiktokUser
     } | null>({
         queryFn: () => getTiktokMedia(userId),
@@ -382,17 +367,7 @@ function TiktokWidgetTitle({ userId }: { userId: string }) {
         refetchOnWindowFocus: false,
     })
 
-    return media?.user.username ? (
-        <Link className="flex items-center" href={media.user.profile_deep_link}>
-            <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />
-            <p>{media?.user.username}</p>
-        </Link>
-    ) : (
-        <div className="flex items-center">
-            <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />
-            <p>{media?.user.username}</p>
-        </div>
-    )
+    return <TiktokTitle user={media?.user} />
 }
 
 function InstagramWidgetFeed({ userId }: { userId: string }) {
@@ -405,19 +380,15 @@ function InstagramWidgetFeed({ userId }: { userId: string }) {
         refetchOnWindowFocus: false,
     })
 
-    return (
-        <WidgetContent>
-            {isLoading ? (
-                <Loader className="h-4 w-4 animate-spin" />
-            ) : media ? (
-                <InstagramScroll media={media.media} />
-            ) : (
-                <PairAccountButton
-                    label={'Click to connect your Instagram account'}
-                    link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
-                />
-            )}
-        </WidgetContent>
+    return isLoading ? (
+        <Loader className="h-4 w-4 animate-spin" />
+    ) : media ? (
+        <InstagramScroll media={media.media} />
+    ) : (
+        <PairAccountButton
+            label={'Click to connect your Instagram account'}
+            link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+        />
     )
 }
 
@@ -431,19 +402,7 @@ function InstagramWidgetTitle({ userId }: { userId: string }) {
         refetchOnWindowFocus: false,
     })
 
-    return media?.profile.username ? (
-        <Link
-            className="flex items-center"
-            href={'https://instagram.com/' + media.profile.username}
-        >
-            <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
-            <p>{media.profile.username}</p>
-        </Link>
-    ) : (
-        <div className="flex items-center">
-            <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
-        </div>
-    )
+    return <InstagramTitle profile={media?.profile} />
 }
 
 function moveItem(widgets: Widget[], fromPos: number, toPos: number) {

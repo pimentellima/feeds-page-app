@@ -2,10 +2,8 @@
 
 import { db } from '@/drizzle/index'
 import { integrationTokens } from '@/drizzle/schema'
-import { getTiktokProfileAndMedia } from '@/lib/api-helpers/tiktok'
-import {
-    getUserIntegrationAccessToken
-} from '@/services/integration-tokens'
+import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
+import { getUserIntegrationAccessToken } from '@/services/integration-tokens'
 import { and, eq } from 'drizzle-orm'
 
 export async function getTiktokMedia(userId: string) {
@@ -17,16 +15,15 @@ export async function getTiktokMedia(userId: string) {
     })
     if (!token) return null
 
-    const accessToken = getUserIntegrationAccessToken('tiktokIntegration')
+    const accessToken = await getUserIntegrationAccessToken('tiktokIntegration')
 
     if (!accessToken) return null
 
-    const { mediaData, profileData } = await getTiktokProfileAndMedia(
-        token.accessToken
-    )
+    const videos = await fetchTiktokMedia(accessToken)
+    const user = await fetchTiktokUser(accessToken)
 
     return {
-        videos: mediaData.videos,
-        user: profileData.user,
+        videos,
+        user,
     }
 }

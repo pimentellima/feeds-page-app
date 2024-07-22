@@ -8,22 +8,21 @@ export interface InstagramPost {
     permalink?: string
 }
 
-export async function getInstagramProfileAndMedia(accessToken: string) {
-    const mediaResponse = await fetch(
-        `https://graph.instagram.com/me/media?fields=caption,media_url,media_type,thumbnail_url,timestamp,permalink&access_token=${accessToken}`
-    )
-    const mediaResponseJson = (await mediaResponse.json())
-        .data as InstagramPost[]
-    const profileResponse = await fetch(
+export async function fetchInstagramProfile(accessToken: string) {
+    const response = await fetch(
         `https://graph.instagram.com/me?fields=username,media_count,account_type&access_token=${accessToken}`
     )
-    const profileResponseJson =
-        (await profileResponse.json()) as InstagramProfile
+    const responseJson = (await response.json()) as InstagramProfile
 
-    return {
-        profile: profileResponseJson,
-        media: mediaResponseJson,
-    }
+    return responseJson
+}
+
+export async function fetchInstagramMedia(accessToken: string) {
+    const response = await fetch(
+        `https://graph.instagram.com/me/media?fields=caption,media_url,media_type,thumbnail_url,timestamp,permalink&access_token=${accessToken}`
+    )
+    const responseJson = (await response.json()).data as InstagramPost[]
+    return responseJson
 }
 
 export interface InstagramProfile {
