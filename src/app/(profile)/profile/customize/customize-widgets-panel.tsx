@@ -22,6 +22,7 @@ import {
     WidgetHeader,
     WidgetOptions,
     WidgetTitle,
+    YoutubeTitle,
 } from '@/components/widget'
 import XTwitterIcon from '@/components/xtwitter-icon'
 import { widgets } from '@/drizzle/schema'
@@ -60,6 +61,10 @@ import {
 } from './actions'
 import PairAccountButton from './pair-account-button'
 import { Card } from '@/components/ui/card'
+import { getYoutubeMedia } from '@/app/actions/get-youtube-media'
+import { YouTubeVideo } from '@/lib/api-helpers/youtube'
+import YoutubeScroll from '@/components/youtube-scroll'
+import { youtube_v3 } from 'googleapis'
 
 type Widget = {
     id: string
@@ -197,21 +202,61 @@ export function CustomizeWidgetsPanel({
             onDragEnd={handleDragEnd}
         >
             <SortableContext items={optimisticWidgets}>
-                {sortedWidgets.map((widget) => (
-                    <EditWidget
-                        widget={widget}
-                        deleteWidget={removeWidget}
-                        updateWidgetType={updateWidgetType}
-                        userId={userId}
-                        key={widget.id}
-                    />
-                ))}
+                {sortedWidgets.map((widget) => {
+                    if (widget.type === 'instagramIntegration')
+                        return (
+                            <InstagramWidget
+                                key={widget.id}
+                                removeWidget={removeWidget}
+                                userId={userId}
+                                widgetId={widget.id}
+                            />
+                        )
+                    if (widget.type === 'tiktokIntegration')
+                        return (
+                            <TiktokWidget
+                                key={widget.id}
+                                removeWidget={removeWidget}
+                                userId={userId}
+                                widgetId={widget.id}
+                            />
+                        )
+                    if (widget.type === 'youtubeIntegration')
+                        return (
+                            <YoutubeWidget
+                                key={widget.id}
+                                removeWidget={removeWidget}
+                                userId={userId}
+                                widgetId={widget.id}
+                            />
+                        )
+                    if (!widget.type)
+                        return (
+                            <Widget key={widget.id}>
+                                <WidgetHeader>
+                                    <WidgetTitle>New widget</WidgetTitle>
+                                    <WidgetOptions
+                                        onClickDelete={() =>
+                                            removeWidget(widget.id)
+                                        }
+                                    />
+                                </WidgetHeader>
+                                <WidgetContent>
+                                    <WidgetTypeSelect
+                                        onSelectType={(type) =>
+                                            updateWidgetType(widget.id, type)
+                                        }
+                                    />
+                                </WidgetContent>
+                            </Widget>
+                        )
+                })}
             </SortableContext>
             <Card
                 onClick={addNewWidget}
                 className="text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4"
             >
-                <button className='h-full w-full flex justify-center items-center flex-col'>
+                <button className="h-full w-full flex justify-center items-center flex-col">
                     <PlusIcon className="h-16 w-16" />
                     Add feed
                 </button>
@@ -220,87 +265,17 @@ export function CustomizeWidgetsPanel({
     )
 }
 
-function EditWidget({
-    widget,
-    userId,
-    updateWidgetType,
-    deleteWidget,
-}: {
-    widget: Widget
-    userId: string
-    updateWidgetType: (
-        id: string,
-        type: InferInsertModel<typeof widgets>['type']
-    ) => Promise<void>
-    deleteWidget: (id: string) => Promise<void>
-}) {
-    const selectedFeed = widget.type
-
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging,
-    } = useSortable({ id: widget.id })
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-    }
-
-    return (
-        <Widget ref={setNodeRef} style={style}>
-            <WidgetHeader>
-                <WidgetTitle>
-                    {selectedFeed === 'tiktokIntegration' ? (
-                        <TiktokWidgetTitle userId={userId} />
-                    ) : selectedFeed === 'instagramIntegration' ? (
-                        <InstagramWidgetTitle userId={userId} />
-                    ) : (
-                        'New widget'
-                    )}
-                </WidgetTitle>
-                <WidgetOptions
-                    isDragging={isDragging}
-                    attributes={attributes}
-                    listeners={listeners}
-                    onClickDelete={() => deleteWidget(widget.id)}
-                />
-            </WidgetHeader>
-            <WidgetContent>
-                {selectedFeed === 'tiktokIntegration' ? (
-                    <TiktokWidgetFeed userId={userId} />
-                ) : selectedFeed === 'instagramIntegration' ? (
-                    <InstagramWidgetFeed userId={userId} />
-                ) : (
-                    <WidgetTypeSelect
-                        onChangeType={(type) =>
-                            updateWidgetType(widget.id, type)
-                        }
-                        widgetType={widget.type}
-                    />
-                )}
-            </WidgetContent>
-        </Widget>
-    )
-}
-
 function WidgetTypeSelect({
-    widgetType,
-    onChangeType,
+    onSelectType,
 }: {
-    widgetType: InferInsertModel<typeof widgets>['type']
-    onChangeType: (
+    onSelectType: (
         type: InferInsertModel<typeof widgets>['type']
     ) => Promise<void>
 }) {
     return (
         <Select
-            value={widgetType || undefined}
             onValueChange={(value) =>
-                onChangeType(value as InferInsertModel<typeof widgets>['type'])
+                onSelectType(value as InferInsertModel<typeof widgets>['type'])
             }
         >
             <SelectTrigger className="w-full">
@@ -326,7 +301,7 @@ function WidgetTypeSelect({
                             Facebook posts
                         </div>
                     </SelectItem>
-                    <SelectItem disabled value="youtube">
+                    <SelectItem value="youtubeIntegration">
                         <div className="flex items-center">
                             <YoutubeIcon className="mr-1 text-red-500 w-4 h-4" />
                             Youtube videos
@@ -344,43 +319,16 @@ function WidgetTypeSelect({
     )
 }
 
-function TiktokWidgetFeed({ userId }: { userId: string }) {
-    const { data: media, isLoading } = useQuery<{
-        videos: TiktokMedia[]
-        user: TiktokUser
-    } | null>({
-        queryFn: () => getTiktokMedia(userId),
-        queryKey: ['tiktokMedia', userId],
-        refetchOnWindowFocus: false,
-    })
-
-    return isLoading ? (
-        <Loader className="h-4 w-4 animate-spin" />
-    ) : media ? (
-        <TiktokScroll media={media.videos} />
-    ) : (
-        <PairAccountButton
-            label={'Click to connect your Tiktok account'}
-            link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
-        />
-    )
-}
-
-function TiktokWidgetTitle({ userId }: { userId: string }) {
-    const { data: media } = useQuery<{
-        videos: TiktokMedia[]
-        user: TiktokUser
-    } | null>({
-        queryFn: () => getTiktokMedia(userId),
-        queryKey: ['tiktokMedia', userId],
-        refetchOnWindowFocus: false,
-    })
-
-    return <TiktokTitle user={media?.user} />
-}
-
-function InstagramWidgetFeed({ userId }: { userId: string }) {
-    const { data: media, isLoading } = useQuery<{
+function InstagramWidget({
+    userId,
+    widgetId,
+    removeWidget,
+}: {
+    userId: string
+    widgetId: string
+    removeWidget: (id: string) => void
+}) {
+    const { data, isLoading } = useQuery<{
         profile: InstagramProfile
         media: InstagramPost[]
     } | null>({
@@ -389,29 +337,167 @@ function InstagramWidgetFeed({ userId }: { userId: string }) {
         refetchOnWindowFocus: false,
     })
 
-    return isLoading ? (
-        <Loader className="h-4 w-4 animate-spin" />
-    ) : media ? (
-        <InstagramScroll media={media.media} />
-    ) : (
-        <PairAccountButton
-            label={'Click to connect your Instagram account'}
-            link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
-        />
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: widgetId })
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
+
+    return (
+        <Widget ref={setNodeRef} style={style}>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <InstagramTitle profile={data?.profile} />
+                </WidgetTitle>
+                <WidgetOptions
+                    isDragging={isDragging}
+                    attributes={attributes}
+                    listeners={listeners}
+                    onClickDelete={() => removeWidget(widgetId)}
+                />
+            </WidgetHeader>
+            <WidgetContent>
+                {isLoading ? (
+                    <Loader className="h-4 w-4 animate-spin" />
+                ) : data ? (
+                    <InstagramScroll media={data?.media} />
+                ) : (
+                    <PairAccountButton
+                        label={'Click to connect your Instagram account'}
+                        link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                    />
+                )}
+            </WidgetContent>
+        </Widget>
     )
 }
 
-function InstagramWidgetTitle({ userId }: { userId: string }) {
-    const { data: media } = useQuery<{
-        profile: InstagramProfile
-        media: InstagramPost[]
+function TiktokWidget({
+    userId,
+    widgetId,
+    removeWidget,
+}: {
+    userId: string
+    widgetId: string
+    removeWidget: (id: string) => void
+}) {
+    const { data, isLoading } = useQuery<{
+        videos: TiktokMedia[]
+        user: TiktokUser
     } | null>({
-        queryFn: () => getInstagramMedia(userId),
-        queryKey: ['instagramMedia', userId],
+        queryFn: () => getTiktokMedia(userId),
+        queryKey: ['tiktokMedia', userId],
         refetchOnWindowFocus: false,
     })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: widgetId })
 
-    return <InstagramTitle profile={media?.profile} />
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
+
+    return (
+        <Widget ref={setNodeRef} style={style}>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <TiktokTitle user={data?.user} />
+                </WidgetTitle>
+                <WidgetOptions
+                    isDragging={isDragging}
+                    attributes={attributes}
+                    listeners={listeners}
+                    onClickDelete={() => removeWidget(widgetId)}
+                />
+            </WidgetHeader>
+            <WidgetContent>
+                {isLoading ? (
+                    <Loader className="h-4 w-4 animate-spin" />
+                ) : data ? (
+                    <TiktokScroll media={data.videos} />
+                ) : (
+                    <PairAccountButton
+                        label={'Click to connect your Tiktok account'}
+                        link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+                    />
+                )}
+            </WidgetContent>
+        </Widget>
+    )
+}
+
+function YoutubeWidget({
+    userId,
+    widgetId,
+    removeWidget,
+}: {
+    userId: string
+    widgetId: string
+    removeWidget: (id: string) => void
+}) {
+    const { data, isLoading } = useQuery<{
+        channel: youtube_v3.Schema$ChannelSnippet | null
+        media: youtube_v3.Schema$Video[] | null
+    } | null>({
+        queryFn: () => getYoutubeMedia(userId),
+        queryKey: ['youtubeMedia', userId],
+        refetchOnWindowFocus: false,
+    })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: widgetId })
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
+
+    return (
+        <Widget ref={setNodeRef} style={style}>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <YoutubeTitle channel={data?.channel} />
+                </WidgetTitle>
+                <WidgetOptions
+                    isDragging={isDragging}
+                    attributes={attributes}
+                    listeners={listeners}
+                    onClickDelete={() => removeWidget(widgetId)}
+                />
+            </WidgetHeader>
+            <WidgetContent>
+                {isLoading ? (
+                    <Loader className="h-4 w-4 animate-spin" />
+                ) : data?.media ? (
+                    <YoutubeScroll media={data.media} />
+                ) : (
+                    <PairAccountButton
+                        label={'Click to connect your Youtube account'}
+                        link={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
+                    />
+                )}
+            </WidgetContent>
+        </Widget>
+    )
 }
 
 function moveItem(widgets: Widget[], fromPos: number, toPos: number) {

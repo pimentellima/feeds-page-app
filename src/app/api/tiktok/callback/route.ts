@@ -60,7 +60,7 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
             )
         }
-        const [integrationToken] = await db
+        await db
             .insert(integrationTokens)
             .values({
                 accessToken: data.access_token,
@@ -72,22 +72,11 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 type: 'tiktokIntegration',
                 userId: session.user.id,
             })
-            .returning()
-        await db
-            .update(widgets)
-            .set({ integrationTokenId: integrationToken.id })
-            .where(
-                and(
-                    eq(widgets.userId, userId),
-                    eq(widgets.type, 'tiktokIntegration')
-                )
-            )
 
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`
         )
     } catch (e) {
-        console.log(e)
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
         )

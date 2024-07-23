@@ -57,7 +57,7 @@ export const authOptions = {
                 return token
             }
 
-            return refreshAccessToken(token as any)
+            return await refreshAccessToken(token as any)
         },
         async session({ session, token }) {
             if (token) {

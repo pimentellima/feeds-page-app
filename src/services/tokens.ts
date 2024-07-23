@@ -1,3 +1,4 @@
+import 'server-only'
 import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL } from '@/constants'
 import { db } from '@/drizzle/index'
 import { refreshTokens } from '@/drizzle/schema'

@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { forwardRef, ReactNode } from 'react'
 import TiktokIcon from './tiktok-icon'
 import InstagramIcon from './instagram-icon'
+import { SocialLinkIcon } from '@/app/(profile)/profile/customize/social-icons'
+import { youtube_v3 } from 'googleapis'
 
 export function WidgetGrid({
     gridSize,
@@ -64,20 +66,22 @@ export function WidgetOptions({
     isDragging,
 }: {
     onClickDelete: () => void
-    listeners: SyntheticListenerMap | undefined
-    attributes: DraggableAttributes
-    isDragging: boolean
+    listeners?: SyntheticListenerMap | undefined
+    attributes?: DraggableAttributes
+    isDragging?: boolean
 }) {
     return (
         <div className="justify-self-end flex gap-3 items-center">
-            <button
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-                {...listeners}
-                {...attributes}
-                title="Drag widget"
-            >
-                <GripIcon className="h-5 w-5 text-muted-foreground" />
-            </button>
+            {listeners && attributes && (
+                <button
+                    style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+                    {...listeners}
+                    {...attributes}
+                    title="Drag widget"
+                >
+                    <GripIcon className="h-5 w-5 text-muted-foreground" />
+                </button>
+            )}
             <button title="Delete widget" onClick={onClickDelete}>
                 <Trash2Icon className="text-destructive h-5 w-5" />
             </button>
@@ -118,6 +122,26 @@ export function TiktokTitle({ user }: { user?: TiktokUser }) {
     ) : (
         <div className="flex items-center">
             <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />
+        </div>
+    )
+}
+
+export function YoutubeTitle({
+    channel,
+}: {
+    channel?: youtube_v3.Schema$ChannelSnippet | null
+}) {
+    return channel?.customUrl ? (
+        <Link
+            className="flex items-center"
+            href={'https://youtube.com/' + channel.customUrl}
+        >
+            <SocialLinkIcon className="mr-1" linkType="youtube" />
+            <p>{channel.title}</p>
+        </Link>
+    ) : (
+        <div className="flex items-center">
+            <SocialLinkIcon linkType="youtube" />
         </div>
     )
 }

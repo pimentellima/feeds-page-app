@@ -7,6 +7,8 @@ const nextConfig = {
             { hostname: 'utfs.io' },
             { hostname: '*-sign-va.tiktokcdn.com' },
             { hostname: 'scontent-*.cdninstagram.com' },
+            { hostname: 'yt3.ggpht.com' },
+            { hostname: 'i.ytimg.com' },
         ],
     },
 }

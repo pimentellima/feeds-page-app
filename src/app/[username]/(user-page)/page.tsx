@@ -21,16 +21,24 @@ import {
     WidgetGrid,
     WidgetHeader,
     WidgetTitle,
+    YoutubeTitle,
 } from '@/components/widget'
-import { widgets } from '@/drizzle/schema'
+import YoutubeScroll from '@/components/youtube-scroll'
 import {
     fetchInstagramMedia,
     fetchInstagramProfile,
 } from '@/lib/api-helpers/instagram'
 import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
-import { getUserIntegrationAccessToken } from '@/services/integration-tokens'
+import {
+    fetchYoutubeMedia,
+    fetchYoutubeChannel,
+} from '@/lib/api-helpers/youtube'
+import {
+    getInstagramAccessToken,
+    getTiktokAccessToken,
+    getYoutubeAccessToken,
+} from '@/services/integration-tokens'
 import { getUserByUsername } from '@/services/user'
-import { InferSelectModel } from 'drizzle-orm'
 import { SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -71,7 +79,10 @@ export default async function UserPage({
                             {user.socialLinks.map((link) => (
                                 <Button key={link.id} variant={'ghost'} asChild>
                                     <Link href={link.url}>
-                                        <SocialLinkIcon className="sm:h-6 sm:w-6 h-5 w-5" linkType={link.type} />
+                                        <SocialLinkIcon
+                                            className="sm:h-6 sm:w-6 h-5 w-5"
+                                            linkType={link.type}
+                                        />
                                     </Link>
                                 </Button>
                             ))}
@@ -90,68 +101,97 @@ export default async function UserPage({
                     <Separator className="my-2" />
                 </div>
                 <WidgetGrid gridSize={user.gridSize ?? 2}>
-                    {user.widgets.map((widget) => (
-                        <SocialWidget widget={widget} key={widget.id} />
-                    ))}
+                    {user.widgets.map((widget) => {
+                        if (widget.type === 'instagramIntegration')
+                            return (
+                                <InstagramWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'tiktokIntegration')
+                            return (
+                                <TiktokWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'youtubeIntegration')
+                            return (
+                                <YoutubeWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                    })}
                 </WidgetGrid>
             </div>
         </>
     )
 }
 
-async function SocialWidget({
-    widget,
-}: {
-    widget: InferSelectModel<typeof widgets>
-}) {
-    const widgetType = widget.type
-    if (!widgetType) return null
-
-    const accessToken = await getUserIntegrationAccessToken(widgetType)
+async function TiktokWidget({ userId }: { userId: string }) {
+    const accessToken = await getTiktokAccessToken(userId)
     if (!accessToken) return null
+
+    const user = await fetchTiktokUser(accessToken)
+    const media = await fetchTiktokMedia(accessToken)
+    if (!media) return null
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    {widgetType === 'tiktokIntegration' ? (
-                        <TiktokWidgetTitle accessToken={accessToken} />
-                    ) : widgetType === 'instagramIntegration' ? (
-                        <InstagramWidgetTitle acesssToken={accessToken} />
-                    ) : null}
+                    <TiktokTitle user={user} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                {widgetType === 'tiktokIntegration' ? (
-                    <TiktokWidgetFeed accessToken={accessToken} />
-                ) : widgetType === 'instagramIntegration' ? (
-                    <InstagramWidgetFeed accessToken={accessToken} />
-                ) : null}
+                <TiktokScroll media={media} />
             </WidgetContent>
         </Widget>
     )
 }
 
-async function TiktokWidgetFeed({ accessToken }: { accessToken: string }) {
-    const media = await fetchTiktokMedia(accessToken)
+async function InstagramWidget({ userId }: { userId: string }) {
+    const accessToken = await getInstagramAccessToken(userId)
+    if (!accessToken) return null
 
-    return <TiktokScroll media={media} />
-}
-
-async function TiktokWidgetTitle({ accessToken }: { accessToken: string }) {
-    const user = await fetchTiktokUser(accessToken)
-
-    return <TiktokTitle user={user} />
-}
-
-async function InstagramWidgetFeed({ accessToken }: { accessToken: string }) {
+    const profile = await fetchInstagramProfile(accessToken)
     const media = await fetchInstagramMedia(accessToken)
+    if (!media) return null
 
-    return <InstagramScroll media={media} />
+    return (
+        <Widget>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <InstagramTitle profile={profile} />
+                </WidgetTitle>
+            </WidgetHeader>
+            <WidgetContent>
+                <InstagramScroll media={media} />
+            </WidgetContent>
+        </Widget>
+    )
 }
 
-async function InstagramWidgetTitle({ acesssToken }: { acesssToken: string }) {
-    const profile = await fetchInstagramProfile(acesssToken)
+async function YoutubeWidget({ userId }: { userId: string }) {
+    const accessToken = await getYoutubeAccessToken(userId)
+    if (!accessToken) return null
 
-    return <InstagramTitle profile={profile} />
+    const channel = await fetchYoutubeChannel(accessToken)
+    const media = await fetchYoutubeMedia(accessToken)
+    if (!media) return null
+
+    return (
+        <Widget>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <YoutubeTitle channel={channel} />
+                </WidgetTitle>
+            </WidgetHeader>
+            <WidgetContent>
+                <YoutubeScroll media={media} />
+            </WidgetContent>
+        </Widget>
+    )
 }
