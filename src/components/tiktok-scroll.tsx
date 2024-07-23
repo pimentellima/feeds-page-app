@@ -19,7 +19,7 @@ export default function TiktokScroll({ media }: { media: TiktokMedia[] }) {
                         <div className="relative bg-black rounded-md">
                             <div
                                 className="absolute flex items-center gap-1 bottom-2 
-                                right-2 z-10 rounded-md bg-black/20 text-white text-xs px-2 py-1"
+                                right-2 rounded-md bg-black/20 text-white text-xs px-2 py-1"
                             >
                                 <PlayIcon className="w-3 h-3 text-white fill-white" />
                                 {format(

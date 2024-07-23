@@ -11,6 +11,7 @@ import {
 } from '@/components/profile-section'
 import TiktokScroll from '@/components/tiktok-scroll'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import UserAvatar from '@/components/user-avatar'
 import {
     InstagramTitle,
@@ -41,7 +42,7 @@ export default async function UserPage({
 
     return (
         <>
-            <div className="absolute top-5 right-14 flex items-center gap-1">
+            <div className="hidden absolute top-5 right-14 sm:flex items-center gap-1">
                 <Button asChild variant={'link'}>
                     <Link href={'/sign-in'}>Sign in</Link>
                 </Button>
@@ -49,8 +50,11 @@ export default async function UserPage({
                     <Link href={'/sign-up'}>Create account</Link>
                 </Button>
             </div>
-            <div className="grid grid-cols-[4fr,10fr] gap-44 min-h-screen bg-background">
-                <div className="fixed top-0 mt-20 h-[80vh]">
+            <div
+                className="sm:grid sm:grid-cols-[4fr,10fr] sm:gap-44 sm:min-h-screen bg-background
+                    flex flex-col px-6 sm:px-0"
+            >
+                <div className="sm:fixed sm:top-0 mt-2 sm:mt-20 sm:h-[80vh]">
                     <ProfileSection>
                         <ProfileSectionContent>
                             <ProfileSectionImage>
@@ -64,12 +68,9 @@ export default async function UserPage({
                         </ProfileSectionContent>
                         <ProfileSectionLinks>
                             {user.socialLinks.map((link) => (
-                                <Button variant={'ghost'} asChild>
+                                <Button key={link.id} variant={'ghost'} asChild>
                                     <Link href={link.url}>
-                                        <SocialLinkIcon
-                                            className="h-6 w-6 text-foreground"
-                                            linkType={link.type}
-                                        />
+                                        <SocialLinkIcon linkType={link.type} />
                                     </Link>
                                 </Button>
                             ))}
@@ -84,7 +85,13 @@ export default async function UserPage({
                         </ProfileSectionFooter>
                     </ProfileSection>
                 </div>
-                <div className="col-start-2 grid grid-cols-2 gap-4 pt-20 pb-10 pr-16">
+                <div className="sm:hidden">
+                    <Separator className="my-2" />
+                </div>
+                <div
+                    className="flex flex-col gap-4 col-start-2 sm:grid sm:grid-cols-2
+                 sm:gap-4 mt-2 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
+                >
                     {user.widgets.map((widget) => (
                         <SocialWidget widget={widget} key={widget.id} />
                     ))}

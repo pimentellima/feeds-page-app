@@ -6,11 +6,15 @@ export function ProfileSection({ children }: { children: ReactNode }) {
 }
 
 export function ProfileSectionContent({ children }: { children: ReactNode }) {
-    return <div className="flex flex-col">{children}</div>
+    return (
+        <div className="flex sm:flex-col items-center sm:items-start">
+            {children}
+        </div>
+    )
 }
 
 export function ProfileSectionImage({ children }: { children: ReactNode }) {
-    return <div className="pl-16 mt-1">{children}</div>
+    return <div className="sm:pl-16 mt-1">{children}</div>
 }
 
 export function ProfileSectionInfoContainer({
@@ -18,7 +22,7 @@ export function ProfileSectionInfoContainer({
 }: {
     children: ReactNode
 }) {
-    return <div className="pl-14 mt-1">{children}</div>
+    return <div className="sm:pl-14 mt-1">{children}</div>
 }
 
 export function ProfileSectionInfo({
@@ -32,19 +36,20 @@ export function ProfileSectionInfo({
 }) {
     return (
         <div
-            className="rounded-md transition-colors w-96
+            className="rounded-md transition-colors sm:w-96
             p-3 text-left"
         >
-            <p className="w-full text-4xl font-bold">
+            <p className="w-full text-2xl sm:text-4xl font-bold">
                 {user.name || 'No name set'}
             </p>
             {user.location && (
-                <div className="mt-2 font-normal flex items-center">
+                <div className="mt-1 sm:mt-2 font-normal flex items-center tracking-tight sm:tracking-normal">
                     <MapPinIcon className="mr-2 w-4 h-4" />
                     <p>{user.location}</p>
                 </div>
             )}
-            <p className="mt-2 line-clamp-4 text-lg font-normal">
+            <p className="mt-1 sm:mt-2 line-clamp-4 sm:text-lg font-normal 
+            sm:leading-normal leading-tight tracking-tight sm:tracking-normal">
                 {user.bio || 'No bio'}
             </p>
         </div>
@@ -52,12 +57,17 @@ export function ProfileSectionInfo({
 }
 
 export function ProfileSectionLinks({ children }: { children: ReactNode }) {
-    return <div className="mt-4 pl-10 flex gap-1">{children}</div>
+    return (
+        <div className="mt-4 sm:pl-12 flex justify-center sm:justify-normal gap-1">
+            {children}
+        </div>
+    )
 }
 
 export function ProfileSectionFooter({ children }: { children: ReactNode }) {
     return (
-        <div className="pl-10 flex flex-col h-full justify-end items-start">
+        <div className="fixed bottom-5 right-5 sm:static sm:pl-10 
+                sm:flex sm:flex-col sm:h-full sm:justify-end sm:items-start z-20">
             {children}
         </div>
     )

@@ -1,34 +1,39 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
+import { InstagramProfile } from '@/lib/api-helpers/instagram'
 import { TiktokUser } from '@/lib/api-helpers/tiktok'
 import { DraggableAttributes } from '@dnd-kit/core'
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
-
-import { GripIcon, InstagramIcon, Trash2Icon } from 'lucide-react'
+import { GripIcon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import { forwardRef, ReactNode } from 'react'
 import TiktokIcon from './tiktok-icon'
+import InstagramIcon from './instagram-icon'
 
 export const Widget = forwardRef<
     HTMLDivElement,
     React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-    <Card
+    <div
         ref={ref}
-        className="text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4"
+        className="rounded-lg border bg-card text-card-foreground shadow-sm 
+        text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4"
         {...props}
     />
 ))
 
 export function WidgetHeader({ children }: { children: ReactNode }) {
     return (
-        <CardHeader className="grid grid-cols-3 justify-items-center place-items-center">
-            {children}
-        </CardHeader>
+        <div className="grid grid-cols-3 w-full flex-row p-5">{children}</div>
     )
 }
 export function WidgetTitle({ children }: { children: ReactNode }) {
-    return <CardTitle className="col-start-2 text-base">{children}</CardTitle>
+    return (
+        <div
+            className="flex justify-center text-base col-start-2
+                font-semibold leading-none tracking-tight"
+        >
+            {children}
+        </div>
+    )
 }
 
 export function WidgetOptions({
@@ -61,9 +66,9 @@ export function WidgetOptions({
 
 export function WidgetContent({ children }: { children: ReactNode }) {
     return (
-        <CardContent className="flex justify-center w-full h-96 items-center">
+        <div className="p-5 pt-0 flex justify-center w-full h-96 items-center">
             {children}
-        </CardContent>
+        </div>
     )
 }
 

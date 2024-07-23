@@ -21,6 +21,7 @@ import {
     ProfileSectionInfoContainer,
     ProfileSectionLinks,
 } from '@/components/profile-section'
+import { Separator } from '@radix-ui/react-separator'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -33,12 +34,19 @@ export default async function CustomizePage() {
 
     return (
         <>
-            <div className="absolute top-5 right-14 flex items-center gap-1">
+            <div
+                className="absolute top-3 sm:top-5 sm:right-14 
+                    flex items-center justify-between sm:justify-normal
+                     gap-1 w-full px-6 sm:w-auto sm:px-0"
+            >
                 <ChangeThemeSelect />
                 <AccountSettingsDropdown />
             </div>
-            <div className="grid grid-cols-[4fr,10fr] gap-44 min-h-screen bg-background">
-                <div className="fixed top-0 mt-20 h-[80vh]">
+            <div
+                className="sm:grid sm:grid-cols-[4fr,10fr] sm:gap-44 sm:min-h-screen bg-background
+                    flex flex-col px-6 sm:px-0"
+            >
+                <div className="sm:fixed sm:top-0 mt-20 sm:h-[80vh]">
                     <ProfileSection>
                         <ProfileSectionContent>
                             <ProfileSectionImage>
@@ -84,8 +92,11 @@ export default async function CustomizePage() {
                         </ProfileSectionLinks>
                         <ProfileSectionFooter>
                             {user.username ? (
-                                <Button variant={'secondary'} asChild>
-                                    <Link target='_blank' href={'/' + user.username}>
+                                <Button variant={'outline'} asChild>
+                                    <Link
+                                        target="_blank"
+                                        href={'/' + user.username}
+                                    >
                                         <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
                                         Visit your page
                                     </Link>
@@ -94,17 +105,23 @@ export default async function CustomizePage() {
                                 <EditProfileDialog
                                     user={user}
                                     trigger={
-                                        <Button variant={'secondary'}>
+                                        <Button variant={'default'}>
                                             <CircleCheckIcon className="h-4 w-4 mr-1" />
                                             Claim username
                                         </Button>
                                     }
                                 />
-                            )}{' '}
+                            )}
                         </ProfileSectionFooter>
                     </ProfileSection>
                 </div>
-                <div className="col-start-2 grid grid-cols-2 gap-4 pt-20 pb-10 pr-16">
+                <div className="sm:hidden">
+                    <Separator className="my-2" />
+                </div>
+                <div
+                    className="flex flex-col gap-4 col-start-2 sm:grid sm:grid-cols-2
+                 sm:gap-4 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
+                >
                     <CustomizeWidgetsPanel
                         userId={user.id}
                         userWidgets={user.widgets}

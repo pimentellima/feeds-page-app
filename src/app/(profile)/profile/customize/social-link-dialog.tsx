@@ -80,7 +80,7 @@ export function SocialLinkDialog({
                 >
                     {socialLink?.type ? (
                         <SocialLinkIcon
-                            className="h-6 w-6 text-foreground"
+                            className="h-6 w-6"
                             linkType={socialLink.type}
                         />
                     ) : (
@@ -194,7 +194,7 @@ function SelectSocialLinkField({
                     disabled={userLinks.some((l) => l.type === 'tiktok')}
                     value="tiktok"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <SocialLinkIcon linkType="tiktok" />
                         Tiktok
                     </div>
@@ -203,7 +203,7 @@ function SelectSocialLinkField({
                     disabled={userLinks.some((l) => l.type === 'instagram')}
                     value="instagram"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <SocialLinkIcon linkType="instagram" />
                         Instagram
                     </div>
@@ -212,7 +212,7 @@ function SelectSocialLinkField({
                     disabled={userLinks.some((l) => l.type === 'x')}
                     value="x"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <SocialLinkIcon linkType="x" />X
                     </div>
                 </SelectItem>
@@ -220,7 +220,7 @@ function SelectSocialLinkField({
                     disabled={userLinks.some((l) => l.type === 'linkedin')}
                     value="linkedin"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <SocialLinkIcon linkType="linkedin" />
                         LinkedIn
                     </div>
@@ -229,7 +229,7 @@ function SelectSocialLinkField({
                     disabled={userLinks.some((l) => l.type === 'github')}
                     value="github"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <SocialLinkIcon linkType="github" />
                         Github
                     </div>
@@ -238,7 +238,7 @@ function SelectSocialLinkField({
                     disabled={userLinks.some((l) => l.type === 'youtube')}
                     value="youtube"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         <SocialLinkIcon linkType="youtube" />
                         Youtube
                     </div>
