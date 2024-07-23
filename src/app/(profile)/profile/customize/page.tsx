@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { AccountSettingsDropdown } from './account-settings-dropdown'
 import ChangeImageDialog from './change-image-dialog'
-import ChangeThemeSelect from './change-theme-dropdown'
+import ChangeThemeDropdown from './change-theme-dropdown'
 import { CustomizeWidgetsPanel } from './customize-widgets-panel'
 import EditProfileDialog from './edit-profile-dialog'
 import { SocialLinkDialog } from './social-link-dialog'
@@ -22,6 +22,8 @@ import {
     ProfileSectionLinks,
 } from '@/components/profile-section'
 import { Separator } from '@radix-ui/react-separator'
+import { ChangeGridDropdown } from './change-grid-dropdown'
+import { WidgetGrid } from '@/components/widget'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -31,7 +33,6 @@ export default async function CustomizePage() {
     }
 
     const user = await getUser(session.user.id)
-
     return (
         <>
             <div
@@ -39,7 +40,10 @@ export default async function CustomizePage() {
                     flex items-center justify-between sm:justify-normal
                      gap-1 w-full px-6 sm:w-auto sm:px-0"
             >
-                <ChangeThemeSelect />
+                <ChangeThemeDropdown />
+                <div className='hidden sm:block'>
+                    <ChangeGridDropdown selectedSize={user.gridSize ?? 2} />
+                </div>
                 <AccountSettingsDropdown />
             </div>
             <div
@@ -118,15 +122,12 @@ export default async function CustomizePage() {
                 <div className="sm:hidden">
                     <Separator className="my-2" />
                 </div>
-                <div
-                    className="flex flex-col gap-4 col-start-2 sm:grid sm:grid-cols-2
-                 sm:gap-4 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
-                >
+                <WidgetGrid gridSize={user.gridSize ?? 2}>
                     <CustomizeWidgetsPanel
                         userId={user.id}
                         userWidgets={user.widgets}
                     />
-                </div>
+                </WidgetGrid>
             </div>
         </>
     )

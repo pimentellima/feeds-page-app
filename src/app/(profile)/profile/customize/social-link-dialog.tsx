@@ -80,11 +80,11 @@ export function SocialLinkDialog({
                 >
                     {socialLink?.type ? (
                         <SocialLinkIcon
-                            className="h-6 w-6"
+                            className="sm:h-6 sm:w-6 h-5 w-5"
                             linkType={socialLink.type}
                         />
                     ) : (
-                        <PlusIcon className="h-6 w-6 text-foreground" />
+                        <PlusIcon className="sm:h-6 sm:w-6 h-5 w-5 text-foreground" />
                     )}
                 </Button>
             </DialogTrigger>

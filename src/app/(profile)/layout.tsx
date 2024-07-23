@@ -15,7 +15,7 @@ export default async function Layout({
     const defaultTheme = (await getUser(session.user.id))?.theme ?? undefined
 
     return (
-        <NextThemesProvider attribute="class" defaultTheme={defaultTheme}>
+        <NextThemesProvider attribute="class" forcedTheme={defaultTheme}>
             {children}
         </NextThemesProvider>
     )

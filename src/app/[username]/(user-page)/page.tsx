@@ -18,6 +18,7 @@ import {
     TiktokTitle,
     Widget,
     WidgetContent,
+    WidgetGrid,
     WidgetHeader,
     WidgetTitle,
 } from '@/components/widget'
@@ -70,7 +71,7 @@ export default async function UserPage({
                             {user.socialLinks.map((link) => (
                                 <Button key={link.id} variant={'ghost'} asChild>
                                     <Link href={link.url}>
-                                        <SocialLinkIcon linkType={link.type} />
+                                        <SocialLinkIcon className="sm:h-6 sm:w-6 h-5 w-5" linkType={link.type} />
                                     </Link>
                                 </Button>
                             ))}
@@ -88,14 +89,11 @@ export default async function UserPage({
                 <div className="sm:hidden">
                     <Separator className="my-2" />
                 </div>
-                <div
-                    className="flex flex-col gap-4 col-start-2 sm:grid sm:grid-cols-2
-                 sm:gap-4 mt-2 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
-                >
+                <WidgetGrid gridSize={user.gridSize ?? 2}>
                     {user.widgets.map((widget) => (
                         <SocialWidget widget={widget} key={widget.id} />
                     ))}
-                </div>
+                </WidgetGrid>
             </div>
         </>
     )

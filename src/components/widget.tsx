@@ -8,6 +8,27 @@ import { forwardRef, ReactNode } from 'react'
 import TiktokIcon from './tiktok-icon'
 import InstagramIcon from './instagram-icon'
 
+export function WidgetGrid({
+    gridSize,
+    children,
+}: {
+    gridSize: number
+    children: ReactNode
+}) {
+    return (
+        <div
+            style={{
+                gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+                gridAutoRows: 'min-content',
+            }}
+            className="flex flex-col gap-4 col-start-2 sm:grid
+        sm:gap-4 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
+        >
+            {children}
+        </div>
+    )
+}
+
 export const Widget = forwardRef<
     HTMLDivElement,
     React.HTMLAttributes<HTMLDivElement>

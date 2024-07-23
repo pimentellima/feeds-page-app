@@ -5,21 +5,29 @@ import {
     DropdownMenuContent,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
-    DropdownMenuTrigger
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useToast } from '@/components/ui/use-toast'
 import { themes } from '@/constants'
 import { PaletteIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { updateUserTheme } from './actions'
 
 export default function ChangeThemeDropdown() {
-    const { setTheme, theme } = useTheme()
+    const { theme } = useTheme()
+    const { toast } = useToast()
 
-    const handleChangeTheme = async (theme: string) => {
-        const themeIndex = themes.findIndex((t) => t.name === theme)
-        if (themeIndex === -1) {
-            return 'Theme not found'
+    const handleChangeTheme = async (newTheme: string) => {
+        const themeIndex = themes.findIndex((t) => t.name === newTheme)
+        if (themeIndex === -1) return
+
+        const error = await updateUserTheme(newTheme)
+        if (error) {
+            toast({
+                title: 'Error updating theme',
+                variant: 'destructive',
+            })
         }
-        setTheme(theme)
     }
 
     return (
@@ -27,7 +35,7 @@ export default function ChangeThemeDropdown() {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost">
                     <PaletteIcon className="mr-1 h-4 w-4" />
-                    <span>Change theme</span>
+                    <span>Theme</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-44">

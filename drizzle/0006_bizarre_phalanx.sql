@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "gridSize" integer DEFAULT 2;

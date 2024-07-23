@@ -7,15 +7,6 @@ export async function getUserByUsername(username: string) {
     const user = await db.query.users.findFirst({
         where: eq(users.username, username),
         columns: {
-            bio: true,
-            createdAt: true,
-            email: true,
-            id: true,
-            imageUrl: true,
-            location: true,
-            name: true,
-            theme: true,
-            username: true,
             password: false,
         },
         with: {
@@ -34,15 +25,6 @@ export async function getUser(userId: string) {
     const user = await db.query.users.findFirst({
         where: eq(users.id, userId),
         columns: {
-            bio: true,
-            createdAt: true,
-            email: true,
-            id: true,
-            imageUrl: true,
-            location: true,
-            name: true,
-            theme: true,
-            username: true,
             password: false,
         },
         with: {

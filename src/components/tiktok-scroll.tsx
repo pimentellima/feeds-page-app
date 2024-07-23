@@ -46,7 +46,7 @@ export default function TiktokScroll({ media }: { media: TiktokMedia[] }) {
                                     { addSuffix: true }
                                 )}
                             </p>
-                            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                          {/*   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                                 <p className="flex gap-1 items-center">
                                     <EyeIcon className="h-4 w-4" />
                                     {video.view_count}
@@ -59,7 +59,7 @@ export default function TiktokScroll({ media }: { media: TiktokMedia[] }) {
                                     <RepeatIcon className="h-4 w-4" />
                                     {video.share_count}
                                 </p>
-                            </div>
+                            </div> */}
                         </div>
                         <Separator className="my-4 group-last:hidden" />
                     </Link>

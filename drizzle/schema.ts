@@ -19,6 +19,7 @@ export const users = pgTable('users', {
     username: text('username'),
     location: text('location'),
     bio: text('bio'),
+    gridSize: integer('gridSize').default(2),
     theme: text('theme'),
     email: text('email'),
     password: text('password'),
