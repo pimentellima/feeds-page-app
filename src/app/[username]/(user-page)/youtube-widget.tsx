@@ -13,7 +13,6 @@ import {
 import { getYoutubeAccessToken } from '@/services/integration-tokens'
 
 async function getMedia(accessToken: string) {
-    'use server'
     try {
         const media = await fetchYoutubeMedia(accessToken)
         if (!media) return null

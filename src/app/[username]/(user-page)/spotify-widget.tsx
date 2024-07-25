@@ -13,7 +13,6 @@ import {
 import { getSpotifyAccessToken } from '@/services/integration-tokens'
 
 async function getMedia(accessToken: string) {
-    'use server'
     try {
         const media = await fetchSpotifyMedia(accessToken)
         const profile = await fetchSpotifyProfile(accessToken)

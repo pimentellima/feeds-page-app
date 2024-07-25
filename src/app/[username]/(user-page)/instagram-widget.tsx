@@ -13,7 +13,6 @@ import {
 import { getInstagramAccessToken } from '@/services/integration-tokens'
 
 async function getMedia(accessToken: string) {
-    'use server'
     try {
         const media = await fetchInstagramMedia(accessToken)
         const profile = await fetchInstagramProfile(accessToken)
