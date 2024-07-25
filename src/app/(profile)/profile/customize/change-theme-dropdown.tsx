@@ -14,7 +14,7 @@ import { useTheme } from 'next-themes'
 import { updateUserTheme } from './actions'
 
 export default function ChangeThemeDropdown() {
-    const { theme } = useTheme()
+    const { forcedTheme } = useTheme()
     const { toast } = useToast()
 
     const handleChangeTheme = async (newTheme: string) => {
@@ -40,7 +40,7 @@ export default function ChangeThemeDropdown() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-44">
                 <DropdownMenuRadioGroup
-                    value={theme}
+                    value={forcedTheme}
                     onValueChange={(theme) => handleChangeTheme(theme)}
                 >
                     {themes.map(({ gradient, label, name }) => (

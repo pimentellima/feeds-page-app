@@ -5,7 +5,7 @@ import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
 export function Scroll({ children }: { children: ReactNode }) {
-    return <ScrollArea className="h-96 w-full pb-4">{children}</ScrollArea>
+    return <ScrollArea className="h-96 w-full pb-4 pr-4">{children}</ScrollArea>
 }
 export function ScrollContent({ children }: { children: ReactNode }) {
     return <div className="grid gap-2">{children}</div>
@@ -18,19 +18,21 @@ export function ScrollItem({
     href?: string
 }) {
     return (
-        <Link
-            href={href || '/404'}
-            className="flex flex-col justify-center items-center group"
-        >
-            {children}
+        <div className="group">
+            <Link
+                href={href || '/404'}
+                className="flex flex-col justify-center items-center "
+            >
+                {children}
+            </Link>
             <Separator className="my-4 group-last:hidden" />
-        </Link>
+        </div>
     )
 }
 export function ScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
     return (
         <Image
-            className="rounded-md object-contain"
+            className="rounded-md object-contain mb-2"
             quality={100}
             src={mediaUrl}
             alt="Post image"
@@ -41,14 +43,14 @@ export function ScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
 }
 export function ScrollItemFooter({ children }: { children: ReactNode }) {
     return (
-        <div className="flex flex-col gap-1 text-center w-48 mt-2">
+        <div className="grid gap-1 text-center w-full">
             {children}
         </div>
     )
 }
 export function ScrollItemCaption({ children }: { children: ReactNode }) {
     return (
-        <div className="overflow-hidden whitespace-nowrap text-ellipsis">
+        <div className="overflow-hidden whitespace-nowrap text-ellipsis flex flex-col">
             {children}
         </div>
     )

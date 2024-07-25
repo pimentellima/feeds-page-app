@@ -1,10 +1,13 @@
 'use client'
 import { getInstagramMedia } from '@/app/actions/get-instagram-media'
+import { getSpotifyMedia } from '@/app/actions/get-spotify-media'
 import { getTiktokMedia } from '@/app/actions/get-tiktok-media'
+import { getYoutubeMedia } from '@/app/actions/get-youtube-media'
 import InstagramScroll from '@/components/instagram-scroll'
+import SpotifyScroll from '@/components/spotify-scroll'
 import TiktokIcon from '@/components/tiktok-icon'
 import TiktokScroll from '@/components/tiktok-scroll'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
     Select,
     SelectContent,
@@ -16,6 +19,7 @@ import {
 import { useToast } from '@/components/ui/use-toast'
 import {
     InstagramTitle,
+    SpotifyTitle,
     TiktokTitle,
     Widget,
     WidgetContent,
@@ -25,8 +29,10 @@ import {
     YoutubeTitle,
 } from '@/components/widget'
 import XTwitterIcon from '@/components/xtwitter-icon'
+import YoutubeScroll from '@/components/youtube-scroll'
 import { widgets } from '@/drizzle/schema'
 import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
+import { SpotifyMedia, SpotifyUserProfile } from '@/lib/api-helpers/spotify'
 import { TiktokMedia, TiktokUser } from '@/lib/api-helpers/tiktok'
 import {
     closestCenter,
@@ -45,6 +51,7 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
+import { youtube_v3 } from 'googleapis'
 import {
     FacebookIcon,
     InstagramIcon,
@@ -60,11 +67,7 @@ import {
     updateWidgetPosition,
 } from './actions'
 import PairAccountButton from './pair-account-button'
-import { Card } from '@/components/ui/card'
-import { getYoutubeMedia } from '@/app/actions/get-youtube-media'
-import { YouTubeVideo } from '@/lib/api-helpers/youtube'
-import YoutubeScroll from '@/components/youtube-scroll'
-import { youtube_v3 } from 'googleapis'
+import SpotifyIcon from '@/components/spotify-icon'
 
 type Widget = {
     id: string
@@ -230,6 +233,15 @@ export function CustomizeWidgetsPanel({
                                 widgetId={widget.id}
                             />
                         )
+                    if (widget.type === 'spotifyIntegration')
+                        return (
+                            <SpotifyWidget
+                                key={widget.id}
+                                removeWidget={removeWidget}
+                                userId={userId}
+                                widgetId={widget.id}
+                            />
+                        )
                     if (!widget.type)
                         return (
                             <Widget key={widget.id}>
@@ -295,19 +307,26 @@ function WidgetTypeSelect({
                             Instagram media
                         </div>
                     </SelectItem>
-                    <SelectItem disabled value="facebook">
-                        <div className="flex items-center">
-                            <FacebookIcon className="mr-1 text-blue-500 w-4 h-4" />
-                            Facebook posts
-                        </div>
-                    </SelectItem>
+
                     <SelectItem value="youtubeIntegration">
                         <div className="flex items-center">
                             <YoutubeIcon className="mr-1 text-red-500 w-4 h-4" />
                             Youtube videos
                         </div>
                     </SelectItem>
-                    <SelectItem disabled value="x">
+                    <SelectItem value="spotifyIntegration">
+                        <div className="flex items-center">
+                            <SpotifyIcon className="mr-1 text-white fill-green-800 w-4 h-4" />
+                            Spotify tracks
+                        </div>
+                    </SelectItem>
+                    <SelectItem disabled value="facebook">
+                        <div className="flex items-center">
+                            <FacebookIcon className="mr-1 text-blue-500 w-4 h-4" />
+                            Facebook posts
+                        </div>
+                    </SelectItem>
+                    <SelectItem disabled value="xIntegration">
                         <div className="flex items-center">
                             <XTwitterIcon className="mr-1 fill-foreground w-4 h-4" />
                             X posts
@@ -493,6 +512,66 @@ function YoutubeWidget({
                     <PairAccountButton
                         label={'Click to connect your Youtube account'}
                         link={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
+                    />
+                )}
+            </WidgetContent>
+        </Widget>
+    )
+}
+
+function SpotifyWidget({
+    userId,
+    widgetId,
+    removeWidget,
+}: {
+    userId: string
+    widgetId: string
+    removeWidget: (id: string) => void
+}) {
+    const { data, isLoading } = useQuery<{
+        media: SpotifyMedia[]
+        profile: SpotifyUserProfile
+    } | null>({
+        queryFn: () => getSpotifyMedia(userId),
+        queryKey: ['spotifyMedia', userId],
+        refetchOnWindowFocus: false,
+    })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: widgetId })
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
+
+    return (
+        <Widget ref={setNodeRef} style={style}>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <SpotifyTitle profile={data?.profile} />
+                </WidgetTitle>
+                <WidgetOptions
+                    isDragging={isDragging}
+                    attributes={attributes}
+                    listeners={listeners}
+                    onClickDelete={() => removeWidget(widgetId)}
+                />
+            </WidgetHeader>
+            <WidgetContent>
+                {isLoading ? (
+                    <Loader className="h-4 w-4 animate-spin" />
+                ) : data?.media ? (
+                    <SpotifyScroll media={data.media} />
+                ) : (
+                    <PairAccountButton
+                        label={'Click to connect your Spotify account'}
+                        link={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
                     />
                 )}
             </WidgetContent>

@@ -9,12 +9,14 @@ import {
     ProfileSectionInfoContainer,
     ProfileSectionLinks,
 } from '@/components/profile-section'
+import SpotifyScroll from '@/components/spotify-scroll'
 import TiktokScroll from '@/components/tiktok-scroll'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import UserAvatar from '@/components/user-avatar'
 import {
     InstagramTitle,
+    SpotifyTitle,
     TiktokTitle,
     Widget,
     WidgetContent,
@@ -28,13 +30,18 @@ import {
     fetchInstagramMedia,
     fetchInstagramProfile,
 } from '@/lib/api-helpers/instagram'
+import {
+    fetchSpotifyMedia,
+    fetchSpotifyProfile,
+} from '@/lib/api-helpers/spotify'
 import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
 import {
-    fetchYoutubeMedia,
     fetchYoutubeChannel,
+    fetchYoutubeMedia,
 } from '@/lib/api-helpers/youtube'
 import {
     getInstagramAccessToken,
+    getSpotifyAccessToken,
     getTiktokAccessToken,
     getYoutubeAccessToken,
 } from '@/services/integration-tokens'
@@ -123,6 +130,13 @@ export default async function UserPage({
                                     userId={user.id}
                                 />
                             )
+                        if (widget.type === 'spotifyIntegration')
+                            return (
+                                <SpotifyWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
                     })}
                 </WidgetGrid>
             </div>
@@ -191,6 +205,28 @@ async function YoutubeWidget({ userId }: { userId: string }) {
             </WidgetHeader>
             <WidgetContent>
                 <YoutubeScroll media={media} />
+            </WidgetContent>
+        </Widget>
+    )
+}
+
+async function SpotifyWidget({ userId }: { userId: string }) {
+    const accessToken = await getSpotifyAccessToken(userId)
+    if (!accessToken) return null
+
+    const profile = await fetchSpotifyProfile(accessToken)
+    const media = await fetchSpotifyMedia(accessToken)
+    if (!media) return null
+
+    return (
+        <Widget>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <SpotifyTitle profile={profile} />
+                </WidgetTitle>
+            </WidgetHeader>
+            <WidgetContent>
+                <SpotifyScroll media={media} />
             </WidgetContent>
         </Widget>
     )

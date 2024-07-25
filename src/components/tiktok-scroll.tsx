@@ -27,7 +27,6 @@ export default function TiktokScroll({ media }: { media: TiktokMedia[] }) {
                                 )}
                             </ScrollItemTimestamp>
                         </ScrollItemFooter>
-                        <Separator className="my-4 group-last:hidden" />
                     </ScrollItem>
                 ))}
             </ScrollContent>

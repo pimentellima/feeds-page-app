@@ -1,6 +1,5 @@
 import { db } from '@/drizzle/index'
 import { integrationTokens } from '@/drizzle/schema'
-import { auth } from '@/lib/auth'
 import { encodeBody } from '@/lib/encode-body'
 import { oauth2Client } from '@/lib/google-oauth-client'
 import { and, eq } from 'drizzle-orm'
@@ -125,6 +124,47 @@ export async function getTiktokAccessToken(userId: string) {
                 expiresAt: new Date(Date.now() + expiresInMs),
                 refreshToken: responseJson.refresh_token,
                 refreshExpiresAt: new Date(Date.now() + refreshExpiresInMs),
+            })
+            .where(eq(integrationTokens.id, token.id))
+            .returning()
+        return newToken.accessToken
+    }
+    return token.accessToken
+}
+
+export async function getSpotifyAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'spotifyIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) return null
+    if (token.expiresAt && token.expiresAt < new Date()) {
+        const response = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: encodeBody({
+                client_key: process.env.TIKTOK_CLIENT_ID!,
+                grant_type: 'refresh_token',
+                refresh_token: token.refreshToken as string,
+            }),
+        })
+        const responseJson = (await response.json()) as {
+            access_token: string
+            expires_in: number
+            refresh_token: string
+        }
+        const expiresInMs = responseJson.expires_in * 1000
+
+        const [newToken] = await db
+            .update(integrationTokens)
+            .set({
+                accessToken: responseJson.access_token,
+                expiresAt: new Date(Date.now() + expiresInMs),
+                refreshToken: responseJson.refresh_token,
             })
             .where(eq(integrationTokens.id, token.id))
             .returning()

@@ -1,14 +1,16 @@
+import { SocialLinkIcon } from '@/app/(profile)/profile/customize/social-icons'
 import { InstagramProfile } from '@/lib/api-helpers/instagram'
+import { SpotifyUserProfile } from '@/lib/api-helpers/spotify'
 import { TiktokUser } from '@/lib/api-helpers/tiktok'
 import { DraggableAttributes } from '@dnd-kit/core'
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
+import { youtube_v3 } from 'googleapis'
 import { GripIcon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import { forwardRef, ReactNode } from 'react'
-import TiktokIcon from './tiktok-icon'
 import InstagramIcon from './instagram-icon'
-import { SocialLinkIcon } from '@/app/(profile)/profile/customize/social-icons'
-import { youtube_v3 } from 'googleapis'
+import TiktokIcon from './tiktok-icon'
+import SpotifyIcon from './spotify-icon'
 
 export function WidgetGrid({
     gridSize,
@@ -45,14 +47,15 @@ export const Widget = forwardRef<
 
 export function WidgetHeader({ children }: { children: ReactNode }) {
     return (
-        <div className="grid grid-cols-3 w-full flex-row p-5">{children}</div>
+        <div className="flex justify-between w-full px-5 pt-5 pb-2">
+            {children}
+        </div>
     )
 }
 export function WidgetTitle({ children }: { children: ReactNode }) {
     return (
         <div
-            className="flex justify-center text-base col-start-2
-                font-semibold leading-none tracking-tight"
+            className="text-base font-semibold leading-none tracking-tight"
         >
             {children}
         </div>
@@ -71,7 +74,7 @@ export function WidgetOptions({
     isDragging?: boolean
 }) {
     return (
-        <div className="justify-self-end flex gap-3 items-center">
+        <div className="flex justify-end gap-3 items-center w-1/3">
             {listeners && attributes && (
                 <button
                     style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -142,6 +145,19 @@ export function YoutubeTitle({
     ) : (
         <div className="flex items-center">
             <SocialLinkIcon linkType="youtube" />
+        </div>
+    )
+}
+
+export function SpotifyTitle({ profile }: { profile?: SpotifyUserProfile }) {
+    return profile?.uri ? (
+        <Link className="flex items-center" href={profile.uri}>
+            <SpotifyIcon className="h-5 w-5 text-white fill-green-600  mr-1" />
+            <p>{profile.display_name}</p>
+        </Link>
+    ) : (
+        <div className="flex items-center">
+            <SpotifyIcon className="h-5 w-5 text-white fill-green-600 " />
         </div>
     )
 }

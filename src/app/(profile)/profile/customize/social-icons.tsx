@@ -1,6 +1,7 @@
 import GithubIcon from '@/components/github-icon'
 import InstagramIcon from '@/components/instagram-icon'
 import LinkedinIcon from '@/components/linkedin-icon'
+import SpotifyIcon from '@/components/spotify-icon'
 import TiktokIcon from '@/components/tiktok-icon'
 import XTwitterIcon from '@/components/xtwitter-icon'
 import YoutubeIcon from '@/components/youtube-icon'
@@ -15,33 +16,49 @@ export function SocialLinkIcon({
     className,
     ...props
 }: SVGProps<SVGSVGElement> & {
-    linkType: InferSelectModel<typeof socialLinks>['type']
+    linkType:
+        | 'tiktok'
+        | 'instagram'
+        | 'x'
+        | 'youtube'
+        | 'linkedin'
+        | 'github'
+        | 'spotify'
 }) {
     if (linkType === 'tiktok')
         return (
             <TiktokIcon
-                className={cn('sm:h-5 sm:w-5 h-4 w-4 fill-foreground', className)}
+                className={cn(
+                    'sm:h-5 sm:w-5 h-4 w-4 fill-foreground',
+                    className
+                )}
                 {...props}
             />
         )
     if (linkType === 'instagram')
         return (
             <InstagramIcon
-                className={cn('sm:h-5 sm:w-5 h-4 w-4 text-pink-900', className)}
+                className={cn('sm:h-5 sm:w-5 h-4 w-4 text-pink-700', className)}
                 {...props}
             />
         )
     if (linkType === 'x')
         return (
             <XTwitterIcon
-                className={cn('sm:h-5 sm:w-5 h-4 w-4 fill-foreground', className)}
+                className={cn(
+                    'sm:h-5 sm:w-5 h-4 w-4 fill-foreground',
+                    className
+                )}
                 {...props}
             />
         )
     if (linkType === 'youtube')
         return (
             <YoutubeIcon
-                className={cn('sm:h-5 sm:w-5 h-4 w-4 text-white fill-red-900', className)}
+                className={cn(
+                    'sm:h-5 sm:w-5 h-4 w-4 text-white fill-red-700',
+                    className
+                )}
                 {...props}
             />
         )
@@ -56,7 +73,20 @@ export function SocialLinkIcon({
         return (
             <GithubIcon
                 className={
-                    (cn('sm:h-5 sm:w-5 h-4 w-4 fill-foreground text-background'), className)
+                    (cn(
+                        'sm:h-5 sm:w-5 h-4 w-4 fill-foreground text-background'
+                    ),
+                    className)
+                }
+                {...props}
+            />
+        )
+    if (linkType === 'spotify')
+        return (
+            <SpotifyIcon
+                className={
+                    (cn('sm:h-5 sm:w-5 h-4 w-4 text-green-700 fill-green-800'),
+                    className)
                 }
                 {...props}
             />

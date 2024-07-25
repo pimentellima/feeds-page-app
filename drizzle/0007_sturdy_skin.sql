@@ -1,0 +1,1 @@
+ALTER TYPE "integrationType" ADD VALUE 'spotifyIntegration';

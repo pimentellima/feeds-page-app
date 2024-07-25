@@ -29,10 +29,8 @@ export default function YoutubeScroll({
                         >
                             <ScrollItemImage
                                 mediaUrl={
-                                    video.snippet?.thumbnails?.high
-                                        ?.url ||
-                                    video.snippet?.thumbnails?.medium
-                                        ?.url ||
+                                    video.snippet?.thumbnails?.high?.url ||
+                                    video.snippet?.thumbnails?.medium?.url ||
                                     ''
                                 }
                             />
@@ -43,9 +41,7 @@ export default function YoutubeScroll({
                                 <ScrollItemTimestamp>
                                     {video.snippet?.publishedAt &&
                                         formatDistanceToNow(
-                                            new Date(
-                                                video.snippet.publishedAt
-                                            ),
+                                            new Date(video.snippet.publishedAt),
                                             { addSuffix: true }
                                         )}
                                 </ScrollItemTimestamp>
