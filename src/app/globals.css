@@ -9,36 +9,36 @@
        URL: https://gradient.page */
 
         /* CSS: .bg-gradient { background: var(--gradient) } */
-        --gradient: linear-gradient(to top left, #091e3a, #2f80ed, #2d9ee0);
-        --background: 228 98.65% 98.26%;
-        --foreground: 228 7.3% 0.52%;
+        --gradient: linear-gradient(to top left, #f7f8f8, #acbb78);
 
-        --muted: 228 7.3% 91.3%;
-        --muted-foreground: 228 3.65% 41.3%;
+        --background: 191 4.550000000000001% 7.76%;
+        --foreground: 191 0.7000000000000001% 99.85%;
 
-        --popover: 228 31.6% 91.3%;
-        --popover-foreground: 228 7.3% 0.65%;
+        --muted: 191 3.5000000000000004% 29.099999999999998%;
+        --muted-foreground: 191 0.7000000000000001% 59.7%;
 
-        --card: 228 31.6% 91.3%;
-        --card-foreground: 228 7.3% 0.65%;
+        --popover: 191 63.6% 12.61%;
+        --popover-foreground: 191 0.7000000000000001% 99.85%;
 
-        --border: 228 12.3% 89.52%;
-        --input: 228 12.3% 89.52%;
+        --card: 191 63.6% 12.61%;
+        --card-foreground: 191 0.7000000000000001% 99.85%;
 
-        --primary: 228 73% 13%;
-        --primary-foreground: 228 1.46% 91.3%;
+        --border: 191 3.5000000000000004% 29.099999999999998%;
+        --input: 191 3.5000000000000004% 29.099999999999998%;
 
-        --secondary: 228 3.65% 95.65%;
-        --secondary-foreground: 228 5.38% 11.3%;
+        --primary: 191 7% 97%;
+        --primary-foreground: 191 0.7000000000000001% 9.7%;
 
-        --accent: 228 3.65% 95.65%;
-        --accent-foreground: 228 5.38% 11.3%;
+        --secondary: 191 3.5000000000000004% 29.099999999999998%;
+        --secondary-foreground: 191 0.7000000000000001% 99.85%;
 
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
+        --accent: 191 3.5000000000000004% 29.099999999999998%;
+        --accent-foreground: 191 0.7000000000000001% 99.85%;
 
-        --ring: 228 73% 13%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 191 0.7000000000000001% 99.85%;
 
+        --ring: 191 7% 97%;
         --radius: 0.5rem;
     }
 

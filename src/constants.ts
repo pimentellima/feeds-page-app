@@ -2,7 +2,7 @@ export const REFRESH_TOKEN_TTL = 3 * 24 * 60 * 60 * 1000 // 3 dias
 export const ACCESS_TOKEN_TTL = 1000 * 60 * 10 // 10 minutos
 
 export const themes = [
-    { name: 'oxford-blue', label: 'Oxford blue', gradient: '#091E3A' },
+    { name: 'dark-slate', label: 'Dark slate', gradient: '#0c2d35' },
     { name: 'ultra-pink', label: 'Ultra pink', gradient: '#f857a6' },
     { name: 'aspargus-green', label: 'Asparagus green', gradient: '#215f00' },
     { name: 'raspberry-pink', label: 'Raspberry pink', gradient: '#E55D87' },
