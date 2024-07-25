@@ -37,11 +37,11 @@ export function ProfileSectionInfo({
     return (
         <div
             className="rounded-md transition-colors sm:w-96
-            p-3 text-left"
+            p-3 text-left font-sans"
         >
-            <p className="w-full text-2xl sm:text-4xl font-bold">
+            <h2 className="w-full text-2xl sm:text-4xl font-bold bg-gradient text-transparent inline-block bg-clip-text">
                 {user.name || 'No name set'}
-            </p>
+            </h2>
             {user.location && (
                 <div className="mt-1 sm:mt-2 font-normal flex items-center tracking-tight sm:tracking-normal">
                     <MapPinIcon className="mr-2 w-4 h-4" />

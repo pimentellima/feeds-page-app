@@ -40,7 +40,7 @@ export const Widget = forwardRef<
     <div
         ref={ref}
         className="rounded-lg border bg-card text-card-foreground shadow-sm 
-        text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4"
+        text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4 font-sans"
         {...props}
     />
 ))
@@ -103,14 +103,14 @@ export function WidgetContent({ children }: { children: ReactNode }) {
 export function InstagramTitle({ profile }: { profile?: InstagramProfile }) {
     return profile ? (
         <Link
-            className="flex items-center"
+            className="flex"
             href={'https://instagram.com/' + profile.username}
         >
             <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
             <p>{profile.username}</p>
         </Link>
     ) : (
-        <div className="flex items-center">
+        <div className="flex">
             <InstagramIcon className="mr-1 text-pink-500 w-5 h-5" />
         </div>
     )
@@ -118,12 +118,12 @@ export function InstagramTitle({ profile }: { profile?: InstagramProfile }) {
 
 export function TiktokTitle({ user }: { user?: TiktokUser }) {
     return user ? (
-        <Link className="flex items-center" href={user.profile_deep_link}>
+        <Link className="flex" href={user.profile_deep_link}>
             <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />
             <p>{user.username}</p>
         </Link>
     ) : (
-        <div className="flex items-center">
+        <div className="flex">
             <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />
         </div>
     )
@@ -136,14 +136,14 @@ export function YoutubeTitle({
 }) {
     return channel?.customUrl ? (
         <Link
-            className="flex items-center"
+            className="flex"
             href={'https://youtube.com/' + channel.customUrl}
         >
             <SocialLinkIcon className="mr-1" linkType="youtube" />
             <p>{channel.title}</p>
         </Link>
     ) : (
-        <div className="flex items-center">
+        <div className="flex">
             <SocialLinkIcon linkType="youtube" />
         </div>
     )
@@ -151,12 +151,12 @@ export function YoutubeTitle({
 
 export function SpotifyTitle({ profile }: { profile?: SpotifyUserProfile | null }) {
     return profile?.uri ? (
-        <Link className="flex items-center" href={profile.uri}>
+        <Link className="flex" href={profile.uri}>
             <SpotifyIcon className="h-5 w-5 text-white fill-green-600  mr-1" />
             <p>{profile.display_name}</p>
         </Link>
     ) : (
-        <div className="flex items-center">
+        <div className="flex">
             <SpotifyIcon className="h-5 w-5 text-white fill-green-600 " />
         </div>
     )

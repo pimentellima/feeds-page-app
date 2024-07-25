@@ -38,7 +38,7 @@ export default function SpotifyScroll({ media }: { media: SpotifyMedia[] }) {
                                         </p>
                                         <ScrollItemTimestamp>
                                             {!!track.playedAt &&
-                                                formatDistanceToNow(
+                                                'played ' + formatDistanceToNow(
                                                     new Date(track.playedAt),
                                                     { addSuffix: true }
                                                 )}
