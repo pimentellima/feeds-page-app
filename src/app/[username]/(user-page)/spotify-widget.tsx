@@ -16,7 +16,6 @@ async function getMedia(accessToken: string) {
     'use server'
     try {
         const media = await fetchSpotifyMedia(accessToken)
-        if (!media) return null
         const profile = await fetchSpotifyProfile(accessToken)
 
         return {
@@ -33,7 +32,7 @@ export async function SpotifyWidget({ userId }: { userId: string }) {
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
-    if (!media) return <p>An error occured fetching data.</p>
+    if (!media) return null
 
     return (
         <Widget>
@@ -43,7 +42,11 @@ export async function SpotifyWidget({ userId }: { userId: string }) {
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                <SpotifyScroll media={media.media} />
+                {media?.media ? (
+                    <SpotifyScroll media={media.media} />
+                ) : (
+                    <p>An error occured fetching data.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

@@ -3,7 +3,7 @@ import {
     WidgetContent,
     WidgetHeader,
     WidgetTitle,
-    YoutubeTitle
+    YoutubeTitle,
 } from '@/components/widget'
 import YoutubeScroll from '@/components/youtube-scroll'
 import {
@@ -33,17 +33,20 @@ export async function YoutubeWidget({ userId }: { userId: string }) {
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
-    if (!media) return <p>An error occured fetching data.</p>
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <YoutubeTitle channel={media.channel} />
+                    <YoutubeTitle channel={media?.channel} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                <YoutubeScroll media={media.media} />
+                {media?.media ? (
+                    <YoutubeScroll media={media.media} />
+                ) : (
+                    <p>An error occured fetching data.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

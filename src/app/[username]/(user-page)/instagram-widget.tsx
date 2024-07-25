@@ -4,7 +4,7 @@ import {
     Widget,
     WidgetContent,
     WidgetHeader,
-    WidgetTitle
+    WidgetTitle,
 } from '@/components/widget'
 import {
     fetchInstagramMedia,
@@ -16,7 +16,6 @@ async function getMedia(accessToken: string) {
     'use server'
     try {
         const media = await fetchInstagramMedia(accessToken)
-        if (!media) return null
         const profile = await fetchInstagramProfile(accessToken)
 
         return {
@@ -33,17 +32,20 @@ export async function InstagramWidget({ userId }: { userId: string }) {
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
-    if (!media) return <p>An error occured fetching data.</p>
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <InstagramTitle profile={media.profile} />
+                    <InstagramTitle profile={media?.profile} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                <InstagramScroll media={media.media} />
+                {media?.media ? (
+                    <InstagramScroll media={media.media} />
+                ) : (
+                    <p>An error occured fetching data.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

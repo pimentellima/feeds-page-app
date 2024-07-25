@@ -4,7 +4,7 @@ import {
     Widget,
     WidgetContent,
     WidgetHeader,
-    WidgetTitle
+    WidgetTitle,
 } from '@/components/widget'
 import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
 import { getTiktokAccessToken } from '@/services/integration-tokens'
@@ -13,7 +13,6 @@ async function getMedia(accessToken: string) {
     'use server'
     try {
         const media = await fetchTiktokMedia(accessToken)
-        if (!media) return null
         const user = await fetchTiktokUser(accessToken)
 
         return {
@@ -30,17 +29,20 @@ export async function TiktokWidget({ userId }: { userId: string }) {
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
-    if (!media) return <p>An error occured fetching data.</p>
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <TiktokTitle user={media.user} />
+                    <TiktokTitle user={media?.user} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                <TiktokScroll media={media.media} />
+                {media?.media ? (
+                    <TiktokScroll media={media.media} />
+                ) : (
+                    <p>An error occured fetching data.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

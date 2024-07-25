@@ -5,10 +5,10 @@ import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
 export function Scroll({ children }: { children: ReactNode }) {
-    return <ScrollArea className="h-96 w-full pb-4 pr-4">{children}</ScrollArea>
+    return <ScrollArea className="h-96 w-full pb-4">{children}</ScrollArea>
 }
 export function ScrollContent({ children }: { children: ReactNode }) {
-    return <div className="grid gap-2">{children}</div>
+    return <div className="grid gap-2 px-3">{children}</div>
 }
 export function ScrollItem({
     children,

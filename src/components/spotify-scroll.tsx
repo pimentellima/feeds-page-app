@@ -18,10 +18,9 @@ export default function SpotifyScroll({ media }: { media: SpotifyMedia[] }) {
                 {media
                     .filter((i) => !!i)
                     .map((track) => (
-                        <div className="group">
+                        <div key={track.trackId} className="group">
                             <Link
                                 href={track.trackUrl}
-                                key={track.trackId}
                                 className="flex items-center gap-3"
                             >
                                 <Image
