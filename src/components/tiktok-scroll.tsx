@@ -21,7 +21,7 @@ export default function TiktokScroll({ media }: { media: TiktokMedia[] }) {
                         <ScrollItemFooter>
                             <ScrollItemCaption>{post.title}</ScrollItemCaption>
                             <ScrollItemTimestamp>
-                                {formatDistanceToNow(
+                                {!!post.create_time && formatDistanceToNow(
                                     new Date(post.create_time * 1000),
                                     { addSuffix: true }
                                 )}

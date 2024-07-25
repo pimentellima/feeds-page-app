@@ -1,5 +1,4 @@
 import { SocialLinkIcon } from '@/app/(profile)/profile/customize/social-icons'
-import InstagramScroll from '@/components/instagram-scroll'
 import {
     ProfileSection,
     ProfileSectionContent,
@@ -9,45 +8,17 @@ import {
     ProfileSectionInfoContainer,
     ProfileSectionLinks,
 } from '@/components/profile-section'
-import SpotifyScroll from '@/components/spotify-scroll'
-import TiktokScroll from '@/components/tiktok-scroll'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import UserAvatar from '@/components/user-avatar'
-import {
-    InstagramTitle,
-    SpotifyTitle,
-    TiktokTitle,
-    Widget,
-    WidgetContent,
-    WidgetGrid,
-    WidgetHeader,
-    WidgetTitle,
-    YoutubeTitle,
-} from '@/components/widget'
-import YoutubeScroll from '@/components/youtube-scroll'
-import {
-    fetchInstagramMedia,
-    fetchInstagramProfile,
-} from '@/lib/api-helpers/instagram'
-import {
-    fetchSpotifyMedia,
-    fetchSpotifyProfile,
-} from '@/lib/api-helpers/spotify'
-import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
-import {
-    fetchYoutubeChannel,
-    fetchYoutubeMedia,
-} from '@/lib/api-helpers/youtube'
-import {
-    getInstagramAccessToken,
-    getSpotifyAccessToken,
-    getTiktokAccessToken,
-    getYoutubeAccessToken,
-} from '@/services/integration-tokens'
+import { WidgetGrid } from '@/components/widget'
 import { getUserByUsername } from '@/services/user'
 import { SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
+import { InstagramWidget } from './instagram-widget'
+import { TiktokWidget } from './tiktok-widget'
+import { YoutubeWidget } from './youtube-widget'
+import { SpotifyWidget } from './spotify-widget'
 
 export default async function UserPage({
     params,
@@ -141,93 +112,5 @@ export default async function UserPage({
                 </WidgetGrid>
             </div>
         </>
-    )
-}
-
-async function TiktokWidget({ userId }: { userId: string }) {
-    const accessToken = await getTiktokAccessToken(userId)
-    if (!accessToken) return null
-
-    const user = await fetchTiktokUser(accessToken)
-    const media = await fetchTiktokMedia(accessToken)
-    if (!media) return null
-
-    return (
-        <Widget>
-            <WidgetHeader>
-                <WidgetTitle>
-                    <TiktokTitle user={user} />
-                </WidgetTitle>
-            </WidgetHeader>
-            <WidgetContent>
-                <TiktokScroll media={media} />
-            </WidgetContent>
-        </Widget>
-    )
-}
-
-async function InstagramWidget({ userId }: { userId: string }) {
-    const accessToken = await getInstagramAccessToken(userId)
-    if (!accessToken) return null
-
-    const profile = await fetchInstagramProfile(accessToken)
-    const media = await fetchInstagramMedia(accessToken)
-    if (!media) return null
-
-    return (
-        <Widget>
-            <WidgetHeader>
-                <WidgetTitle>
-                    <InstagramTitle profile={profile} />
-                </WidgetTitle>
-            </WidgetHeader>
-            <WidgetContent>
-                <InstagramScroll media={media} />
-            </WidgetContent>
-        </Widget>
-    )
-}
-
-async function YoutubeWidget({ userId }: { userId: string }) {
-    const accessToken = await getYoutubeAccessToken(userId)
-    if (!accessToken) return null
-
-    const channel = await fetchYoutubeChannel(accessToken)
-    const media = await fetchYoutubeMedia(accessToken)
-    if (!media) return null
-
-    return (
-        <Widget>
-            <WidgetHeader>
-                <WidgetTitle>
-                    <YoutubeTitle channel={channel} />
-                </WidgetTitle>
-            </WidgetHeader>
-            <WidgetContent>
-                <YoutubeScroll media={media} />
-            </WidgetContent>
-        </Widget>
-    )
-}
-
-async function SpotifyWidget({ userId }: { userId: string }) {
-    const accessToken = await getSpotifyAccessToken(userId)
-    if (!accessToken) return null
-
-    const profile = await fetchSpotifyProfile(accessToken)
-    const media = await fetchSpotifyMedia(accessToken)
-    if (!media) return null
-
-    return (
-        <Widget>
-            <WidgetHeader>
-                <WidgetTitle>
-                    <SpotifyTitle profile={profile} />
-                </WidgetTitle>
-            </WidgetHeader>
-            <WidgetContent>
-                <SpotifyScroll media={media} />
-            </WidgetContent>
-        </Widget>
     )
 }

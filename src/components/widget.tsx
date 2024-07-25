@@ -149,7 +149,7 @@ export function YoutubeTitle({
     )
 }
 
-export function SpotifyTitle({ profile }: { profile?: SpotifyUserProfile }) {
+export function SpotifyTitle({ profile }: { profile?: SpotifyUserProfile | null }) {
     return profile?.uri ? (
         <Link className="flex items-center" href={profile.uri}>
             <SpotifyIcon className="h-5 w-5 text-white fill-green-600  mr-1" />

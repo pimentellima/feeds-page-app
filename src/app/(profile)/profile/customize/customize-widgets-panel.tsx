@@ -528,9 +528,9 @@ function SpotifyWidget({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
-    const { data, isLoading } = useQuery<{
-        media: SpotifyMedia[]
-        profile: SpotifyUserProfile
+    const { data, isLoading, isError } = useQuery<{
+        media: SpotifyMedia[] | null
+        profile: SpotifyUserProfile | null
     } | null>({
         queryFn: () => getSpotifyMedia(userId),
         queryKey: ['spotifyMedia', userId],
@@ -549,6 +549,7 @@ function SpotifyWidget({
         transform: CSS.Transform.toString(transform),
         transition,
     }
+    console.log(data, isError)
 
     return (
         <Widget ref={setNodeRef} style={style}>
@@ -564,7 +565,9 @@ function SpotifyWidget({
                 />
             </WidgetHeader>
             <WidgetContent>
-                {isLoading ? (
+                {isError ? (
+                    <p>An error occured fetching data.</p>
+                ) : isLoading ? (
                     <Loader className="h-4 w-4 animate-spin" />
                 ) : data?.media ? (
                     <SpotifyScroll media={data.media} />

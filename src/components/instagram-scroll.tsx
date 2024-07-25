@@ -28,7 +28,7 @@ export default function InstagramScroll({ media }: { media: InstagramPost[] }) {
                                     {post.caption}
                                 </ScrollItemCaption>
                                 <ScrollItemTimestamp>
-                                    {formatDistanceToNow(
+                                    {!!post.timestamp && formatDistanceToNow(
                                         new Date(post.timestamp),
                                         { addSuffix: true }
                                     )}

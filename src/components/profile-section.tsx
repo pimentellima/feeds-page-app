@@ -48,8 +48,10 @@ export function ProfileSectionInfo({
                     <p>{user.location}</p>
                 </div>
             )}
-            <p className="mt-1 sm:mt-2 line-clamp-4 sm:text-lg font-normal 
-            sm:leading-normal leading-tight tracking-tight sm:tracking-normal">
+            <p
+                className="mt-1 sm:mt-2 line-clamp-4 sm:text-lg font-normal 
+            sm:leading-normal leading-tight tracking-tight sm:tracking-normal"
+            >
                 {user.bio || 'No bio'}
             </p>
         </div>
