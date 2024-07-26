@@ -1,11 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { oauth2Client } from '@/lib/google-oauth-client'
 
 const scopes = ['https://www.googleapis.com/auth/youtube.readonly']
 
-export function POST(req: NextApiRequest, res: NextApiResponse) {
+export function POST() {
     try {
         const csrfState = Math.random().toString(36).substring(2)
         cookies().set('csrfState', csrfState, { maxAge: 60000 })

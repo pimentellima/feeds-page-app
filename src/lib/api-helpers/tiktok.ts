@@ -1,5 +1,3 @@
-/* id,title,video_description,duration,cover_image_url,embed_link,create_time,share_url,comment_count,share_count,view_count */
-
 export interface TiktokMedia {
     id: string
     title: string

@@ -549,7 +549,6 @@ function SpotifyWidget({
         transform: CSS.Transform.toString(transform),
         transition,
     }
-    console.log(data, isError)
 
     return (
         <Widget ref={setNodeRef} style={style}>

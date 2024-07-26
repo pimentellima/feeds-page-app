@@ -163,7 +163,8 @@ export async function fetchSpotifyMedia(
                 trackUrl,
             }
         })
-    } catch {
+    } catch(e) {
+        console.log(e)
         return null
     }
 }

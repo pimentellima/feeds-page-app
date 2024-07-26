@@ -20,6 +20,8 @@ import { TiktokWidget } from './tiktok-widget'
 import { YoutubeWidget } from './youtube-widget'
 import { SpotifyWidget } from './spotify-widget'
 
+export const revalidate = 1200
+
 export default async function UserPage({
     params,
 }: {
