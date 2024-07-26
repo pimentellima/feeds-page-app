@@ -53,10 +53,7 @@ export default function SignInForm() {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="grid gap-3"
-                >
+                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -108,10 +105,9 @@ export default function SignInForm() {
                 >
                     Or continue with
                 </p>
-                <div className="flex gap-1 mt-3">
-                    <Button className="w-full">Google</Button>
-                    <Button className="w-full">Github</Button>
-                </div>
+                <Button onClick={() => signIn('google')} className="w-full mt-2">
+                    Google
+                </Button>
             </CardFooter>
         </Card>
     )

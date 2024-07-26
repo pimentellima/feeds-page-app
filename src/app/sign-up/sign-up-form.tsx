@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form'
 import { signup } from './actions'
 import { FormValues, schema } from './schema'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 
 export default function SignUpForm() {
     const {
@@ -101,10 +102,9 @@ export default function SignUpForm() {
                 >
                     Or continue with
                 </p>
-                <div className="flex gap-1 mt-3">
-                    <Button className="w-full">Google</Button>
-                    <Button className="w-full">Github</Button>
-                </div>
+                <Button onClick={() => signIn('google')} className="w-full mt-2">
+                    Google
+                </Button>
             </CardFooter>
         </Card>
     )
