@@ -149,37 +149,38 @@
         --radius: 0.5rem;
     }
 
-    .raspberry-pink {
-        --gradient: linear-gradient(to top left, #e55d87, #5fc3e4);
+    .lavender-mist {
+        /* CSS: .bg-gradient { background: var(--gradient) } */
+        --gradient: #ddd6f3;
 
-        --background: -20 46.8% 5.04%;
-        --foreground: -20 7.199999999999999% 98.15%;
+        --background: 270 35.75% 7.12%;
+        --foreground: 270 5.5% 99.45%;
 
-        --muted: -20 36% 18.9%;
-        --muted-foreground: -20 7.199999999999999% 56.3%;
+        --muted: 270 27.500000000000004% 26.7%;
+        --muted-foreground: 270 5.5% 58.9%;
 
-        --popover: -20 50.6% 8.19%;
-        --popover-foreground: -20 7.199999999999999% 98.15%;
+        --popover: 270 54% 11.57%;
+        --popover-foreground: 270 5.5% 99.45%;
 
-        --card: -20 50.6% 8.19%;
-        --card-foreground: -20 7.199999999999999% 98.15%;
+        --card: 270 54% 11.57%;
+        --card-foreground: 270 5.5% 99.45%;
 
-        --border: -20 36% 18.9%;
-        --input: -20 36% 18.9%;
+        --border: 270 27.500000000000004% 26.7%;
+        --input: 270 27.500000000000004% 26.7%;
 
-        --primary: -20 72% 63%;
-        --primary-foreground: -20 7.199999999999999% 6.3%;
+        --primary: 270 55% 89%;
+        --primary-foreground: 270 5.5% 8.9%;
 
-        --secondary: -20 36% 18.9%;
-        --secondary-foreground: -20 7.199999999999999% 98.15%;
+        --secondary: 270 27.500000000000004% 26.7%;
+        --secondary-foreground: 270 5.5% 99.45%;
 
-        --accent: -20 36% 18.9%;
-        --accent-foreground: -20 7.199999999999999% 98.15%;
+        --accent: 270 27.500000000000004% 26.7%;
+        --accent-foreground: 270 5.5% 99.45%;
 
         --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: -20 7.199999999999999% 98.15%;
+        --destructive-foreground: 270 5.5% 99.45%;
 
-        --ring: -20 72% 63%;
+        --ring: 270 55% 89%;
         --radius: 0.5rem;
     }
 
@@ -251,37 +252,38 @@
         --radius: 0.5rem;
     }
 
-    .maroon {
-        --gradient: linear-gradient(to top left, #780206, #061161);
-        --background: -2 99.85% 98.48%;
-        --foreground: -2 9.7% 0.96%;
+    .dark-chocolate {
+        /* CSS: .bg-gradient { background: var(--gradient) } */
+        --gradient: #fdfcfb;
 
-        --muted: -2 9.7% 92.4%;
-        --muted-foreground: -2 4.85% 42.4%;
+        --background: 32 21.45% 7.92%;
+        --foreground: 32 3.3000000000000003% 99.95%;
 
-        --popover: -2 12.400000000000006% 92.4%;
-        --popover-foreground: -2 9.7% 1.2%;
+        --muted: 32 16.5% 29.7%;
+        --muted-foreground: 32 3.3000000000000003% 59.9%;
 
-        --card: -2 12.400000000000006% 92.4%;
-        --card-foreground: -2 9.7% 1.2%;
+        --popover: 32 58.4% 12.87%;
+        --popover-foreground: 32 3.3000000000000003% 99.95%;
 
-        --border: -2 14.7% 89.96%;
-        --input: -2 14.7% 89.96%;
+        --card: 32 58.4% 12.87%;
+        --card-foreground: 32 3.3000000000000003% 99.95%;
 
-        --primary: -2 97% 24%;
-        --primary-foreground: -2 1.94% 92.4%;
+        --border: 32 16.5% 29.7%;
+        --input: 32 16.5% 29.7%;
 
-        --secondary: -2 4.85% 96.2%;
-        --secondary-foreground: -2 6.82% 12.4%;
+        --primary: 32 33% 99%;
+        --primary-foreground: 32 3.3000000000000003% 9.9%;
 
-        --accent: -2 4.85% 96.2%;
-        --accent-foreground: -2 6.82% 12.4%;
+        --secondary: 32 16.5% 29.7%;
+        --secondary-foreground: 32 3.3000000000000003% 99.95%;
 
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
+        --accent: 32 16.5% 29.7%;
+        --accent-foreground: 32 3.3000000000000003% 99.95%;
 
-        --ring: -2 97% 24%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 32 3.3000000000000003% 99.95%;
 
+        --ring: 32 33% 99%;
         --radius: 0.5rem;
     }
 
@@ -452,6 +454,41 @@
         --destructive-foreground: 0 10% 97.35%;
 
         --ring: 0 100% 47%;
+        --radius: 0.5rem;
+    }
+
+    .pastel-green {
+        /* CSS: .bg-gradient { background: var(--gradient) } */
+        --gradient: #c1dfc4;
+
+        --background: 134 20.8% 6.56%;
+        --foreground: 134 3.2% 99.1%;
+
+        --muted: 134 16% 24.599999999999998%;
+        --muted-foreground: 134 3.2% 58.2%;
+
+        --popover: 134 58.6% 10.66%;
+        --popover-foreground: 134 3.2% 99.1%;
+
+        --card: 134 58.6% 10.66%;
+        --card-foreground: 134 3.2% 99.1%;
+
+        --border: 134 16% 24.599999999999998%;
+        --input: 134 16% 24.599999999999998%;
+
+        --primary: 134 32% 82%;
+        --primary-foreground: 134 3.2% 8.2%;
+
+        --secondary: 134 16% 24.599999999999998%;
+        --secondary-foreground: 134 3.2% 99.1%;
+
+        --accent: 134 16% 24.599999999999998%;
+        --accent-foreground: 134 3.2% 99.1%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 134 3.2% 99.1%;
+
+        --ring: 134 32% 82%;
         --radius: 0.5rem;
     }
 

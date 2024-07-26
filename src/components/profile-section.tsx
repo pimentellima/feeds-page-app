@@ -39,7 +39,7 @@ export function ProfileSectionInfo({
             className="rounded-md transition-colors sm:w-96
             p-3 text-left font-sans"
         >
-            <h2 className="w-full text-2xl sm:text-4xl font-bold bg-gradient text-transparent inline-block bg-clip-text">
+            <h2 className="w-full text-2xl sm:text-4xl font-bold">
                 {user.name || 'No name set'}
             </h2>
             {user.location && (
