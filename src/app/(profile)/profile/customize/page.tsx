@@ -41,10 +41,12 @@ export default async function CustomizePage() {
                      gap-1 w-full px-6 sm:w-auto sm:px-0"
             >
                 <ChangeThemeDropdown />
-                <div className='hidden sm:block'>
+                <div className="hidden sm:block">
                     <ChangeGridDropdown selectedSize={user.gridSize ?? 2} />
                 </div>
-                <AccountSettingsDropdown />
+                <AccountSettingsDropdown
+                    integrations={user.integrationTokens}
+                />
             </div>
             <div
                 className="sm:grid sm:grid-cols-[4fr,10fr] sm:gap-44 sm:min-h-screen bg-background

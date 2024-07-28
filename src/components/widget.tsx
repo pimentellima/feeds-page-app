@@ -54,9 +54,7 @@ export function WidgetHeader({ children }: { children: ReactNode }) {
 }
 export function WidgetTitle({ children }: { children: ReactNode }) {
     return (
-        <div
-            className="text-base font-semibold leading-none tracking-tight"
-        >
+        <div className="text-base font-semibold leading-none tracking-tight">
             {children}
         </div>
     )
@@ -149,7 +147,11 @@ export function YoutubeTitle({
     )
 }
 
-export function SpotifyTitle({ profile }: { profile?: SpotifyUserProfile | null }) {
+export function SpotifyTitle({
+    profile,
+}: {
+    profile?: SpotifyUserProfile | null
+}) {
     return profile?.uri ? (
         <Link className="flex" href={profile.uri}>
             <SpotifyIcon className="h-5 w-5 text-white fill-green-600  mr-1" />

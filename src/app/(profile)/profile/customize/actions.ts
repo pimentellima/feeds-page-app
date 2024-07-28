@@ -1,14 +1,24 @@
 'use server'
 import { db } from '@/drizzle/index'
-import { socialLinks, users, widgets } from '@/drizzle/schema'
+import {
+    integrationTokens,
+    socialLinks,
+    users,
+    widgets,
+} from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { utapi } from '@/server/uploadthing'
-import { and, eq, InferInsertModel, ne, sql } from 'drizzle-orm'
+import {
+    and,
+    eq,
+    InferInsertModel,
+    ne,
+    sql
+} from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { UploadFileResult } from 'uploadthing/types'
-import * as z from 'zod'
-import { schema, SocialLinkValues } from './social-link-schema'
 import { profileSchema, ProfileValues } from './edit-profile-schema'
+import { schema, SocialLinkValues } from './social-link-schema'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -287,5 +297,19 @@ export async function updateGridSize(gridSize: number) {
         revalidatePath('/profile/customize')
     } catch (e) {
         return 'An error occurred'
+    }
+}
+
+export async function deleteIntegration(integrationId: string) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+
+        await db
+            .delete(integrationTokens)
+            .where(eq(integrationTokens.id, integrationId))
+        revalidatePath('/profile/customize')
+    } catch {
+        return 'Error deleting integration'
     }
 }

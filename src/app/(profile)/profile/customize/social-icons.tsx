@@ -84,10 +84,10 @@ export function SocialLinkIcon({
     if (linkType === 'spotify')
         return (
             <SpotifyIcon
-                className={
-                    (cn('sm:h-5 sm:w-5 h-4 w-4 text-green-700 fill-green-800'),
-                    className)
-                }
+                className={cn(
+                    'sm:h-5 sm:w-5 h-4 w-4 text-white fill-green-600',
+                    className
+                )}
                 {...props}
             />
         )
