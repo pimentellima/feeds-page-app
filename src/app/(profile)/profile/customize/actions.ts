@@ -223,7 +223,8 @@ export async function updateWidgetPosition(
                     .where(
                         and(
                             eq(widgets.userId, session.user.id),
-                            sql`${widgets.pos} >= ${newPosition}`
+                            sql`${widgets.pos} >= ${newPosition}`,
+                            sql`${widgets.pos} < ${widget.pos}`
                         )
                     )
             }
@@ -235,7 +236,8 @@ export async function updateWidgetPosition(
                     .where(
                         and(
                             eq(widgets.userId, session.user.id),
-                            sql`${widgets.pos} <= ${newPosition}`
+                            sql`${widgets.pos} <= ${newPosition}`,
+                            sql`${widgets.pos} > ${widget.pos}`
                         )
                     )
             }
@@ -245,7 +247,8 @@ export async function updateWidgetPosition(
                 .where(eq(widgets.id, widgetId))
         })
         revalidatePath('/profile/customize')
-    } catch {
+    } catch(e) {
+        console.log(e)
         return 'Error updating widget position'
     }
 }

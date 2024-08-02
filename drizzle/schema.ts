@@ -41,7 +41,7 @@ export const integrationTypeEnum = pgEnum('integrationType', [
     'instagramIntegration',
     'xIntegration',
     'youtubeIntegration',
-    'spotifyIntegration'
+    'spotifyIntegration',
 ])
 
 export const socialLinks = pgTable('socialLinks', {
@@ -55,25 +55,16 @@ export const socialLinks = pgTable('socialLinks', {
         .references(() => users.id, { onDelete: 'cascade' }),
 })
 
-export const widgets = pgTable(
-    'widgets',
-    {
-        id: text('id')
-            .default(sql`gen_random_uuid()`)
-            .primaryKey(),
-        userId: text('userId')
-            .notNull()
-            .references(() => users.id, { onDelete: 'cascade' }),
-        type: integrationTypeEnum('type'),
-        pos: serial('pos').notNull(),
-    },
-    (widget) => ({
-        uniqueWidgetPos: uniqueIndex('uniqueWidgetPos').on(
-            widget.userId,
-            widget.pos
-        ),
-    })
-)
+export const widgets = pgTable('widgets', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    userId: text('userId')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+    type: integrationTypeEnum('type'),
+    pos: serial('pos').notNull(),
+})
 
 export const integrationTokens = pgTable('integrationTokens', {
     id: text('id')
