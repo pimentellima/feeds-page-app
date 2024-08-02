@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import UserAvatar from '@/components/user-avatar'
-import { CameraIcon } from 'lucide-react'
+import { CameraIcon, LoaderCircle, LoaderCircleIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
@@ -120,7 +120,10 @@ function SubmitButton({ disabled }: { disabled?: boolean }) {
     const status = useFormStatus()
     return (
         <Button disabled={status.pending || disabled} type="submit">
-            Save
+            {status.pending && (
+                <LoaderCircleIcon className="animate-spin mr-1 h-5 w-5" />
+            )}
+            {status.pending ? 'Saving' : 'Save'}
         </Button>
     )
 }

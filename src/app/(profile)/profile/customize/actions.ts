@@ -7,18 +7,11 @@ import {
     widgets,
 } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
-import { utapi } from '@/server/uploadthing'
-import {
-    and,
-    eq,
-    InferInsertModel,
-    ne,
-    sql
-} from 'drizzle-orm'
+import { and, eq, InferInsertModel, ne, sql } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { UploadFileResult } from 'uploadthing/types'
 import { profileSchema, ProfileValues } from './edit-profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
+import { deleteFile, uploadFile } from '@/lib/gcs'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -85,23 +78,31 @@ export async function updateUserProfile(values: ProfileValues) {
 }
 
 export async function updateUserImage(formData: FormData) {
-    const file: File | null = formData.get('file') as unknown as File
-    if (!file) return 'No files selected'
+    const file = formData.get('file')
+    if (!(file instanceof File)) {
+        throw new Error('Uploaded file is not valid')
+    }
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
+        const newImageUrl = await uploadFile(file)
 
-        const response: UploadFileResult = await utapi.uploadFiles(file)
-        if (response.error) {
-            return 'An error occurred'
+        const oldImageUrl = (
+            await db.query.users.findFirst({
+                where: eq(users.id, session.user.id),
+                columns: { imageUrl: true },
+            })
+        )?.imageUrl
+        const oldFilename = oldImageUrl?.split('/').pop()
+        if (oldFilename) {
+            await deleteFile(oldFilename)
         }
-        if (response.data.url) {
-            await db
-                .update(users)
-                .set({ imageUrl: response.data.url })
-                .where(eq(users.id, session.user.id))
-            revalidatePath('/profile/customize')
-        }
+
+        await db
+            .update(users)
+            .set({ imageUrl: newImageUrl })
+            .where(eq(users.id, session.user.id))
+        revalidatePath('/profile/customize')
     } catch (e) {
         console.log(e)
         return 'An error occurred'
@@ -112,6 +113,17 @@ export async function removeUserImage() {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
+
+        const oldImageUrl = (
+            await db.query.users.findFirst({
+                where: eq(users.id, session.user.id),
+                columns: { imageUrl: true },
+            })
+        )?.imageUrl
+        const fileName = oldImageUrl?.split('/').pop()
+        if (fileName) {
+            await deleteFile(fileName)
+        }
 
         await db
             .update(users)
