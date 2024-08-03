@@ -45,7 +45,7 @@ export default async function Page({
 
                     <CardFooter className="flex justify-end">
                         <Button variant={'link'} asChild>
-                            <Link href={'/'}>Go back</Link>
+                            <Link href={'/profile/customize'}>Go back</Link>
                         </Button>
                     </CardFooter>
                 </Card>
@@ -82,7 +82,7 @@ export default async function Page({
                 <CardContent className="text-sm">
                     Refresh the page to see the purchase details
                 </CardContent>
-                <CardFooter className='flex justify-end'>
+                <CardFooter className="flex justify-end">
                     <RefreshButton />
                 </CardFooter>
             </Card>
