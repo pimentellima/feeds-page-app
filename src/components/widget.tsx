@@ -99,7 +99,11 @@ export function WidgetContent({ children }: { children: ReactNode }) {
     )
 }
 
-export function InstagramTitle({ profile }: { profile?: InstagramProfile }) {
+export function InstagramTitle({
+    profile,
+}: {
+    profile?: { username?: string }
+}) {
     return profile ? (
         <Link
             className="flex"
@@ -168,14 +172,17 @@ export function SpotifyTitle({
 export function PinterestTitle({
     profile,
 }: {
-    profile?: PinterestProfile | null
+    profile?: { username?: string } | null
 }) {
     return profile?.username ? (
         <Link
             className="flex"
             href={'https://pinterest.com/' + profile.username}
         >
-            <SocialLinkIcon className="sm:h-5 sm:w-5 mr-1" linkType="pinterest" />
+            <SocialLinkIcon
+                className="sm:h-5 sm:w-5 mr-1"
+                linkType="pinterest"
+            />
             <p>{profile.username}</p>
         </Link>
     ) : (

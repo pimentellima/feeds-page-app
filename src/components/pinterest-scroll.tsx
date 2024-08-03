@@ -20,9 +20,7 @@ export default function PinterestScroll({ media }: { media: PinterestPin[] }) {
                             mediaUrl={pin.media.images['600x'].url}
                         />
                         <ScrollItemFooter>
-                            <ScrollItemCaption>
-                                {pin.title}
-                            </ScrollItemCaption>
+                            <ScrollItemCaption>{pin.title}</ScrollItemCaption>
                             <ScrollItemTimestamp>
                                 {!!pin.created_at &&
                                     formatDistanceToNow(

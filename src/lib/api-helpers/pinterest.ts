@@ -19,15 +19,6 @@ export interface PinterestPin {
     link: string
     title: string
     description: string
-    dominant_color: string
-    alt_text: string
-    creative_type: string
-    board_id: string
-    board_section_id: string
-    board_owner: {
-        username: string
-    }
-    is_owner: boolean
     media: {
         media_type: string
         images: {
@@ -51,24 +42,6 @@ export interface PinterestPin {
                 height: number
                 url: string
             }
-        }
-    }
-    parent_pin_id: string
-    is_standard: boolean
-    has_been_promoted: boolean
-    note: string
-    pin_metrics: {
-        '90d': {
-            pin_click: number
-            impression: number
-            clickthrough: number
-        }
-        lifetime_metrics: {
-            pin_click: number
-            impression: number
-            clickthrough: number
-            reaction: number
-            comment: number
         }
     }
 }

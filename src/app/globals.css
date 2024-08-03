@@ -4,41 +4,36 @@
 
 @layer base {
     :root {
-        /* Name: custom color palette
-       Author: Ilias Ism
-       URL: https://gradient.page */
+        --gradient: linear-gradient(to top left, #215f00, #e4e4d9);
+        --background: 105 100% 98.38%;
+        --foreground: 105 10% 0.76%;
 
-        /* CSS: .bg-gradient { background: var(--gradient) } */
-        --gradient: linear-gradient(to top left, #f7f8f8, #acbb78);
+        --muted: 105 10% 91.9%;
+        --muted-foreground: 105 5% 41.9%;
 
-        --background: 191 4.550000000000001% 7.76%;
-        --foreground: 191 0.7000000000000001% 99.85%;
+        --popover: 105 10% 91.9%;
+        --popover-foreground: 105 10% 0.95%;
 
-        --muted: 191 3.5000000000000004% 29.099999999999998%;
-        --muted-foreground: 191 0.7000000000000001% 59.7%;
+        --card: 105 10% 91.9%;
+        --card-foreground: 105 10% 0.95%;
 
-        --popover: 191 63.6% 12.61%;
-        --popover-foreground: 191 0.7000000000000001% 99.85%;
+        --border: 105 15% 89.76%;
+        --input: 105 15% 89.76%;
 
-        --card: 191 63.6% 12.61%;
-        --card-foreground: 191 0.7000000000000001% 99.85%;
+        --primary: 105 100% 19%;
+        --primary-foreground: 105 2% 91.9%;
 
-        --border: 191 3.5000000000000004% 29.099999999999998%;
-        --input: 191 3.5000000000000004% 29.099999999999998%;
+        --secondary: 105 5% 95.95%;
+        --secondary-foreground: 105 7% 11.9%;
 
-        --primary: 191 7% 97%;
-        --primary-foreground: 191 0.7000000000000001% 9.7%;
+        --accent: 105 5% 95.95%;
+        --accent-foreground: 105 7% 11.9%;
 
-        --secondary: 191 3.5000000000000004% 29.099999999999998%;
-        --secondary-foreground: 191 0.7000000000000001% 99.85%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
 
-        --accent: 191 3.5000000000000004% 29.099999999999998%;
-        --accent-foreground: 191 0.7000000000000001% 99.85%;
+        --ring: 105 100% 19%;
 
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 191 0.7000000000000001% 99.85%;
-
-        --ring: 191 7% 97%;
         --radius: 0.5rem;
     }
 

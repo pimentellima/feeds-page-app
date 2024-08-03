@@ -17,6 +17,7 @@ const nextConfig = {
             { hostname: 'i.scdn.co' },
             { hostname: 'storage.googleapis.com' },
             { hostname: 'i.pinimg.com' },
+            { hostname: 'picsum.photos' },
         ],
     },
 }

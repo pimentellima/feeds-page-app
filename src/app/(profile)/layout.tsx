@@ -1,7 +1,8 @@
 import { auth } from '@/lib/auth'
-import NextThemesProvider from '../next-themes-provider'
 import { getUser } from '@/services/user'
 import { redirect } from 'next/navigation'
+import NextThemesProvider from '../next-themes-provider'
+import Providers from './providers'
 
 export default async function Layout({
     children,
@@ -12,11 +13,13 @@ export default async function Layout({
 
     if (!session?.user) redirect('/sign-in')
 
-    const defaultTheme = (await getUser(session.user.id))?.theme ?? undefined
+    const theme = (await getUser(session.user.id))?.theme ?? undefined
 
     return (
-        <NextThemesProvider attribute="class" forcedTheme={defaultTheme}>
-            {children}
-        </NextThemesProvider>
+        <Providers>
+            <NextThemesProvider forcedTheme={theme}>
+                {children}
+            </NextThemesProvider>
+        </Providers>
     )
 }
