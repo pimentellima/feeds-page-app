@@ -118,7 +118,11 @@ export function InstagramTitle({
     )
 }
 
-export function TiktokTitle({ user }: { user?: TiktokUser }) {
+export function TiktokTitle({
+    user,
+}: {
+    user?: { username: string; profile_deep_link: string }
+}) {
     return user ? (
         <Link className="flex" href={user.profile_deep_link}>
             <TiktokIcon className="mr-1 fill-foreground w-5 h-5" />

@@ -1,167 +1,65 @@
-export const pinterestMocks = [
+export const tiktokMocks = [
     {
         id: '1',
-        created_at: '2024-01-01T10:30:00Z',
-        link: '/',
-        title: '',
-        description: 'A serene lake surrounded by mountains at sunrise.',
-        media: {
-            media_type: 'image',
-            images: {
-                '150x150': {
-                    width: 150,
-                    height: 150,
-                    url: 'https://picsum.photos/seed/1234/150/150',
-                },
-                '400x300': {
-                    width: 400,
-                    height: 300,
-                    url: 'https://picsum.photos/seed/1234/400/300',
-                },
-                '600x': {
-                    width: 600,
-                    height: 400,
-                    url: 'https://picsum.photos/seed/1234/600/400',
-                },
-                '1200x': {
-                    width: 1200,
-                    height: 800,
-                    url: 'https://picsum.photos/seed/1234/1200/800',
-                },
-            },
-        },
+        title: 'Amazing Dance Moves',
+        video_description:
+            'Watch these incredible dance moves that will leave you mesmerized!',
+        duration: 60,
+        cover_image_url: 'https://picsum.photos/seed/012d/600/400',
+        embed_link: 'https://tiktok.com/embed/1',
+        create_time: 1622519100,
+        comment_count: 150,
+        share_count: 200,
+        view_count: 5000,
+        share_url: 'https://tiktok.com/share/1',
     },
     {
         id: '2',
-        created_at: '2024-02-15T14:45:00Z',
-        link: '/',
-        title: '',
-        description: 'A healthy and tasty avocado toast recipe.',
-        media: {
-            media_type: 'image',
-            images: {
-                '150x150': {
-                    width: 150,
-                    height: 150,
-                    url: 'https://picsum.photos/seed/5678/150/150',
-                },
-                '400x300': {
-                    width: 400,
-                    height: 300,
-                    url: 'https://picsum.photos/seed/5678/400/300',
-                },
-                '600x': {
-                    width: 600,
-                    height: 400,
-                    url: 'https://picsum.photos/seed/5678/600/400',
-                },
-                '1200x': {
-                    width: 1200,
-                    height: 800,
-                    url: 'https://picsum.photos/seed/5678/1200/800',
-                },
-            },
-        },
+        title: 'Funny Cat Compilation',
+        video_description:
+            'A compilation of the funniest cat moments that will make your day!',
+        duration: 45,
+        cover_image_url: 'https://picsum.photos/seed/012d/600/400',
+        embed_link: 'https://tiktok.com/embed/2',
+        create_time: 1622605500,
+        comment_count: 230,
+        share_count: 300,
+        view_count: 7500,
+        share_url: 'https://tiktok.com/share/2',
     },
     {
         id: '3',
-        created_at: '2024-03-10T08:30:00Z',
-        link: '/',
-        title: '',
-        description: 'A collection of classic cars from the 1950s.',
-        media: {
-            media_type: 'image',
-            images: {
-                '150x150': {
-                    width: 150,
-                    height: 150,
-                    url: 'https://picsum.photos/seed/8923/150/150',
-                },
-                '400x300': {
-                    width: 400,
-                    height: 300,
-                    url: 'https://picsum.photos/seed/8923/400/300',
-                },
-                '600x': {
-                    width: 600,
-                    height: 400,
-                    url: 'https://picsum.photos/seed/8923/600/400',
-                },
-                '1200x': {
-                    width: 1200,
-                    height: 800,
-                    url: 'https://picsum.photos/seed/8923/1200/800',
-                },
-            },
-        },
+        title: 'Quick Cooking Hacks',
+        video_description:
+            'Learn some quick and easy cooking hacks to make your meals delicious!',
+        duration: 90,
+        cover_image_url: 'https://picsum.photos/seed/012d/600/400',
+        embed_link: 'https://tiktok.com/embed/3',
+        create_time: 1622691900,
+        comment_count: 120,
+        share_count: 180,
+        view_count: 4000,
+        share_url: 'https://tiktok.com/share/3',
     },
     {
         id: '4',
-        created_at: '2024-04-05T11:20:00Z',
-        link: '/',
-        title: '',
-        description: 'A comfortable reading nook with a view of the garden.',
-        media: {
-            media_type: 'image',
-            images: {
-                '150x150': {
-                    width: 150,
-                    height: 150,
-                    url: 'https://picsum.photos/seed/7530/150/150',
-                },
-                '400x300': {
-                    width: 400,
-                    height: 300,
-                    url: 'https://picsum.photos/seed/7530/400/300',
-                },
-                '600x': {
-                    width: 600,
-                    height: 400,
-                    url: 'https://picsum.photos/seed/7530/600/400',
-                },
-                '1200x': {
-                    width: 1200,
-                    height: 800,
-                    url: 'https://picsum.photos/seed/7530/1200/800',
-                },
-            },
-        },
+        title: 'Incredible Nature Shots',
+        video_description:
+            'Experience the beauty of nature through these stunning shots.',
+        duration: 120,
+        cover_image_url: 'https://picsum.photos/seed/012d/600/400',
+        embed_link: 'https://tiktok.com/embed/4',
+        create_time: 1622778300,
+        comment_count: 310,
+        share_count: 450,
+        view_count: 12000,
+        share_url: 'https://tiktok.com/share/4',
     },
-    {
-        id: '5',
-        created_at: '2024-05-22T16:00:00Z',
-        link: '/',
-        title: '',
-        description: 'Creative and fun DIY craft projects for all ages.',
-        media: {
-            media_type: 'image',
-            images: {
-                '150x150': {
-                    width: 150,
-                    height: 150,
-                    url: 'https://picsum.photos/seed/9224/150/150',
-                },
-                '400x300': {
-                    width: 400,
-                    height: 300,
-                    url: 'https://picsum.photos/seed/9224/400/300',
-                },
-                '600x': {
-                    width: 600,
-                    height: 400,
-                    url: 'https://picsum.photos/seed/9224/600/400',
-                },
-                '1200x': {
-                    width: 1200,
-                    height: 800,
-                    url: 'https://picsum.photos/seed/9224/1200/800',
-                },
-            },
-        },
-    },
-].sort(
-    (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+   
+].sort((a, b) =>
+    a.create_time && b.create_time
+        ? new Date(b.create_time).getTime() - new Date(a.create_time).getTime()
+        : 1
 )
 
 export const instagramMocks = [
@@ -185,7 +83,7 @@ export const instagramMocks = [
         id: '3',
         media_url: 'https://picsum.photos/seed/ffff/600/400',
         media_type: 'VIDEO',
-        thumbnail_url: 'https://www.example.com/image/vacation-thumbnail.jpg',
+        thumbnail_url: 'https://picsum.photos/seed/dddd/600/400',
         timestamp: '2024-03-05T09:45:00Z',
         permalink: '/',
     },

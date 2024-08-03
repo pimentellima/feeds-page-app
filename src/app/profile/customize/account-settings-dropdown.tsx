@@ -20,6 +20,7 @@ import { DialogDescription } from '@radix-ui/react-dialog'
 import { InferSelectModel } from 'drizzle-orm'
 import {
     CircleUserIcon,
+    CrownIcon,
     LineChartIcon,
     LinkIcon,
     LogOut,
@@ -49,12 +50,8 @@ export function AccountSettingsDropdown({
                 <DropdownMenuContent className="w-48">
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
-                            <LineChartIcon className="mr-2 h-4 w-4" />
-                            <span>Check metrics</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <SparklesIcon className="mr-2 h-4 w-4" />
-                            <span>Upgrade plan</span>
+                            <CrownIcon className="text-yellow-600 mr-2 h-4 w-4" />
+                            <span>Get lifetime access</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => setIntegrationDialogOpen(true)}

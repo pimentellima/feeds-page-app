@@ -315,12 +315,6 @@ function WidgetTypeSelect({
                             Tiktok videos
                         </div>
                     </SelectItem>
-                    <SelectItem value="instagramIntegration">
-                        <div className="flex items-center">
-                            <InstagramIcon className="mr-1 text-pink-400 w-4 h-4" />
-                            Instagram media
-                        </div>
-                    </SelectItem>
                     <SelectItem value="pinterestIntegration">
                         <div className="flex items-center">
                             <SocialLinkIcon
@@ -336,7 +330,13 @@ function WidgetTypeSelect({
                             Youtube videos
                         </div>
                     </SelectItem>
-                    <SelectItem value="spotifyIntegration">
+                    <SelectItem disabled value="instagramIntegration">
+                        <div className="flex items-center">
+                            <InstagramIcon className="mr-1 text-pink-400 w-4 h-4" />
+                            Instagram media
+                        </div>
+                    </SelectItem>
+                    <SelectItem disabled value="spotifyIntegration">
                         <div className="flex items-center">
                             <SpotifyIcon className="mr-1 text-white fill-green-800 w-4 h-4" />
                             Spotify tracks
