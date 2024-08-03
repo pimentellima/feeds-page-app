@@ -1,6 +1,5 @@
 import { db } from '@/drizzle/index'
 import { subscriptions, users } from '@/drizzle/schema'
-import { eq } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'

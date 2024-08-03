@@ -16,6 +16,7 @@ import { profileSchema, ProfileValues } from './edit-profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
 import { deleteFile, uploadFile } from '@/lib/gcs'
 import { planPrice } from '@/constants'
+import { getSubscriptionByUserId } from '@/services/subscriptions'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -347,9 +348,9 @@ export async function createCheckoutSession() {
         const session = await auth()
         if (!session) return 'Unauthenticated'
 
-        const hasSubscription = !!(await db.query.subscriptions.findFirst({
-            where: eq(subscriptions.userId, session.user.id),
-        }))
+        const hasSubscription = !!(await getSubscriptionByUserId(
+            session.user.id
+        ))
 
         if (!!hasSubscription) return 'You already have a subscription'
 
@@ -378,6 +379,7 @@ export async function createCheckoutSession() {
         if (!checkoutSession.url) return 'Error getting session url'
         url = checkoutSession.url
     } catch (e) {
+        console.log(e)
         return 'Internal error'
     }
     redirect(url)
