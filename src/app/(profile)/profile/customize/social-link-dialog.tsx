@@ -47,6 +47,7 @@ export function SocialLinkDialog({
         formState: { isValid, isSubmitting, errors },
     } = useForm<SocialLinkValues>({
         defaultValues: {
+            id: socialLink?.id,
             type: socialLink?.type,
             url: socialLink?.url,
         },
@@ -60,6 +61,7 @@ export function SocialLinkDialog({
             setError('root', { message: error })
             return
         }
+        reset(data)
         setOpen(false)
     }
 
@@ -137,7 +139,11 @@ export function SocialLinkDialog({
                         </p>
                     )}
                     <DialogFooter className="flex justify-end gap-1">
-                        <Button onClick={() => setOpen(false)} type="button">
+                        <Button
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                            type="button"
+                        >
                             Cancel
                         </Button>
                         {socialLink && (
@@ -161,11 +167,7 @@ export function SocialLinkDialog({
                                 Delete
                             </Button>
                         )}
-                        <Button
-                            variant={'secondary'}
-                            disabled={isSubmitting}
-                            type="submit"
-                        >
+                        <Button disabled={isSubmitting} type="submit">
                             Save
                         </Button>
                     </DialogFooter>

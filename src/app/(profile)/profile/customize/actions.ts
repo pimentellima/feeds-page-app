@@ -17,13 +17,21 @@ export async function createSocialLink(values: SocialLinkValues) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
-        const { type, url } = schema.parse(values)
+        const { type, url, id } = schema.parse(values)
 
-        await db.insert(socialLinks).values({
-            userId: session.user.id,
-            type,
-            url,
-        })
+        id
+            ? await db
+                  .update(socialLinks)
+                  .set({
+                      type,
+                      url,
+                  })
+                  .where(eq(socialLinks.id, id))
+            : await db.insert(socialLinks).values({
+                  userId: session.user.id,
+                  type,
+                  url,
+              })
         revalidatePath('/profile/customize')
     } catch {
         return 'Error adding link'
@@ -247,7 +255,7 @@ export async function updateWidgetPosition(
                 .where(eq(widgets.id, widgetId))
         })
         revalidatePath('/profile/customize')
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         return 'Error updating widget position'
     }

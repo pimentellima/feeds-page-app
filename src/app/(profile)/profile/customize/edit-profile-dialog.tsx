@@ -75,6 +75,7 @@ export default function EditProfileDialog({
             setError('root', { message: error })
             return
         }
+        reset(data)
         setOpen(false)
     }
 
