@@ -9,8 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     typescript: true,
 })
 
-// const secret = process.env.STRIPE_WEBHOOK_SECRET || ''
-const secret = 'whsec_f39219190a7a304c24e2eb8b5fb42692825795bde528d4871fda7ce65d0b20b1'
+const secret = process.env.STRIPE_WEBHOOK_SECRET || ''
 
 export async function POST(req: Request) {
     try {
