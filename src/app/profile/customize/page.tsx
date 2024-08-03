@@ -1,17 +1,3 @@
-import { Button } from '@/components/ui/button'
-import { socialLinks, users } from '@/drizzle/schema'
-import { auth } from '@/lib/auth'
-import { getUser } from '@/services/user'
-import { InferSelectModel } from 'drizzle-orm'
-import { CircleCheckIcon, MapPinIcon, SquareArrowRightIcon } from 'lucide-react'
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { AccountSettingsDropdown } from './account-settings-dropdown'
-import ChangeImageDialog from './change-image-dialog'
-import ChangeThemeDropdown from './change-theme-dropdown'
-import { CustomizeWidgetsPanel } from './customize-widgets-panel'
-import EditProfileDialog from './edit-profile-dialog'
-import { SocialLinkDialog } from './social-link-dialog'
 import {
     ProfileSection,
     ProfileSectionContent,
@@ -21,9 +7,21 @@ import {
     ProfileSectionInfoContainer,
     ProfileSectionLinks,
 } from '@/components/profile-section'
-import { Separator } from '@radix-ui/react-separator'
-import { ChangeGridDropdown } from './change-grid-dropdown'
+import { Button } from '@/components/ui/button'
 import { WidgetGrid } from '@/components/widget'
+import { auth } from '@/lib/auth'
+import { getUser } from '@/services/user'
+import { Separator } from '@radix-ui/react-separator'
+import { CircleCheckIcon, SquareArrowRightIcon } from 'lucide-react'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { AccountSettingsDropdown } from './account-settings-dropdown'
+import { ChangeGridDropdown } from './change-grid-dropdown'
+import ChangeImageDialog from './change-image-dialog'
+import ChangeThemeDropdown from './change-theme-dropdown'
+import { CustomizeWidgetsPanel } from './customize-widgets-panel'
+import EditProfileDialog from './edit-profile-dialog'
+import { SocialLinkDialog } from './social-link-dialog'
 
 export default async function CustomizePage() {
     const session = await auth()

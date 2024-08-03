@@ -25,7 +25,7 @@ import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createSocialLink, deleteSocialLink } from './actions'
-import { SocialLinkIcon } from './social-icons'
+import { SocialLinkIcon } from '../../../components/social-icons'
 import { schema, SocialLinkValues } from './social-link-schema'
 
 export function SocialLinkDialog({
@@ -37,6 +37,12 @@ export function SocialLinkDialog({
 }) {
     const { toast } = useToast()
     const [open, setOpen] = useState<boolean>(false)
+
+    const defaultValues = {
+        id: socialLink?.id || undefined,
+        type: socialLink?.type || undefined,
+        url: socialLink?.url || '',
+    }
     const {
         register,
         handleSubmit,
@@ -46,11 +52,7 @@ export function SocialLinkDialog({
         reset,
         formState: { isValid, isSubmitting, errors },
     } = useForm<SocialLinkValues>({
-        defaultValues: {
-            id: socialLink?.id,
-            type: socialLink?.type,
-            url: socialLink?.url,
-        },
+        defaultValues,
         resolver: zodResolver(schema),
         mode: 'onSubmit',
     })
@@ -61,7 +63,7 @@ export function SocialLinkDialog({
             setError('root', { message: error })
             return
         }
-        reset(data)
+        data.id ? reset(data) : reset(defaultValues)
         setOpen(false)
     }
 
@@ -69,9 +71,6 @@ export function SocialLinkDialog({
         <Dialog
             open={open}
             onOpenChange={(open) => {
-                if (open) {
-                    reset()
-                }
                 setOpen(open)
             }}
         >
@@ -141,7 +140,10 @@ export function SocialLinkDialog({
                     <DialogFooter className="flex justify-end gap-1">
                         <Button
                             variant="outline"
-                            onClick={() => setOpen(false)}
+                            onClick={() => {
+                                reset(defaultValues)
+                                setOpen(false)
+                            }}
                             type="button"
                         >
                             Cancel
@@ -160,6 +162,7 @@ export function SocialLinkDialog({
                                         })
                                         return
                                     }
+                                    reset(defaultValues)
                                     setOpen(false)
                                 }}
                                 type="button"

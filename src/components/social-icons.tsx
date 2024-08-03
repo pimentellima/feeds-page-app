@@ -6,9 +6,7 @@ import SpotifyIcon from '@/components/spotify-icon'
 import TiktokIcon from '@/components/tiktok-icon'
 import XTwitterIcon from '@/components/xtwitter-icon'
 import YoutubeIcon from '@/components/youtube-icon'
-import { socialLinks } from '@/drizzle/schema'
 import { cn } from '@/lib/utils'
-import { InferSelectModel } from 'drizzle-orm'
 
 import { SVGProps } from 'react'
 

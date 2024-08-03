@@ -1,5 +1,5 @@
 import { getUserByUsername } from '@/services/user'
-import NextThemesProvider from '../../next-themes-provider'
+import NextThemesProvider from '../next-themes-provider'
 
 export default async function Layout({
     children,
@@ -13,7 +13,7 @@ export default async function Layout({
     return (
         <NextThemesProvider
             attribute="class"
-            forcedTheme={userTheme || undefined}
+            forcedTheme={userTheme || 'aspargus-green'}
         >
             {children}
         </NextThemesProvider>

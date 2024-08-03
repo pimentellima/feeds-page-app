@@ -1,4 +1,3 @@
-import { SocialLinkIcon } from '@/app/(profile)/profile/customize/social-icons'
 import {
     ProfileSection,
     ProfileSectionContent,
@@ -20,6 +19,7 @@ import { TiktokWidget } from './tiktok-widget'
 import { YoutubeWidget } from './youtube-widget'
 import { SpotifyWidget } from './spotify-widget'
 import { PinterestWidget } from './pinterest-widget'
+import { SocialLinkIcon } from '@/components/social-icons'
 
 export const revalidate = 1200
 

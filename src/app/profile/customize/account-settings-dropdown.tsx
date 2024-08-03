@@ -5,16 +5,8 @@ import {
     DialogContent,
     DialogFooter,
     DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+    DialogTitle
 } from '@/components/ui/dialog'
-import { useToast } from '@/components/ui/use-toast'
-import { integrationTokens } from '@/drizzle/schema'
-import { InferSelectModel } from 'drizzle-orm'
-import { useActionState, useState } from 'react'
-import { deleteIntegration } from './actions'
-import InstagramIcon from '@/components/instagram-icon'
-import TiktokIcon from '@/components/tiktok-icon'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -22,6 +14,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useToast } from '@/components/ui/use-toast'
+import { integrationTokens } from '@/drizzle/schema'
+import { DialogDescription } from '@radix-ui/react-dialog'
+import { InferSelectModel } from 'drizzle-orm'
 import {
     CircleUserIcon,
     LineChartIcon,
@@ -30,9 +26,9 @@ import {
     SparklesIcon,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
-import { DialogDescription } from '@radix-ui/react-dialog'
-import { useFormStatus } from 'react-dom'
-import { SocialLinkIcon } from './social-icons'
+import { useState } from 'react'
+import { SocialLinkIcon } from '../../../components/social-icons'
+import { deleteIntegration } from './actions'
 
 export function AccountSettingsDropdown({
     integrations,

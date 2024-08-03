@@ -72,7 +72,7 @@ import {
     updateWidgetPosition,
 } from './actions'
 import PairAccountButton from './pair-account-button'
-import { SocialLinkIcon } from './social-icons'
+import { SocialLinkIcon } from '@/components/social-icons'
 
 type Widget = {
     id: string

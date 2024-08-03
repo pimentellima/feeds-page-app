@@ -1,5 +1,3 @@
-import { SocialLinkIcon } from '@/app/(profile)/profile/customize/social-icons'
-import { InstagramProfile } from '@/lib/api-helpers/instagram'
 import { SpotifyUserProfile } from '@/lib/api-helpers/spotify'
 import { TiktokUser } from '@/lib/api-helpers/tiktok'
 import { DraggableAttributes } from '@dnd-kit/core'
@@ -12,6 +10,7 @@ import InstagramIcon from './instagram-icon'
 import TiktokIcon from './tiktok-icon'
 import SpotifyIcon from './spotify-icon'
 import { PinterestProfile } from '@/lib/api-helpers/pinterest'
+import { SocialLinkIcon } from './social-icons'
 
 export function WidgetGrid({
     gridSize,
