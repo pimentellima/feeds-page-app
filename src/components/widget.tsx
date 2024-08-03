@@ -170,14 +170,17 @@ export function PinterestTitle({
 }: {
     profile?: PinterestProfile | null
 }) {
-    return profile?.url ? (
-        <Link className="flex" href={profile.url}>
-            <SocialLinkIcon className='sm:h-5 sm:w-5' linkType="pinterest" />
+    return profile?.username ? (
+        <Link
+            className="flex"
+            href={'https://pinterest.com/' + profile.username}
+        >
+            <SocialLinkIcon className="sm:h-5 sm:w-5 mr-1" linkType="pinterest" />
             <p>{profile.username}</p>
         </Link>
     ) : (
         <div className="flex">
-            <SocialLinkIcon className='sm:h-5 sm:w-5' linkType="pinterest" />
+            <SocialLinkIcon className="sm:h-5 sm:w-5" linkType="pinterest" />
         </div>
     )
 }

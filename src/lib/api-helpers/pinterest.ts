@@ -1,8 +1,16 @@
 export interface PinterestProfile {
+    board_count: number
+    following_count: number
+    pin_count: number
+    account_type: 'BUSINESS' | 'PERSONAL'
+    monthly_views: number
+    about: string
+    id: string
+    website_url: string
+    profile_image: string
+    business_name: string
     username: string
-    url: string
-    image_url: string
-    account_type: string
+    follower_count: number
 }
 
 export interface PinterestPin {
@@ -65,10 +73,6 @@ export interface PinterestPin {
     }
 }
 
-interface UserMediaResponse {
-    data: PinterestPin[]
-}
-
 export async function fetchPinterestUserMedia(
     accessToken: string
 ): Promise<PinterestPin[]> {
@@ -99,5 +103,6 @@ export async function fetchPinterestUserProfile(
     })
 
     const data: PinterestProfile = await response.json()
+    console.log(data)
     return data
 }

@@ -17,11 +17,11 @@ export default function PinterestScroll({ media }: { media: PinterestPin[] }) {
                 {media.map((pin) => (
                     <ScrollItem href={pin.link} key={pin.id}>
                         <ScrollItemImage
-                            mediaUrl={pin.media.images['400x300'].url}
+                            mediaUrl={pin.media.images['600x'].url}
                         />
                         <ScrollItemFooter>
                             <ScrollItemCaption>
-                                {pin.description}
+                                {pin.title}
                             </ScrollItemCaption>
                             <ScrollItemTimestamp>
                                 {!!pin.created_at &&
