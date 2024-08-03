@@ -1,8 +1,11 @@
 'use server'
+import { redirect } from 'next/navigation'
+import Stripe from 'stripe'
 import { db } from '@/drizzle/index'
 import {
     integrationTokens,
     socialLinks,
+    subscriptions,
     users,
     widgets,
 } from '@/drizzle/schema'
@@ -12,6 +15,7 @@ import { revalidatePath } from 'next/cache'
 import { profileSchema, ProfileValues } from './edit-profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
 import { deleteFile, uploadFile } from '@/lib/gcs'
+import { planPrice } from '@/constants'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -335,4 +339,46 @@ export async function deleteIntegration(integrationId: string) {
     } catch {
         return 'Error deleting integration'
     }
+}
+
+export async function createCheckoutSession() {
+    let url = ''
+    try {
+        const session = await auth()
+        if (!session) return 'Unauthenticated'
+
+        const hasSubscription = !!(await db.query.subscriptions.findFirst({
+            where: eq(subscriptions.userId, session.user.id),
+        }))
+
+        if (!!hasSubscription) return 'You already have a subscription'
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+            typescript: true,
+        })
+
+        const checkoutSession = await stripe.checkout.sessions.create({
+            payment_intent_data: {
+                metadata: {
+                    userId: session.user.id,
+                },
+            },
+            mode: 'payment',
+            line_items: [
+                {
+                    price: planPrice,
+                    quantity: 1,
+                },
+            ],
+            currency: 'usd',
+            success_url: `${process.env.NEXT_PUBLIC_URL}/upgrade-plan/?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.NEXT_PUBLIC_URL}/upgrade-plan/?canceled=true`,
+        })
+
+        if (!checkoutSession.url) return 'Error getting session url'
+        url = checkoutSession.url
+    } catch (e) {
+        return 'Internal error'
+    }
+    redirect(url)
 }

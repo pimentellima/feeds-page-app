@@ -5,7 +5,7 @@ import {
     DialogContent,
     DialogFooter,
     DialogHeader,
-    DialogTitle
+    DialogTitle,
 } from '@/components/ui/dialog'
 import {
     DropdownMenu,
@@ -15,30 +15,31 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
-import { integrationTokens } from '@/drizzle/schema'
+import { integrationTokens, subscriptions } from '@/drizzle/schema'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { InferSelectModel } from 'drizzle-orm'
 import {
+    CheckIcon,
     CircleUserIcon,
     CrownIcon,
-    LineChartIcon,
     LinkIcon,
     LogOut,
-    SparklesIcon,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { SocialLinkIcon } from '../../../components/social-icons'
-import { deleteIntegration } from './actions'
+import { createCheckoutSession, deleteIntegration } from './actions'
+import BuyPlanButton from './buy-plan-button'
 
 export function AccountSettingsDropdown({
     integrations,
+    hasLifetimePlan,
 }: {
     integrations: InferSelectModel<typeof integrationTokens>[]
+    hasLifetimePlan: boolean
 }) {
     const [integrationDialogOpen, setIntegrationDialogOpen] =
         useState<boolean>(false)
-
     return (
         <>
             <DropdownMenu>
@@ -49,9 +50,15 @@ export function AccountSettingsDropdown({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48">
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                            <CrownIcon className="text-yellow-600 mr-2 h-4 w-4" />
-                            <span>Get lifetime access</span>
+                        <DropdownMenuItem disabled={hasLifetimePlan}>
+                            {hasLifetimePlan ? (
+                                <>
+                                    <CheckIcon className="text-green-700 h-4 w-4 mr-1" />
+                                    Lifetime access
+                                </>
+                            ) : (
+                                <BuyPlanButton />
+                            )}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => setIntegrationDialogOpen(true)}

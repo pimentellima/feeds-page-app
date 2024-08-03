@@ -1,5 +1,9 @@
 export const REFRESH_TOKEN_TTL = 3 * 24 * 60 * 60 * 1000 // 3 dias
 export const ACCESS_TOKEN_TTL = 1000 * 60 * 10 // 10 minutos
+export const planPrice =
+    process.env.NODE_ENV === 'production'
+        ? 'price_1PjqDJEyugco4uX21basTws9'
+        : 'price_1PjqYkEyugco4uX2723GUXyS'
 
 export const themes = [
     { name: 'aspargus-green', label: 'Asparagus green', gradient: '#215f00' },

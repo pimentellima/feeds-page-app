@@ -42,7 +42,7 @@ export const integrationTypeEnum = pgEnum('integrationType', [
     'xIntegration',
     'youtubeIntegration',
     'spotifyIntegration',
-    'pinterestIntegration'
+    'pinterestIntegration',
 ])
 
 export const socialLinks = pgTable('socialLinks', {
@@ -96,6 +96,17 @@ export const refreshTokens = pgTable('refreshTokens', {
     expires: timestamp('expires', { mode: 'date' }).notNull(),
 })
 
+export const subscriptions = pgTable('subscriptions', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    userId: text('userId')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .unique()
+        .notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+})
+
 export const integrationTokenRelations = relations(
     integrationTokens,
     ({ one }) => ({
@@ -113,7 +124,7 @@ export const socialLinkRelations = relations(socialLinks, ({ one }) => ({
     }),
 }))
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
     widgets: many(widgets),
     integrationTokens: many(integrationTokens),
     socialLinks: many(socialLinks),

@@ -20,6 +20,8 @@ import { YoutubeWidget } from './youtube-widget'
 import { SpotifyWidget } from './spotify-widget'
 import { PinterestWidget } from './pinterest-widget'
 import { SocialLinkIcon } from '@/components/social-icons'
+import { getSubscriptionByUserId } from '@/services/subscriptions'
+import { redirect } from 'next/navigation'
 
 export const revalidate = 1200
 
@@ -29,6 +31,11 @@ export default async function UserPage({
     params: { username: string }
 }) {
     const user = await getUserByUsername(params.username)
+    const subscription = await getSubscriptionByUserId(user.id)
+    
+    if (!user || !subscription) {
+        return redirect('/404')
+    }
 
     return (
         <>

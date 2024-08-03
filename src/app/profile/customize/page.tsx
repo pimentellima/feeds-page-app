@@ -12,7 +12,7 @@ import { WidgetGrid } from '@/components/widget'
 import { auth } from '@/lib/auth'
 import { getUser } from '@/services/user'
 import { Separator } from '@radix-ui/react-separator'
-import { CircleCheckIcon, SquareArrowRightIcon } from 'lucide-react'
+import { CircleCheckIcon, CrownIcon, SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { AccountSettingsDropdown } from './account-settings-dropdown'
@@ -22,6 +22,8 @@ import ChangeThemeDropdown from './change-theme-dropdown'
 import { CustomizeWidgetsPanel } from './customize-widgets-panel'
 import EditProfileDialog from './edit-profile-dialog'
 import { SocialLinkDialog } from './social-link-dialog'
+import BuyPlanButton from './buy-plan-button'
+import { getSubscriptionByUserId } from '@/services/subscriptions'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -31,6 +33,8 @@ export default async function CustomizePage() {
     }
 
     const user = await getUser(session.user.id)
+    const subscription = await getSubscriptionByUserId(session.user.id)
+
     return (
         <>
             <div
@@ -43,6 +47,7 @@ export default async function CustomizePage() {
                     <ChangeGridDropdown selectedSize={user.gridSize ?? 2} />
                 </div>
                 <AccountSettingsDropdown
+                    hasLifetimePlan={!!subscription}
                     integrations={user.integrationTokens}
                 />
             </div>
@@ -95,7 +100,9 @@ export default async function CustomizePage() {
                             </>
                         </ProfileSectionLinks>
                         <ProfileSectionFooter>
-                            {user.username ? (
+                            {!subscription ? (
+                                <BuyPlanButton styled />
+                            ) : user.username ? (
                                 <Button variant={'outline'} asChild>
                                     <Link
                                         target="_blank"

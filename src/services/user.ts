@@ -30,7 +30,7 @@ export async function getUser(userId: string) {
         with: {
             widgets: true,
             socialLinks: true,
-            integrationTokens: true
+            integrationTokens: true,
         },
     })
     if (!user) throw new Error('')
