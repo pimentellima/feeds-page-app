@@ -103,6 +103,5 @@ export async function fetchPinterestUserProfile(
     })
 
     const data: PinterestProfile = await response.json()
-    console.log(data)
     return data
 }

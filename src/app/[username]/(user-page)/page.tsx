@@ -19,6 +19,7 @@ import { InstagramWidget } from './instagram-widget'
 import { TiktokWidget } from './tiktok-widget'
 import { YoutubeWidget } from './youtube-widget'
 import { SpotifyWidget } from './spotify-widget'
+import { PinterestWidget } from './pinterest-widget'
 
 export const revalidate = 1200
 
@@ -106,6 +107,13 @@ export default async function UserPage({
                         if (widget.type === 'spotifyIntegration')
                             return (
                                 <SpotifyWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'pinterestIntegration')
+                            return (
+                                <PinterestWidget
                                     key={widget.id}
                                     userId={user.id}
                                 />
