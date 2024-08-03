@@ -7,6 +7,7 @@ export const planPrice =
 
 export const themes = [
     { name: 'aspargus-green', label: 'Asparagus green', gradient: '#215f00' },
+    { name: 'pastel-green', label: 'Pastel green', gradient: '#c1dfc4' },
     { name: 'ultra-pink', label: 'Ultra pink', gradient: '#f857a6' },
     { name: 'lavender-mist', label: 'Lavender mist', gradient: '#ddd6f3' },
     { name: 'mango-tango', label: 'Mango tango', gradient: '#FD8112' },
@@ -15,5 +16,4 @@ export const themes = [
     { name: 'blush-pink', label: 'Blush Pink', gradient: '#fccfcf' },
     { name: 'charcoal-blue', label: 'Charcoal blue', gradient: '#314755' },
     { name: 'vivid-red', label: 'Vivid red', gradient: '#F00000' },
-    { name: 'pastel-green', label: 'Pastel green', gradient: '#c1dfc4' },
 ]

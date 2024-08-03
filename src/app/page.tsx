@@ -47,8 +47,8 @@ export default function Home() {
 function GetStartedSection() {
     return (
         <div className="w-full">
-            <section className="w-full py-12 md:py-24 lg:py-48 border-b">
-                <div className="container px-4 md:px-6">
+            <section className="w-full py-20 md:py-24 lg:py-48 border-b">
+                <div className="container px-2 md:px-6">
                     <div className="flex flex-col justify-center items-center space-y-2">
                         <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                             All-in-One Social Media Feed
@@ -86,7 +86,7 @@ function GetStartedSection() {
                                 <div className="bg-primary rounded-full p-4 text-primary-foreground">
                                     <UserIcon className="w-6 h-6" />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-2 text-center sm:text-left">
                                     <h3 className="text-xl font-bold">
                                         Sign Up
                                     </h3>
@@ -100,7 +100,7 @@ function GetStartedSection() {
                                 <div className="bg-accent rounded-full p-4 text-accent-foreground">
                                     <LinkIcon className="w-6 h-6" />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-2 text-center sm:text-left">
                                     <h3 className="text-xl font-bold">
                                         Connect Accounts
                                     </h3>
@@ -114,7 +114,7 @@ function GetStartedSection() {
                                 <div className="bg-secondary rounded-full p-4 text-secondary-foreground">
                                     <SlidersVerticalIcon className="w-6 h-6" />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-2 text-center sm:text-left">
                                     <h3 className="text-xl font-bold">
                                         Customize Page
                                     </h3>
@@ -143,7 +143,7 @@ function GetStartedSection() {
 function PricingSection() {
     return (
         <div className="border-t">
-            <section id="pricing" className="w-full py-12 md:py-24 lg:py-40">
+            <section id="pricing" className="w-full py-20 md:py-24 lg:py-40">
                 <div className="container px-4 md:px-6 text-center">
                     <div className="space-y-2">
                         <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
@@ -297,7 +297,7 @@ function Footer() {
             </div>
             <div className="flex flex-col gap-1 w-max">
                 <h3 className="font-semibold uppercase mb-2">
-                    Tos & Privacy policy
+                    Tos & Privacy
                 </h3>
                 <Link
                     className="hover:underline underline-offset-4"
