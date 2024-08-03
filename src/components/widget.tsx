@@ -11,6 +11,7 @@ import { forwardRef, ReactNode } from 'react'
 import InstagramIcon from './instagram-icon'
 import TiktokIcon from './tiktok-icon'
 import SpotifyIcon from './spotify-icon'
+import { PinterestProfile } from '@/lib/api-helpers/pinterest'
 
 export function WidgetGrid({
     gridSize,
@@ -160,6 +161,23 @@ export function SpotifyTitle({
     ) : (
         <div className="flex">
             <SpotifyIcon className="h-5 w-5 text-white fill-green-600 " />
+        </div>
+    )
+}
+
+export function PinterestTitle({
+    profile,
+}: {
+    profile?: PinterestProfile | null
+}) {
+    return profile?.url ? (
+        <Link className="flex" href={profile.url}>
+            <SocialLinkIcon className='sm:h-5 sm:w-5' linkType="pinterest" />
+            <p>{profile.username}</p>
+        </Link>
+    ) : (
+        <div className="flex">
+            <SocialLinkIcon className='sm:h-5 sm:w-5' linkType="pinterest" />
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import GithubIcon from '@/components/github-icon'
 import InstagramIcon from '@/components/instagram-icon'
 import LinkedinIcon from '@/components/linkedin-icon'
+import PinterestIcon from '@/components/pinterest-icon'
 import SpotifyIcon from '@/components/spotify-icon'
 import TiktokIcon from '@/components/tiktok-icon'
 import XTwitterIcon from '@/components/xtwitter-icon'
@@ -24,6 +25,7 @@ export function SocialLinkIcon({
         | 'linkedin'
         | 'github'
         | 'spotify'
+        | 'pinterest'
 }) {
     if (linkType === 'tiktok')
         return (
@@ -88,6 +90,14 @@ export function SocialLinkIcon({
                     'sm:h-5 sm:w-5 h-4 w-4 text-white fill-green-600',
                     className
                 )}
+                {...props}
+            />
+        )
+
+    if (linkType === 'pinterest')
+        return (
+            <PinterestIcon
+                className={cn('sm:h-4 sm:w-4 h-4 w-4 text-red-700', className)}
                 {...props}
             />
         )

@@ -166,6 +166,28 @@ function DeleteIntegrationDialog({
                                         </Button>
                                     </div>
                                 )
+                            if (integration.type === 'pinterestIntegration')
+                                return (
+                                    <div
+                                        className="flex justify-between"
+                                        key={integration.id}
+                                    >
+                                        <div className="flex items-center gap-1">
+                                            <SocialLinkIcon linkType="pinterest" />
+                                            Pinterest
+                                        </div>
+                                        <Button
+                                            onClick={() =>
+                                                onClickDeleteIntegration(
+                                                    integration.id
+                                                )
+                                            }
+                                            variant="ghost"
+                                        >
+                                            <span>Revoke access</span>
+                                        </Button>
+                                    </div>
+                                )
                             if (integration.type === 'spotifyIntegration')
                                 return (
                                     <div

@@ -202,3 +202,62 @@ export async function getSpotifyAccessToken(userId: string) {
         return null
     }
 }
+
+export async function getPinterestAccessToken(userId: string) {
+    try {
+        const token = await db.query.integrationTokens.findFirst({
+            where: and(
+                eq(integrationTokens.type, 'pinterestIntegration'),
+                eq(integrationTokens.userId, userId)
+            ),
+        })
+        if (!token) return null
+        if (token.expiresAt && token.expiresAt < new Date()) {
+            if (!token.refreshToken) throw new Error('No refresh token')
+
+            const body = new URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: token.refreshToken,
+            })
+
+            const tokenResponse = await fetch(
+                'https://api.pinterest.com/v5/oauth/token',
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization:
+                            'Basic ' +
+                            Buffer.from(
+                                `${process.env.PINTEREST_CLIENT_ID}:${process.env.PINTEREST_CLIENT_SECRET}`
+                            ).toString('base64'),
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body,
+                }
+            )
+            const tokenJson = (await tokenResponse.json()) as {
+                access_token: string
+                refresh_token: string
+                expires_in: 2592000
+                refresh_token_expires_in: 31536000
+            }
+            if (!tokenJson.access_token) throw new Error('No access token')
+
+            const [newToken] = await db
+                .update(integrationTokens)
+                .set({
+                    accessToken: tokenJson.access_token,
+                    expiresAt: new Date(
+                        Date.now() + tokenJson.expires_in * 1000
+                    ),
+                })
+                .where(eq(integrationTokens.id, token.id))
+                .returning()
+            return newToken.accessToken
+        }
+        return token.accessToken
+    } catch (e) {
+        console.log(e)
+        return null
+    }
+}

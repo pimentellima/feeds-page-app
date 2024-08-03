@@ -1,9 +1,12 @@
 'use client'
 import { getInstagramMedia } from '@/app/actions/get-instagram-media'
+import { getPinterestMedia } from '@/app/actions/get-pinterest-media'
 import { getSpotifyMedia } from '@/app/actions/get-spotify-media'
 import { getTiktokMedia } from '@/app/actions/get-tiktok-media'
 import { getYoutubeMedia } from '@/app/actions/get-youtube-media'
 import InstagramScroll from '@/components/instagram-scroll'
+import PinterestScroll from '@/components/pinterest-scroll'
+import SpotifyIcon from '@/components/spotify-icon'
 import SpotifyScroll from '@/components/spotify-scroll'
 import TiktokIcon from '@/components/tiktok-icon'
 import TiktokScroll from '@/components/tiktok-scroll'
@@ -19,6 +22,7 @@ import {
 import { useToast } from '@/components/ui/use-toast'
 import {
     InstagramTitle,
+    PinterestTitle,
     SpotifyTitle,
     TiktokTitle,
     Widget,
@@ -32,6 +36,7 @@ import XTwitterIcon from '@/components/xtwitter-icon'
 import YoutubeScroll from '@/components/youtube-scroll'
 import { widgets } from '@/drizzle/schema'
 import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
+import { PinterestPin, PinterestProfile } from '@/lib/api-helpers/pinterest'
 import { SpotifyMedia, SpotifyUserProfile } from '@/lib/api-helpers/spotify'
 import { TiktokMedia, TiktokUser } from '@/lib/api-helpers/tiktok'
 import {
@@ -67,7 +72,7 @@ import {
     updateWidgetPosition,
 } from './actions'
 import PairAccountButton from './pair-account-button'
-import SpotifyIcon from '@/components/spotify-icon'
+import { SocialLinkIcon } from './social-icons'
 
 type Widget = {
     id: string
@@ -242,6 +247,15 @@ export function CustomizeWidgetsPanel({
                                 widgetId={widget.id}
                             />
                         )
+                    if (widget.type === 'pinterestIntegration')
+                        return (
+                            <PinterestWidget
+                                key={widget.id}
+                                removeWidget={removeWidget}
+                                userId={userId}
+                                widgetId={widget.id}
+                            />
+                        )
                     if (!widget.type)
                         return (
                             <Widget key={widget.id}>
@@ -307,7 +321,15 @@ function WidgetTypeSelect({
                             Instagram media
                         </div>
                     </SelectItem>
-
+                    <SelectItem value="pinterestIntegration">
+                        <div className="flex items-center">
+                            <SocialLinkIcon
+                                linkType="pinterest"
+                                className="mr-1 w-4 h-4"
+                            />
+                            Pinterest posts
+                        </div>
+                    </SelectItem>
                     <SelectItem value="youtubeIntegration">
                         <div className="flex items-center">
                             <YoutubeIcon className="mr-1 text-red-500 w-4 h-4" />
@@ -574,6 +596,68 @@ function SpotifyWidget({
                     <PairAccountButton
                         label={'Click to connect your Spotify account'}
                         link={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
+                    />
+                )}
+            </WidgetContent>
+        </Widget>
+    )
+}
+
+function PinterestWidget({
+    userId,
+    widgetId,
+    removeWidget,
+}: {
+    userId: string
+    widgetId: string
+    removeWidget: (id: string) => void
+}) {
+    const { data, isLoading, isError } = useQuery<{
+        media: PinterestPin[] | null
+        user: PinterestProfile | null
+    } | null>({
+        queryFn: () => getPinterestMedia(userId),
+        queryKey: ['pinterestMedia', userId],
+        refetchOnWindowFocus: false,
+    })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: widgetId })
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
+
+    return (
+        <Widget ref={setNodeRef} style={style}>
+            <WidgetHeader>
+                <WidgetTitle>
+                    <PinterestTitle profile={data?.user} />
+                </WidgetTitle>
+                <WidgetOptions
+                    isDragging={isDragging}
+                    attributes={attributes}
+                    listeners={listeners}
+                    onClickDelete={() => removeWidget(widgetId)}
+                />
+            </WidgetHeader>
+            <WidgetContent>
+                {isError ? (
+                    <p>An error occured fetching data.</p>
+                ) : isLoading ? (
+                    <Loader className="h-4 w-4 animate-spin" />
+                ) : data?.media ? (
+                    <PinterestScroll media={data.media} />
+                ) : (
+                    <PairAccountButton
+                        label={'Click to connect your Pinterest account'}
+                        link={process.env.NEXT_PUBLIC_URL! + '/api/pinterest'}
                     />
                 )}
             </WidgetContent>
