@@ -13,7 +13,7 @@ export default async function Layout({
 
     if (!session?.user) redirect('/sign-in')
 
-    const theme = (await getUser(session.user.id))?.theme ?? 'aspargus-green'
+    const theme = (await getUser(session.user.id))?.theme ?? 'default'
 
     return (
         <NextThemesProvider attribute="class" forcedTheme={theme}>

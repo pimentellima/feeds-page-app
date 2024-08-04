@@ -6,6 +6,7 @@ export const planPrice =
         : 'price_1PjqYkEyugco4uX2723GUXyS'
 
 export const themes = [
+    { name: 'default', label: 'Default', gradient: '#1c1718' },
     { name: 'aspargus-green', label: 'Asparagus green', gradient: '#215f00' },
     { name: 'pastel-green', label: 'Pastel green', gradient: '#c1dfc4' },
     { name: 'ultra-pink', label: 'Ultra pink', gradient: '#f857a6' },

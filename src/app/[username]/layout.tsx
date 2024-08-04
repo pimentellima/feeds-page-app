@@ -13,7 +13,7 @@ export default async function Layout({
     return (
         <NextThemesProvider
             attribute="class"
-            forcedTheme={userTheme || 'aspargus-green'}
+            forcedTheme={userTheme || 'default'}
         >
             {children}
         </NextThemesProvider>
