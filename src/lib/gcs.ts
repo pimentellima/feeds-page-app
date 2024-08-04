@@ -1,14 +1,36 @@
 import {
-    Storage,
-    type DownloadResponse,
-    type File as StorageFile,
+    Storage
 } from '@google-cloud/storage'
+import { existsSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+
+const pathJson = join(process.cwd(), 'keys', 'gcs.json')
+
+const createJsonCredentials = () => {
+    const key = process.env.GOOGLE_SERVICE_KEY as string
+    const credentials = JSON.parse(Buffer.from(key, 'base64').toString())
+
+    writeFileSync(pathJson, JSON.stringify(credentials, null, 2))
+
+    return credentials
+}
+
+const makeCredentials = () => {
+    const existsPath = existsSync(pathJson)
+
+    if (!existsPath) return createJsonCredentials()
+
+    const credentials = require(pathJson)
+    return credentials
+}
+
+const credentials = makeCredentials()
 
 export const storage = new Storage({
-    projectId: process.env.GOOGLE_PROJECT_ID,
+    projectId: credentials.project_id,
     credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY!.split(String.raw`\n`).join('\n'),
+        client_email: credentials.client_email,
+        private_key: credentials.private_key ? credentials.private_key : '',
     },
 })
 
@@ -32,16 +54,9 @@ export async function uploadFile(file: File): Promise<string> {
         stream.on('finish', () => {
             resolve(`http://storage.googleapis.com/${bucket.name}/${fileName}`)
         })
-     
+
         stream.end(fileBuffer)
     })
-}
-
-export async function getFile(
-    fileName: string
-): Promise<[StorageFile, Promise<DownloadResponse>]> {
-    const bucketFile = bucket.file(fileName)
-    return [bucketFile, bucketFile.download()]
 }
 
 export async function deleteFile(fileName: string): Promise<any> {
