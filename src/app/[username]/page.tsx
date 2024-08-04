@@ -22,8 +22,21 @@ import { PinterestWidget } from './pinterest-widget'
 import { SocialLinkIcon } from '@/components/social-icons'
 import { getSubscriptionByUserId } from '@/services/subscriptions'
 import { redirect } from 'next/navigation'
+import { Metadata } from 'next'
 
 export const revalidate = 1200
+
+export async function generateMetadata({
+    params,
+}: {
+    params: { username: string }
+}) {
+    const user = await getUserByUsername(params.username)
+    const name = user.name || user.username
+    return {
+        title: `${name} - Feeds`,
+    }
+}
 
 export default async function UserPage({
     params,
@@ -32,7 +45,7 @@ export default async function UserPage({
 }) {
     const user = await getUserByUsername(params.username)
     const subscription = await getSubscriptionByUserId(user.id)
-    
+
     if (!user || !subscription) {
         return redirect('/404')
     }

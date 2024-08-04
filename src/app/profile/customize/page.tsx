@@ -114,7 +114,7 @@ export default async function CustomizePage() {
                                         target="_blank"
                                         href={'/' + user.username}
                                     >
-                                        <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
+                                        <SquareArrowRightIcon className="h-4 w-4 mr-1" />
                                         Visit your page
                                     </Link>
                                 </Button>
