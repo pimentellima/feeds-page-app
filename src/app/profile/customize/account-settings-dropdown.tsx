@@ -15,21 +15,18 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
-import { integrationTokens, subscriptions } from '@/drizzle/schema'
+import { integrationTokens } from '@/drizzle/schema'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { InferSelectModel } from 'drizzle-orm'
 import {
-    CheckIcon,
     CircleUserIcon,
-    CrownIcon,
     LinkIcon,
-    LogOut,
+    LogOut
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { SocialLinkIcon } from '../../../components/social-icons'
-import { createCheckoutSession, deleteIntegration } from './actions'
-import BuyPlanButton from './buy-plan-button'
+import { deleteIntegration } from './actions'
 
 export function AccountSettingsDropdown({
     integrations,
@@ -50,16 +47,6 @@ export function AccountSettingsDropdown({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48">
                     <DropdownMenuGroup>
-                        <DropdownMenuItem disabled={hasLifetimePlan}>
-                            {hasLifetimePlan ? (
-                                <>
-                                    <CheckIcon className="text-green-700 h-4 w-4 mr-1" />
-                                    Lifetime access
-                                </>
-                            ) : (
-                                <BuyPlanButton />
-                            )}
-                        </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => setIntegrationDialogOpen(true)}
                         >

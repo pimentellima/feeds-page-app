@@ -12,7 +12,12 @@ import { WidgetGrid } from '@/components/widget'
 import { auth } from '@/lib/auth'
 import { getUser } from '@/services/user'
 import { Separator } from '@radix-ui/react-separator'
-import { CircleCheckIcon, CrownIcon, SquareArrowRightIcon } from 'lucide-react'
+import {
+    CircleCheckIcon,
+    CrownIcon,
+    SquareArrowRightIcon,
+    StarsIcon,
+} from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { AccountSettingsDropdown } from './account-settings-dropdown'
@@ -24,6 +29,7 @@ import EditProfileDialog from './edit-profile-dialog'
 import { SocialLinkDialog } from './social-link-dialog'
 import BuyPlanButton from './buy-plan-button'
 import { getSubscriptionByUserId } from '@/services/subscriptions'
+import UpgradePlanDialog from './upgrade-plan-dialog'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -101,7 +107,7 @@ export default async function CustomizePage() {
                         </ProfileSectionLinks>
                         <ProfileSectionFooter>
                             {!subscription ? (
-                                <BuyPlanButton styled />
+                                <UpgradePlanDialog />
                             ) : user.username ? (
                                 <Button variant={'outline'} asChild>
                                     <Link
@@ -116,9 +122,9 @@ export default async function CustomizePage() {
                                 <EditProfileDialog
                                     user={user}
                                     trigger={
-                                        <Button variant={'default'}>
+                                        <Button variant={'outline'}>
                                             <CircleCheckIcon className="h-4 w-4 mr-1" />
-                                            Claim username
+                                            Claim username to deploy
                                         </Button>
                                     }
                                 />

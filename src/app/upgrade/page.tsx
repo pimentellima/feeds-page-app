@@ -22,7 +22,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     typescript: true,
 })
 
-export default async function Page({
+export default async function UpgradePage({
     searchParams,
 }: {
     searchParams: {

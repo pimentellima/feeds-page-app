@@ -372,8 +372,8 @@ export async function createCheckoutSession() {
                 },
             ],
             currency: 'usd',
-            success_url: `${process.env.NEXT_PUBLIC_URL}/upgrade-plan/?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_URL}/upgrade-plan/?canceled=true`,
+            success_url: `${process.env.NEXT_PUBLIC_URL}/upgrade/?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.NEXT_PUBLIC_URL}/upgrade/?canceled=true`,
         })
 
         if (!checkoutSession.url) return 'Error getting session url'
