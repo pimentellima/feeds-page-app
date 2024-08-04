@@ -36,14 +36,3 @@ export async function getUser(userId: string) {
     if (!user) throw new Error('')
     return user
 }
-
-export async function updateUserImage(userId: string, url: string) {
-    try {
-        await db
-            .update(users)
-            .set({ imageUrl: url })
-            .where(eq(users.id, userId))
-    } catch (e) {
-        return 'An error occured while updating user image'
-    }
-}
