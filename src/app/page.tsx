@@ -1,25 +1,6 @@
-import InstagramScroll from '@/components/instagram-scroll'
-import TiktokScroll from '@/components/tiktok-scroll'
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { Card, CardFooter, CardHeader } from '@/components/ui/card'
-import {
-    InstagramTitle,
-    TiktokTitle,
-    Widget,
-    WidgetContent,
-    WidgetGrid,
-    WidgetHeader,
-    WidgetTitle,
-} from '@/components/widget'
 import { LinkIcon, SlidersVerticalIcon, UserIcon } from 'lucide-react'
 import Link from 'next/link'
-import { instagramMocks, tiktokMocks } from './mocks'
 
 export default function Home() {
     return (
@@ -29,7 +10,10 @@ export default function Home() {
                     <Link href={'/sign-in'}>Sign in</Link>
                 </Button>
                 <Button asChild variant={'link'}>
-                    <Link href={'/sign-up'}>Create account</Link>
+                    <Link href={'#get-started'}>Get started</Link>
+                </Button>
+                <Button asChild variant={'link'}>
+                    <Link href={'#pricing'}>Pricing</Link>
                 </Button>
             </div>
             <HeroSection />
@@ -71,7 +55,7 @@ function GetStartedSection() {
     return (
         <section
             id="get-started"
-            className="w-full py-12 md:py-24 lg:py-32 bg-card text-accent-foreground"
+            className="w-full py-12 md:py-24 lg:py-32 bg-secondary text-secondary-foreground"
         >
             <div className="container px-4 md:px-6">
                 <div className="grid gap-12">
@@ -93,7 +77,7 @@ function GetStartedSection() {
                             </div>
                         </div>
                         <div className="flex flex-col items-center gap-4">
-                            <div className="bg-accent rounded-full p-4 text-accent-foreground">
+                            <div className="bg-primary rounded-full p-4 text-primary-foreground">
                                 <LinkIcon className="w-6 h-6" />
                             </div>
                             <div className="space-y-2 text-center sm:text-left">
@@ -107,7 +91,7 @@ function GetStartedSection() {
                             </div>
                         </div>
                         <div className="flex flex-col items-center gap-4">
-                            <div className="bg-accent rounded-full p-4 text-accent-foreground">
+                            <div className="bg-primary rounded-full p-4 text-primary-foreground">
                                 <SlidersVerticalIcon className="w-6 h-6" />
                             </div>
                             <div className="space-y-2 text-center sm:text-left">
@@ -137,7 +121,7 @@ function GetStartedSection() {
 function PricingSection() {
     return (
         <div className="border-t">
-            <section className="bg-background py-12 md:py-16 lg:py-20">
+            <section id='pricing' className="bg-background py-24 md:py-28 lg:py-32">
                 <div className="container grid items-center gap-8 px-4 md:px-6">
                     <div className="mx-auto max-w-md text-center">
                         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -170,7 +154,7 @@ function PricingSection() {
 
 function Footer() {
     return (
-        <footer className="border-t grid grid-cols-3 px-40 py-16 text-sm bg-card">
+        <footer className="border-t grid grid-cols-3 px-40 py-16 text-sm bg-secondary text-secondary-foreground">
             <div className="flex flex-col gap-1 w-max">
                 <h3 className="font-semibold uppercase mb-2">Links</h3>
                 <Link className="hover:underline underline-offset-4" href="/">
@@ -187,12 +171,6 @@ function Footer() {
                     href="#pricing"
                 >
                     Pricing
-                </Link>
-                <Link
-                    className="hover:underline underline-offset-4"
-                    href="#faq"
-                >
-                    Faq
                 </Link>
             </div>
             <div className="flex flex-col gap-1 w-max">
@@ -226,37 +204,5 @@ function Footer() {
                 </Link>
             </div>
         </footer>
-    )
-}
-
-function ShowcaseWidgets() {
-    return (
-        <WidgetGrid gridSize={2}>
-            <Widget>
-                <WidgetHeader>
-                    <WidgetTitle>
-                        <InstagramTitle profile={{ username: '_johndoe' }} />
-                    </WidgetTitle>
-                </WidgetHeader>
-                <WidgetContent>
-                    <InstagramScroll media={instagramMocks as any} />
-                </WidgetContent>
-            </Widget>
-            <Widget>
-                <WidgetHeader>
-                    <WidgetTitle>
-                        <TiktokTitle
-                            user={{
-                                username: 'johndoe123',
-                                profile_deep_link: '/',
-                            }}
-                        />
-                    </WidgetTitle>
-                </WidgetHeader>
-                <WidgetContent>
-                    <TiktokScroll media={tiktokMocks as any} />
-                </WidgetContent>
-            </Widget>
-        </WidgetGrid>
     )
 }
