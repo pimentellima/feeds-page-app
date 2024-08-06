@@ -10,7 +10,7 @@ export default async function SignInPage() {
     }
 
     return (
-        <div className="bg-background flex justify-center items-center h-screen">
+        <div className="bg-background flex justify-center items-center h-screen px-3 md:px-0">
             <SignInForm />
         </div>
     )

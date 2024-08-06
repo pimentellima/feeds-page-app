@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import RefreshButton from './refresh-button'
+import { auth } from '@/lib/auth'
 
 const paymentStatusMessage: Record<Stripe.Checkout.Session.Status, string> = {
     complete: 'Payment complete',
@@ -30,6 +31,15 @@ export default async function UpgradePage({
         canceled?: 'true' | 'false'
     }
 }) {
+    const session = await auth()
+    if (!session?.user) {
+        return redirect('/sign-in')
+    }
+
+    if (!searchParams.session_id && !searchParams.canceled) {
+        return redirect('/profile-customize')
+    }
+
     const checkoutSession = searchParams.session_id
         ? await stripe.checkout.sessions.retrieve(searchParams.session_id)
         : null
@@ -37,7 +47,7 @@ export default async function UpgradePage({
     if (searchParams.canceled === 'true')
         return (
             <div className="h-screen flex justify-center items-center bg-background">
-                <Card className="bg-primary-foreground w-[350px]">
+                <Card className=" w-[350px]">
                     <CardHeader>
                         <CardTitle>Purchase details</CardTitle>
                         <CardDescription>Payment canceled</CardDescription>
@@ -55,7 +65,7 @@ export default async function UpgradePage({
     if (checkoutSession?.status)
         return (
             <div className="h-screen flex justify-center items-center bg-background">
-                <Card className="bg-primary-foreground w-[350px]">
+                <Card className=" w-[350px]">
                     <CardHeader>
                         <CardTitle>Purchase details</CardTitle>
                         <CardDescription>
@@ -75,7 +85,7 @@ export default async function UpgradePage({
 
     return (
         <div className="h-screen flex justify-center items-center bg-background">
-            <Card className="bg-primary-foreground w-[350px]">
+            <Card className=" w-[350px]">
                 <CardHeader>
                     <CardTitle>Purchase details</CardTitle>
                 </CardHeader>
@@ -83,6 +93,11 @@ export default async function UpgradePage({
                     Refresh the page to see the purchase details
                 </CardContent>
                 <CardFooter className="flex justify-end">
+                    <Button asChild variant={'link'}>
+                        <Link href={'/profile/customize'}>
+                            Go back to profile page{' '}
+                        </Link>
+                    </Button>
                     <RefreshButton />
                 </CardFooter>
             </Card>

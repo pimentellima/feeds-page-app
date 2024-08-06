@@ -1,22 +1,13 @@
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { LinkIcon, SlidersVerticalIcon, UserIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
     return (
-        <div className="bg-background">
-            <div className="hidden absolute top-5 right-14 sm:grid grid-cols-3 items-center gap-1">
-                <Button asChild variant={'ghost'}>
-                    <Link href={'/sign-in'}>Sign in</Link>
-                </Button>
-                <Button asChild variant={'ghost'}>
-                    <Link href={'#get-started'}>Get started</Link>
-                </Button>
-                <Button asChild variant={'ghost'}>
-                    <Link href={'#pricing'}>Pricing</Link>
-                </Button>
-            </div>
+        <div>
             <HeroSection />
             <GetStartedSection />
             <PricingSection />
@@ -27,29 +18,51 @@ export default function Home() {
 
 function HeroSection() {
     return (
-        <section className="w-full py-20 md:py-24 lg:py-32 border-b">
-            <div className="container px-2 md:px-6 grid grid-cols-2">
-                <div className="flex flex-col justify-center space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                        All-in-One Social Media Feed
+        <section className="w-full py-10 md:py-24 lg:py-32 border-b">
+            <div className="px-3 md:px-28 md:grid grid-cols-2">
+                <div className="flex flex-col justify-center">
+                    <h1 className="text-3xl font-bold tracking-tighter md:text-6xl xl:text-7xl/none">
+                        All your social media updates
+                        <br /> in one place.
                     </h1>
-                    <p className="max-w-[700px] text-muted-foreground md:text-xl">
+                    <p className="max-w-[700px] text-muted-foreground md:text-xl mt-3">
                         Aggregate posts from all your social media platforms,
                         customize your page, and easily share your updates.
                     </p>
-                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                        <Link
-                            href="/sign-in"
-                            className="mt-6 inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-                            prefetch={false}
-                        >
-                            Get Started
-                        </Link>
-                    </div>
+                    <form
+                        action={async (formData) => {
+                            'use server'
+                            return redirect(
+                                '/sign-up?username=' +
+                                    formData.get('username') || ''
+                            )
+                        }}
+                        className="flex flex-wrap gap-2 h-min mt-10"
+                    >
+                        <div className="flex items-center rounded-md bg-secondary">
+                            <label
+                                htmlFor="username"
+                                className="bg-secondary font-medium px-3 py-2 rounded-l-md text-sm text-nowrap"
+                            >
+                                feeds-page-app.vercel.app/
+                            </label>
+                            <Input
+                                maxLength={20}
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="yourname"
+                                className="pl-1 rounded-l-none border-none bg-secondary"
+                            />
+                        </div>
+                        <Button type="submit" variant={'default'}>
+                            Claim your Feed Page
+                        </Button>
+                    </form>
                 </div>
-                <div className='flex justify-center'>
+                <div className="flex justify-center md:mt-0 mt-10">
                     <Image
-                        className="rounded-[2.5rem] ring-8 ring-secondary z-0 overflow-hidden"
+                        className="rounded-[2.5rem] ring-8 ring-secondary overflow-hidden"
                         height={550}
                         width={275}
                         quality={100}
@@ -66,7 +79,7 @@ function GetStartedSection() {
     return (
         <section
             id="get-started"
-            className="w-full py-12 md:py-24 lg:py-32 bg-secondary text-secondary-foreground"
+            className="w-full py-12 md:py-24 lg:py-32 bg-card text-card-foreground"
         >
             <div className="container px-4 md:px-6">
                 <div className="grid gap-12">
@@ -75,12 +88,12 @@ function GetStartedSection() {
                             Get Started in 3 Easy Steps
                         </h2>
                     </div>
-                    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                         <div className="flex flex-col items-center gap-4">
                             <div className="bg-primary rounded-full p-4 text-primary-foreground">
                                 <UserIcon className="w-6 h-6" />
                             </div>
-                            <div className="space-y-2 text-center sm:text-left">
+                            <div className="space-y-2 text-center md:text-left">
                                 <h3 className="text-xl font-bold">Sign Up</h3>
                                 <p className="text-muted-foreground">
                                     Create your account in just a few clicks.
@@ -91,7 +104,7 @@ function GetStartedSection() {
                             <div className="bg-primary rounded-full p-4 text-primary-foreground">
                                 <LinkIcon className="w-6 h-6" />
                             </div>
-                            <div className="space-y-2 text-center sm:text-left">
+                            <div className="space-y-2 text-center md:text-left">
                                 <h3 className="text-xl font-bold">
                                     Connect Accounts
                                 </h3>
@@ -105,7 +118,7 @@ function GetStartedSection() {
                             <div className="bg-primary rounded-full p-4 text-primary-foreground">
                                 <SlidersVerticalIcon className="w-6 h-6" />
                             </div>
-                            <div className="space-y-2 text-center sm:text-left">
+                            <div className="space-y-2 text-center md:text-left">
                                 <h3 className="text-xl font-bold">
                                     Customize Page
                                 </h3>
@@ -168,7 +181,7 @@ function PricingSection() {
 
 function Footer() {
     return (
-        <footer className="border-t grid grid-cols-3 px-12 sm:px-40 py-16 text-sm bg-secondary text-secondary-foreground">
+        <footer className="border-t grid grid-cols-3 px-12 md:px-40 py-16 text-sm bg-card text-card-foreground">
             <div className="flex flex-col gap-1 w-max">
                 <h3 className="font-semibold uppercase mb-2">Links</h3>
                 <Link className="hover:underline underline-offset-4" href="/">
@@ -212,7 +225,7 @@ function Footer() {
                 </Link>
                 <Link
                     className="hover:underline underline-offset-4"
-                    href="/pivacy-policy"
+                    href="/privacy-policy"
                 >
                     Privacy policy
                 </Link>

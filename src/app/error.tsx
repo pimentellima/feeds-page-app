@@ -3,13 +3,12 @@
 import { Button } from '@/components/ui/button'
 import {
     Card,
-    CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
-    CardTitle,
+    CardTitle
 } from '@/components/ui/card'
-import Link from 'next/link'
+import { signOut, useSession } from 'next-auth/react'
 
 export default function Error({
     error,
@@ -18,6 +17,8 @@ export default function Error({
     error: Error & { digest?: string }
     reset: () => void
 }) {
+    const session = useSession()
+
     return (
         <div className="h-screen bg-gradient flex justify-center items-center">
             <Card>
@@ -28,6 +29,11 @@ export default function Error({
                     </CardDescription>
                 </CardHeader>
                 <CardFooter className="flex justify-end">
+                    {session && (
+                        <Button onClick={() => signOut()} variant={'link'}>
+                            Sign out
+                        </Button>
+                    )}
                     <Button onClick={() => reset()} variant={'link'}>
                         Reload
                     </Button>

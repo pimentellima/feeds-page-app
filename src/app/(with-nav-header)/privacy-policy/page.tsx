@@ -11,15 +11,8 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
     return (
-        <main className="bg-background min-h-screen flex flex-col items-center p-10">
-            <div className="flex justify-start w-full">
-                <Button asChild variant="link">
-                    <Link href="/">
-                        <ArrowLeftIcon className="mr-1 h-4 w-4" /> Go back
-                    </Link>
-                </Button>
-            </div>
-            <div className="w-1/2 flex flex-col gap-8">
+        <main className="bg-background min-h-screen flex flex-col items-center py-20">
+            <div className="w-1/2 flex flex-col gap-8 p-14 border rounded-md bg-card text-card-foreground ">
                 <div>
                     <h2 className="text-center text-3xl font-semibold">
                         Privacy Policy
@@ -39,16 +32,16 @@ export default function PrivacyPolicyPage() {
                     </p>
                 </div>
 
-                <div>
+                <div >
                     <h3 className="text-xl font-medium">
                         1. Information We Collect
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'> 
                         We only collect the basic information necessary for you
                         to enjoy the features of our application. The
                         information collected includes:
                     </p>
-                    <ul>
+                    <ul className='text-muted-foreground'>
                         <li>
                             <strong>Username:</strong> For identification within
                             the platform.
@@ -68,8 +61,8 @@ export default function PrivacyPolicyPage() {
                     <h3 className="text-xl font-medium">
                         2. How We Use Your Information
                     </h3>
-                    <p>The information we collect is used to:</p>
-                    <ul>
+                    <p className='text-muted-foreground'>The information we collect is used to:</p>
+                    <ul className='text-muted-foreground'>
                         <li>
                             Create and maintain your personalized page with mini
                             feeds from your social media.
@@ -90,7 +83,7 @@ export default function PrivacyPolicyPage() {
                     <h3 className="text-xl font-medium">
                         3. Information Sharing
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         The information we collect is used only for the purposes
                         described in this Privacy Policy. We do not share your
                         personal information with third parties, except when
@@ -99,7 +92,7 @@ export default function PrivacyPolicyPage() {
                 </div>
                 <div>
                     <h3 className="text-xl font-medium">4. Data Storage</h3>
-                    <p>
+                    <p className='text-muted-foreground'> 
                         We store your information on secure servers and take
                         reasonable measures to protect your information from
                         unauthorized access, use, or disclosure. However, no
@@ -111,7 +104,7 @@ export default function PrivacyPolicyPage() {
 
                 <div>
                     <h3 className="text-xl font-medium">5. Your Rights</h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         You have the right to access, correct, or delete your
                         personal information at any time. To do so, please
                         contact us through our support.
@@ -122,7 +115,7 @@ export default function PrivacyPolicyPage() {
                     <h3 className="text-xl font-medium">
                         6. Changes to This Privacy Policy
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         We may update our Privacy Policy periodically. We will
                         notify you of any changes by posting the new Privacy
                         Policy on this page. We recommend reviewing this Privacy
@@ -132,7 +125,7 @@ export default function PrivacyPolicyPage() {
 
                 <div>
                     <h3 className="text-xl font-medium">7. Contact</h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         If you have any questions or concerns about this Privacy
                         Policy, please contact us at{' '}
                         <Link
@@ -145,7 +138,7 @@ export default function PrivacyPolicyPage() {
                     </p>
                 </div>
 
-                <p className="mt-3">
+                <p className="mt-3 ">
                     Thank you for choosing our application and for trusting us
                     with your personal information. We are committed to
                     protecting your privacy and providing a safe and enjoyable

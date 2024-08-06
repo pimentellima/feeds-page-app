@@ -11,15 +11,8 @@ export const metadata: Metadata = {
 
 export default function TosPage() {
     return (
-        <main className="bg-background min-h-screen flex flex-col items-center p-10">
-            <div className="flex justify-start w-full">
-                <Button asChild variant="link">
-                    <Link href="/">
-                        <ArrowLeftIcon className="mr-1 h-4 w-4" /> Go back
-                    </Link>
-                </Button>
-            </div>
-            <div className="w-1/2 flex flex-col gap-8">
+        <main className="bg-background min-h-screen flex flex-col items-center py-20">
+            <div className="w-1/2 flex flex-col gap-8 p-14 border rounded-md bg-card text-card-foreground ">
                 <div>
                     <h2 className="text-center text-3xl font-semibold">
                         Terms and Conditions
@@ -43,7 +36,7 @@ export default function TosPage() {
                     <h3 className="text-xl font-medium">
                         1. Acceptance of Terms
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         By using our application, you confirm that you are at
                         least 13 years old and have the legal capacity to enter
                         into these Terms and Conditions. If you are using the
@@ -55,7 +48,7 @@ export default function TosPage() {
 
                 <div>
                     <h3 className="text-xl font-medium">2. User Accounts</h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         To access certain features of our app, you may be
                         required to create an account. You agree to provide
                         accurate, current, and complete information during the
@@ -71,12 +64,12 @@ export default function TosPage() {
                     <h3 className="text-xl font-medium">
                         3. Use of the Application
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         You agree to use the application only for lawful
                         purposes and in accordance with these Terms and
                         Conditions. You must not use the app:
                     </p>
-                    <ul>
+                    <ul className='text-muted-foreground'>
                         <li>
                             In any way that violates any applicable federal,
                             state, local, or international law or regulation.
@@ -97,7 +90,7 @@ export default function TosPage() {
                     <h3 className="text-xl font-medium">
                         4. Intellectual Property Rights
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         All content, features, and functionality on the
                         application, including but not limited to text,
                         graphics, logos, and software, are the exclusive
@@ -111,7 +104,7 @@ export default function TosPage() {
                     <h3 className="text-xl font-medium">
                         5. Limitation of Liability
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         To the fullest extent permitted by law, in no event
                         shall we, our affiliates, or our licensors be liable for
                         any indirect, incidental, special, consequential, or
@@ -119,7 +112,7 @@ export default function TosPage() {
                         profits, data, use, goodwill, or other intangible
                         losses, resulting from:
                     </p>
-                    <ul>
+                    <ul className='text-muted-foreground'>
                         <li>
                             Your access to or use of, or inability to access or
                             use, the application.
@@ -136,7 +129,7 @@ export default function TosPage() {
                     <h3 className="text-xl font-medium">
                         6. Changes to These Terms
                     </h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         We may update our Terms and Conditions from time to
                         time. We will notify you of any changes by posting the
                         new Terms and Conditions on this page. You are advised
@@ -146,7 +139,7 @@ export default function TosPage() {
 
                 <div>
                     <h3 className="text-xl font-medium">7. Governing Law</h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         These Terms and Conditions shall be governed by and
                         construed in accordance with the laws of [Your
                         Country/State], without regard to its conflict of law
@@ -156,7 +149,7 @@ export default function TosPage() {
 
                 <div>
                     <h3 className="text-xl font-medium">8. Contact Us</h3>
-                    <p>
+                    <p className='text-muted-foreground'>
                         If you have any questions about these Terms and
                         Conditions, please contact us at{' '}
                         <Link

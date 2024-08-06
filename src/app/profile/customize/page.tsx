@@ -26,7 +26,6 @@ import ManageIntegrationsDialog from './manage-integrations-dialog'
 import { SocialLinkDialog } from './social-link-dialog'
 import TimelineScroll from './timeline-scroll'
 import UpgradePlanDialog from './upgrade-plan-dialog'
-import { integrationTokens } from '@/drizzle/schema'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -139,7 +138,8 @@ export default async function CustomizePage() {
                     >
                         {user.integrationTokens.length === 0 ? (
                             <span className="h-min rounded-md border p-4 text-center">
-                                No integrations. Click on Integrations to add a new
+                                No integrations. Click on Integrations to add a
+                                new
                             </span>
                         ) : (
                             <TimelineScroll userId={user.id} />
