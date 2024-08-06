@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 export default function TosPage() {
     return (
-        <main className="bg-background min-h-screen flex flex-col items-center py-20">
-            <div className="w-1/2 flex flex-col gap-8 p-14 border rounded-md bg-card text-card-foreground ">
+        <main className="bg-background min-h-screen flex flex-col items-center py-3 md:py-20">
+            <div className="mx-3 md:mx-0 md:w-1/2 flex flex-col gap-8 p-3 md:p-14 border rounded-md bg-card text-card-foreground ">
                 <div>
                     <h2 className="text-center text-3xl font-semibold">
                         Terms and Conditions
