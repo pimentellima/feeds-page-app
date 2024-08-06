@@ -5,14 +5,14 @@ import Link from 'next/link'
 export default function Home() {
     return (
         <div className="bg-background">
-            <div className="hidden absolute top-5 right-14 sm:flex items-center gap-1">
-                <Button asChild variant={'link'}>
+            <div className="hidden absolute top-5 right-14 sm:grid grid-cols-3 items-center gap-1">
+                <Button asChild variant={'ghost'}>
                     <Link href={'/sign-in'}>Sign in</Link>
                 </Button>
-                <Button asChild variant={'link'}>
+                <Button asChild variant={'ghost'}>
                     <Link href={'#get-started'}>Get started</Link>
                 </Button>
-                <Button asChild variant={'link'}>
+                <Button asChild variant={'ghost'}>
                     <Link href={'#pricing'}>Pricing</Link>
                 </Button>
             </div>
@@ -121,7 +121,10 @@ function GetStartedSection() {
 function PricingSection() {
     return (
         <div className="border-t">
-            <section id='pricing' className="bg-background py-24 md:py-28 lg:py-32">
+            <section
+                id="pricing"
+                className="bg-background py-32 md:py-36 lg:py-40"
+            >
                 <div className="container grid items-center gap-8 px-4 md:px-6">
                     <div className="mx-auto max-w-md text-center">
                         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -154,7 +157,7 @@ function PricingSection() {
 
 function Footer() {
     return (
-        <footer className="border-t grid grid-cols-3 px-40 py-16 text-sm bg-secondary text-secondary-foreground">
+        <footer className="border-t grid grid-cols-3 px-12 sm:px-40 py-16 text-sm bg-secondary text-secondary-foreground">
             <div className="flex flex-col gap-1 w-max">
                 <h3 className="font-semibold uppercase mb-2">Links</h3>
                 <Link className="hover:underline underline-offset-4" href="/">
