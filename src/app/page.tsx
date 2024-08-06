@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { LinkIcon, SlidersVerticalIcon, UserIcon } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export default function Home() {
@@ -26,13 +27,13 @@ export default function Home() {
 
 function HeroSection() {
     return (
-        <section className="w-full py-20 md:py-24 lg:py-48 border-b">
-            <div className="container px-2 md:px-6">
-                <div className="flex flex-col justify-center items-center space-y-2">
+        <section className="w-full py-20 md:py-24 lg:py-32 border-b">
+            <div className="container px-2 md:px-6 grid grid-cols-2">
+                <div className="flex flex-col justify-center space-y-2">
                     <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                         All-in-One Social Media Feed
                     </h1>
-                    <p className="max-w-[700px] text-center text-muted-foreground md:text-xl">
+                    <p className="max-w-[700px] text-muted-foreground md:text-xl">
                         Aggregate posts from all your social media platforms,
                         customize your page, and easily share your updates.
                     </p>
@@ -45,6 +46,16 @@ function HeroSection() {
                             Get Started
                         </Link>
                     </div>
+                </div>
+                <div className='flex justify-center'>
+                    <Image
+                        className="rounded-[2.5rem] ring-8 ring-secondary z-0 overflow-hidden"
+                        height={550}
+                        width={275}
+                        quality={100}
+                        alt="Cellphone mockup"
+                        src="/list-view-sem-moldura.png"
+                    />
                 </div>
             </div>
         </section>
