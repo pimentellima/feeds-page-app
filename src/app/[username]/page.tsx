@@ -51,113 +51,101 @@ export default async function UserPage({
     }
 
     return (
-        <>
-            <div className="hidden absolute top-5 right-14 lg:flex items-center gap-1">
-                <Button asChild variant={'link'}>
-                    <Link href={'/sign-in'}>Sign in</Link>
-                </Button>
-                <Button asChild variant={'link'}>
-                    <Link href={'/sign-up'}>Create account</Link>
-                </Button>
-            </div>
-            <div
-                className="lg:grid lg:grid-cols-[4fr,10fr] lg:gap-44 lg:min-h-screen bg-background
+        <div
+            className="lg:grid lg:grid-cols-[4fr,10fr] lg:gap-44 lg:min-h-screen bg-background
                     flex flex-col px-6 lg:px-0"
-            >
-                <div className="lg:fixed lg:top-0 mt-2 lg:mt-20 lg:h-[80vh]">
-                    <ProfileSection>
-                        <ProfileSectionContent>
-                            <ProfileSectionImage>
-                                <UserAvatar
-                                    imageUrl={user.imageUrl || undefined}
-                                />
-                            </ProfileSectionImage>
-                            <ProfileSectionInfoContainer>
-                                <ProfileSectionInfo user={user} />
-                            </ProfileSectionInfoContainer>
-                        </ProfileSectionContent>
-                        <ProfileSectionLinks>
-                            {user.socialLinks.map((link) => (
-                                <Button key={link.id} variant={'ghost'} asChild>
-                                    <Link href={link.url}>
-                                        <SocialLinkIcon
-                                            className="lg:h-6 lg:w-6 h-5 w-5"
-                                            linkType={link.type}
-                                        />
-                                    </Link>
-                                </Button>
-                            ))}
-                        </ProfileSectionLinks>
-                        <ProfileSectionFooter>
-                            <Button variant={'secondary'} asChild>
-                                <Link href={'/sign-in'}>
-                                    <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
-                                    Create your Feed Page
+        >
+            <div className="lg:fixed lg:top-0 mt-2 lg:mt-20 lg:h-[80vh]">
+                <ProfileSection>
+                    <ProfileSectionContent>
+                        <ProfileSectionImage>
+                            <UserAvatar imageUrl={user.imageUrl || undefined} />
+                        </ProfileSectionImage>
+                        <ProfileSectionInfoContainer>
+                            <ProfileSectionInfo user={user} />
+                        </ProfileSectionInfoContainer>
+                    </ProfileSectionContent>
+                    <ProfileSectionLinks>
+                        {user.socialLinks.map((link) => (
+                            <Button key={link.id} variant={'ghost'} asChild>
+                                <Link href={link.url}>
+                                    <SocialLinkIcon
+                                        className="lg:h-6 lg:w-6 h-5 w-5"
+                                        linkType={link.type}
+                                    />
                                 </Link>
                             </Button>
-                        </ProfileSectionFooter>
-                    </ProfileSection>
-                </div>
-                <div className="lg:hidden">
-                    <Separator className="my-2" />
-                </div>
-                {user.layout === 'list' ? (
-                    <div
-                        className="flex flex-col gap-4 col-start-2 lg:grid
-                lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
-                    >
-                        <TimelineScroll userId={user.id} />
-                    </div>
-                ) : (
-                    <WidgetGrid
-                        gridSize={
-                            user.layout === 'grid1x1'
-                                ? 1
-                                : user.layout === 'grid3x3'
-                                ? 3
-                                : 2
-                        }
-                    >
-                        {user.widgets.map((widget) => {
-                            if (widget.type === 'instagramIntegration')
-                                return (
-                                    <InstagramWidget
-                                        key={widget.id}
-                                        userId={user.id}
-                                    />
-                                )
-                            if (widget.type === 'tiktokIntegration')
-                                return (
-                                    <TiktokWidget
-                                        key={widget.id}
-                                        userId={user.id}
-                                    />
-                                )
-                            if (widget.type === 'youtubeIntegration')
-                                return (
-                                    <YoutubeWidget
-                                        key={widget.id}
-                                        userId={user.id}
-                                    />
-                                )
-                            if (widget.type === 'spotifyIntegration')
-                                return (
-                                    <SpotifyWidget
-                                        key={widget.id}
-                                        userId={user.id}
-                                    />
-                                )
-                            if (widget.type === 'pinterestIntegration')
-                                return (
-                                    <PinterestWidget
-                                        key={widget.id}
-                                        userId={user.id}
-                                    />
-                                )
-                        })}
-                    </WidgetGrid>
-                )}
+                        ))}
+                    </ProfileSectionLinks>
+                    <ProfileSectionFooter>
+                        <Button variant={'secondary'} asChild>
+                            <Link href={'/sign-in'}>
+                                <SquareArrowRightIcon className="h-4 w-4 mr-1" />{' '}
+                                Create your Feed Page
+                            </Link>
+                        </Button>
+                    </ProfileSectionFooter>
+                </ProfileSection>
             </div>
-        </>
+            <div className="lg:hidden">
+                <Separator className="my-2" />
+            </div>
+            {user.layout === 'list' ? (
+                <div
+                    className="flex flex-col gap-4 col-start-2 lg:grid
+                lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
+                >
+                    <TimelineScroll userId={user.id} />
+                </div>
+            ) : (
+                <WidgetGrid
+                    gridSize={
+                        user.layout === 'grid1x1'
+                            ? 1
+                            : user.layout === 'grid3x3'
+                            ? 3
+                            : 2
+                    }
+                >
+                    {user.widgets.map((widget) => {
+                        if (widget.type === 'instagramIntegration')
+                            return (
+                                <InstagramWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'tiktokIntegration')
+                            return (
+                                <TiktokWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'youtubeIntegration')
+                            return (
+                                <YoutubeWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'spotifyIntegration')
+                            return (
+                                <SpotifyWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                        if (widget.type === 'pinterestIntegration')
+                            return (
+                                <PinterestWidget
+                                    key={widget.id}
+                                    userId={user.id}
+                                />
+                            )
+                    })}
+                </WidgetGrid>
+            )}
+        </div>
     )
 }
