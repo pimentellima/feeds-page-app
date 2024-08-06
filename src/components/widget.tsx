@@ -138,7 +138,7 @@ export function TiktokTitle({
 export function YoutubeTitle({
     channel,
 }: {
-    channel?: youtube_v3.Schema$ChannelSnippet | null
+    channel?: { customUrl?: string | null; title?: string | null } | null
 }) {
     return channel?.customUrl ? (
         <Link

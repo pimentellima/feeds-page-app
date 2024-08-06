@@ -1,11 +1,32 @@
-import { getTimelineItems } from '@/app/actions/get-timeline-feed'
+import { TimelineItem } from '@/app/api/timeline/[userId]/route'
 import { SocialLinkIcon } from '@/components/social-icons'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
 
+async function getTimelineFeed(userId: string) {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_URL}/api/timeline/${userId}`,
+            {
+                method: 'GET',
+            }
+        )
+        return (await res.json()) as TimelineItem[]
+    } catch (e) {
+        console.log(e)
+        return null
+    }
+}
+
 export default async function TimelineScroll({ userId }: { userId: string }) {
-    const timelineItems = await getTimelineItems(userId)
+    const timelineItems = await getTimelineFeed(userId)
+    if (!timelineItems)
+        return (
+            <div className="h-min rounded-md border p-4">
+                Error fetching updates
+            </div>
+        )
 
     if (timelineItems.length === 0)
         return <div className="h-min rounded-md border p-4">No updates</div>

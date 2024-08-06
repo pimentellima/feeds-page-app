@@ -22,7 +22,6 @@ import { PinterestWidget } from './pinterest-widget'
 import { SocialLinkIcon } from '@/components/social-icons'
 import { getSubscriptionByUserId } from '@/services/subscriptions'
 import { redirect } from 'next/navigation'
-import { Metadata } from 'next'
 import TimelineScroll from '../profile/customize/timeline-scroll'
 
 export const revalidate = 1200

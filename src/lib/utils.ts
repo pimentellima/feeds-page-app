@@ -5,25 +5,37 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function getYoutubeThumbnailFromUrl(url: string) {
-    const isValidUrl =
-        /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/.test(url)
-    if (!isValidUrl) return ''
+export function moveItem(
+    item: {
+        id: string
+        pos: number
+    }[],
+    fromPos: number,
+    toPos: number
+) {
+    const updatedItems = [...item]
 
-    const videoId = url.split('v=')[1]
-    if(!videoId) return ''
-    const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-    return thumbnail
-}
+    const itemToMove = updatedItems.find((item) => item.pos === fromPos)
 
-export function getUrlType(url: string) {
-    const isYoutube = /^(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?/.test(url)
-    const isInstagram = /^(https?\:\/\/)?(www\.)?instagram\.com\/.+$/.test(url)
-    const isTwitter = /^(https?\:\/\/)?(www\.)?twitter\.com\/.+$/.test(url)
-    const isX = /^(https?\:\/\/)?(www\.)?x\.com\/.+$/.test(url)
-    if (isYoutube) return 'youtube'
-    if (isInstagram) return 'instagram'
-    if (isTwitter) return 'twitter'
-    if (isX) return 'x'
-    return 'other'
+    if (!itemToMove) {
+        return
+    }
+
+    const direction = toPos > fromPos ? 1 : -1
+
+    updatedItems.forEach((item) => {
+        if (direction === 1) {
+            if (item.pos > fromPos && item.pos <= toPos) {
+                item.pos -= 1
+            }
+        } else {
+            if (item.pos < fromPos && item.pos >= toPos) {
+                item.pos += 1
+            }
+        }
+    })
+
+    itemToMove.pos = toPos
+
+    return updatedItems
 }

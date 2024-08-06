@@ -19,13 +19,13 @@ import { redirect } from 'next/navigation'
 import { SignOutButton } from './sign-out-button'
 import ChangeImageDialog from './change-image-dialog'
 import ChangeThemeDropdown from './change-theme-dropdown'
-import { CustomizeWidgetsPanel } from './customize-widgets-panel'
 import { EditLayoutDropdown } from './edit-layout-dropdown'
 import EditProfileDialog from './edit-profile-dialog'
 import ManageIntegrationsDialog from './manage-integrations-dialog'
 import { SocialLinkDialog } from './social-link-dialog'
 import TimelineScroll from './timeline-scroll'
 import UpgradePlanDialog from './upgrade-plan-dialog'
+import { WidgetsEditPanel } from './widgets-edit-panel'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -134,7 +134,7 @@ export default async function CustomizePage() {
                 {user.layout === 'list' ? (
                     <div
                         className="flex flex-col gap-4 col-start-2 lg:grid
-                lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
+                            lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
                     >
                         {user.integrationTokens.length === 0 ? (
                             <span className="h-min rounded-md border p-4 text-center">
@@ -155,7 +155,7 @@ export default async function CustomizePage() {
                                 : 2
                         }
                     >
-                        <CustomizeWidgetsPanel
+                        <WidgetsEditPanel
                             userId={user.id}
                             userWidgets={user.widgets}
                         />

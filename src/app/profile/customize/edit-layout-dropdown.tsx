@@ -12,10 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import {
-    CircleUserIcon,
     Columns2Icon,
     Columns3Icon,
-    GridIcon,
     LayoutIcon,
     NewspaperIcon,
     SquareEqualIcon,
