@@ -52,7 +52,7 @@ export default async function UserPage({
 
     return (
         <>
-            <div className="hidden absolute top-5 right-14 sm:flex items-center gap-1">
+            <div className="hidden absolute top-5 right-14 lg:flex items-center gap-1">
                 <Button asChild variant={'link'}>
                     <Link href={'/sign-in'}>Sign in</Link>
                 </Button>
@@ -61,10 +61,10 @@ export default async function UserPage({
                 </Button>
             </div>
             <div
-                className="sm:grid sm:grid-cols-[4fr,10fr] sm:gap-44 sm:min-h-screen bg-background
-                    flex flex-col px-6 sm:px-0"
+                className="lg:grid lg:grid-cols-[4fr,10fr] lg:gap-44 lg:min-h-screen bg-background
+                    flex flex-col px-6 lg:px-0"
             >
-                <div className="sm:fixed sm:top-0 mt-2 sm:mt-20 sm:h-[80vh]">
+                <div className="lg:fixed lg:top-0 mt-2 lg:mt-20 lg:h-[80vh]">
                     <ProfileSection>
                         <ProfileSectionContent>
                             <ProfileSectionImage>
@@ -81,7 +81,7 @@ export default async function UserPage({
                                 <Button key={link.id} variant={'ghost'} asChild>
                                     <Link href={link.url}>
                                         <SocialLinkIcon
-                                            className="sm:h-6 sm:w-6 h-5 w-5"
+                                            className="lg:h-6 lg:w-6 h-5 w-5"
                                             linkType={link.type}
                                         />
                                     </Link>
@@ -98,10 +98,18 @@ export default async function UserPage({
                         </ProfileSectionFooter>
                     </ProfileSection>
                 </div>
-                <div className="sm:hidden">
+                <div className="lg:hidden">
                     <Separator className="my-2" />
                 </div>
-                <WidgetGrid gridSize={user.gridSize ?? 2}>
+                <WidgetGrid
+                    gridSize={
+                        user.layout === 'grid1x1'
+                            ? 1
+                            : user.layout === 'grid3x3'
+                            ? 3
+                            : 2
+                    }
+                >
                     {user.widgets.map((widget) => {
                         if (widget.type === 'instagramIntegration')
                             return (

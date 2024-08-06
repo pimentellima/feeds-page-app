@@ -10,7 +10,14 @@ import {
     widgets,
 } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
-import { and, eq, InferInsertModel, ne, sql } from 'drizzle-orm'
+import {
+    and,
+    eq,
+    InferInsertModel,
+    InferSelectModel,
+    ne,
+    sql,
+} from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { profileSchema, ProfileValues } from './edit-profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
@@ -312,15 +319,16 @@ export async function getCityByName(name: string) {
     return uniqueCities
 }
 
-export async function updateGridSize(gridSize: number) {
+export async function updateLayout(
+    layout: InferSelectModel<typeof users>['layout']
+) {
     try {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
-        if (![1, 2, 3].includes(gridSize)) return 'Invalid grid size'
 
         await db
             .update(users)
-            .set({ gridSize })
+            .set({ layout })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
     } catch (e) {

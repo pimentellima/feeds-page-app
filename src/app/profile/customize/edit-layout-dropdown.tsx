@@ -6,6 +6,8 @@ import {
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
@@ -14,15 +16,25 @@ import {
     Columns2Icon,
     Columns3Icon,
     GridIcon,
+    LayoutIcon,
+    NewspaperIcon,
     SquareEqualIcon,
 } from 'lucide-react'
-import { updateGridSize } from './actions'
+import { updateLayout } from './actions'
+import { InferSelectModel } from 'drizzle-orm'
+import { users } from '@/drizzle/schema'
 
-export function ChangeGridDropdown({ selectedSize }: { selectedSize: number }) {
+export function EditLayoutDropdown({
+    layout,
+}: {
+    layout: InferSelectModel<typeof users>['layout']
+}) {
     const { toast } = useToast()
 
-    const handleChangeGrid = async (gridSize: number) => {
-        const error = await updateGridSize(gridSize)
+    const handleChangeGrid = async (
+        layout: InferSelectModel<typeof users>['layout']
+    ) => {
+        const error = await updateLayout(layout)
         if (error) {
             toast({
                 title: 'Error updating theme',
@@ -35,31 +47,42 @@ export function ChangeGridDropdown({ selectedSize }: { selectedSize: number }) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost">
-                    <GridIcon className="mr-1 h-4 w-4" /> Grid size
+                    <LayoutIcon className="mr-1 h-4 w-4" /> Layout
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
                 <DropdownMenuGroup>
+                    <DropdownMenuLabel>Widget grid</DropdownMenuLabel>
                     <DropdownMenuCheckboxItem
-                        checked={selectedSize === 1}
-                        onClick={() => handleChangeGrid(1)}
+                        checked={layout === 'grid1x1'}
+                        onClick={() => handleChangeGrid('grid1x1')}
                     >
                         <SquareEqualIcon className="mr-2 h-4 w-4" />
                         <span>1 column</span>
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
-                        checked={selectedSize === 2}
-                        onClick={() => handleChangeGrid(2)}
+                        checked={layout === 'grid2x2'}
+                        onClick={() => handleChangeGrid('grid2x2')}
                     >
                         <Columns2Icon className="mr-2 h-4 w-4" />
                         <span>2 columns</span>
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
-                        checked={selectedSize === 3}
-                        onClick={() => handleChangeGrid(3)}
+                        checked={layout === 'grid3x3'}
+                        onClick={() => handleChangeGrid('grid3x3')}
                     >
                         <Columns3Icon className="mr-2 h-4 w-4" />
                         <span>3 columns</span>
+                    </DropdownMenuCheckboxItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                    <DropdownMenuLabel>List</DropdownMenuLabel>
+                    <DropdownMenuCheckboxItem
+                        checked={layout === 'list'}
+                        onClick={() => handleChangeGrid('list')}
+                    >
+                        <NewspaperIcon className="mr-1 h-4 w-4" /> Timeline
                     </DropdownMenuCheckboxItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

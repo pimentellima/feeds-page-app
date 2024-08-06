@@ -21,22 +21,36 @@ export default function InstagramScroll({ media }: { media: InstagramPost[] }) {
                             media_type === 'CAROUSEL_ALBUM'
                     )
                     .map((post) => (
-                        <ScrollItem href={post.permalink} key={post.id}>
-                            <ScrollItemImage mediaUrl={post.media_url} />
-                            <ScrollItemFooter>
-                                <ScrollItemCaption>
-                                    {post.caption}
-                                </ScrollItemCaption>
-                                <ScrollItemTimestamp>
-                                    {!!post.timestamp && formatDistanceToNow(
-                                        new Date(post.timestamp),
-                                        { addSuffix: true }
-                                    )}
-                                </ScrollItemTimestamp>
-                            </ScrollItemFooter>
-                        </ScrollItem>
+                        <InstagramScrollItem key={post.id} post={post} />
                     ))}
             </ScrollContent>
         </Scroll>
+    )
+}
+
+export function InstagramScrollItem({
+    post,
+}: {
+    post: {
+        id: string
+        permalink?: string
+        media_url: string
+        caption?: string
+        timestamp: string
+    }
+}) {
+    return (
+        <ScrollItem href={post.permalink}>
+            <ScrollItemImage mediaUrl={post.media_url} />
+            <ScrollItemFooter>
+                <ScrollItemCaption>{post.caption}</ScrollItemCaption>
+                <ScrollItemTimestamp>
+                    {!!post.timestamp &&
+                        formatDistanceToNow(new Date(post.timestamp), {
+                            addSuffix: true,
+                        })}
+                </ScrollItemTimestamp>
+            </ScrollItemFooter>
+        </ScrollItem>
     )
 }

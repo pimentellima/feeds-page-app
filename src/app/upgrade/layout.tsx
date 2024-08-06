@@ -1,5 +1,5 @@
 import { getSubscriptionByUserId } from '@/services/subscriptions'
-import { AccountSettingsDropdown } from '../profile/customize/account-settings-dropdown'
+import { SignOutButton } from '../profile/customize/sign-out-button'
 import { getUser } from '@/services/user'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
@@ -27,7 +27,7 @@ export default async function Layout({
                     flex items-center justify-between sm:justify-normal
                      gap-1 w-full px-6 sm:w-auto sm:px-0"
             >
-                <AccountSettingsDropdown
+                <SignOutButton
                     hasLifetimePlan={!!subscription}
                     integrations={user.integrationTokens}
                 />

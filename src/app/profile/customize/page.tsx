@@ -10,26 +10,23 @@ import {
 import { Button } from '@/components/ui/button'
 import { WidgetGrid } from '@/components/widget'
 import { auth } from '@/lib/auth'
+import { getSubscriptionByUserId } from '@/services/subscriptions'
 import { getUser } from '@/services/user'
 import { Separator } from '@radix-ui/react-separator'
-import {
-    CircleCheckIcon,
-    CrownIcon,
-    SquareArrowRightIcon,
-    StarsIcon,
-} from 'lucide-react'
+import { CircleCheckIcon, SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { AccountSettingsDropdown } from './account-settings-dropdown'
-import { ChangeGridDropdown } from './change-grid-dropdown'
+import { SignOutButton } from './sign-out-button'
 import ChangeImageDialog from './change-image-dialog'
 import ChangeThemeDropdown from './change-theme-dropdown'
 import { CustomizeWidgetsPanel } from './customize-widgets-panel'
+import { EditLayoutDropdown } from './edit-layout-dropdown'
 import EditProfileDialog from './edit-profile-dialog'
+import ManageIntegrationsDialog from './manage-integrations-dialog'
 import { SocialLinkDialog } from './social-link-dialog'
-import BuyPlanButton from './buy-plan-button'
-import { getSubscriptionByUserId } from '@/services/subscriptions'
+import TimelineScroll from './timeline-scroll'
 import UpgradePlanDialog from './upgrade-plan-dialog'
+import { integrationTokens } from '@/drizzle/schema'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -44,24 +41,24 @@ export default async function CustomizePage() {
     return (
         <>
             <div
-                className="absolute top-3 sm:top-5 sm:right-14 
-                    flex items-center justify-between sm:justify-normal
-                     gap-1 w-full px-6 sm:w-auto sm:px-0"
+                className="absolute top-3 lg:top-5 lg:right-14 
+                    flex items-center justify-between lg:justify-normal
+                     gap-1 w-full px-6 lg:w-auto lg:px-0"
             >
                 <ChangeThemeDropdown />
-                <div className="hidden sm:block">
-                    <ChangeGridDropdown selectedSize={user.gridSize ?? 2} />
+                <div className="hidden lg:block">
+                    <EditLayoutDropdown layout={user.layout} />
                 </div>
-                <AccountSettingsDropdown
-                    hasLifetimePlan={!!subscription}
+                <ManageIntegrationsDialog
                     integrations={user.integrationTokens}
                 />
+                <SignOutButton />
             </div>
             <div
-                className="sm:grid sm:grid-cols-[4fr,10fr] sm:gap-44 sm:min-h-screen bg-background
-                    flex flex-col px-6 sm:px-0"
+                className="lg:grid lg:grid-cols-[4fr,10fr] lg:gap-44 lg:min-h-screen bg-background
+                    flex flex-col px-6 lg:px-0"
             >
-                <div className="sm:fixed sm:top-0 mt-20 sm:h-[80vh]">
+                <div className="lg:fixed lg:top-0 mt-20 lg:h-[80vh]">
                     <ProfileSection>
                         <ProfileSectionContent>
                             <ProfileSectionImage>
@@ -132,15 +129,38 @@ export default async function CustomizePage() {
                         </ProfileSectionFooter>
                     </ProfileSection>
                 </div>
-                <div className="sm:hidden">
+                <div className="lg:hidden">
                     <Separator className="my-2" />
                 </div>
-                <WidgetGrid gridSize={user.gridSize ?? 2}>
-                    <CustomizeWidgetsPanel
-                        userId={user.id}
-                        userWidgets={user.widgets}
-                    />
-                </WidgetGrid>
+                {user.layout === 'list' ? (
+                    <div
+                        className="flex flex-col gap-4 col-start-2 lg:grid
+                lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
+                    >
+                        {user.integrationTokens.length === 0 ? (
+                            <span className="h-min rounded-md border p-4 text-center">
+                                No integrations. Click on Integrations to add a new
+                            </span>
+                        ) : (
+                            <TimelineScroll userId={user.id} />
+                        )}
+                    </div>
+                ) : (
+                    <WidgetGrid
+                        gridSize={
+                            user.layout === 'grid1x1'
+                                ? 1
+                                : user.layout === 'grid3x3'
+                                ? 3
+                                : 2
+                        }
+                    >
+                        <CustomizeWidgetsPanel
+                            userId={user.id}
+                            userWidgets={user.widgets}
+                        />
+                    </WidgetGrid>
+                )}
             </div>
         </>
     )

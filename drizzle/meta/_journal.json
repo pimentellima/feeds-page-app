@@ -78,6 +78,13 @@
       "when": 1722724203741,
       "tag": "0010_glossy_dreadnoughts",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1722897338838,
+      "tag": "0011_premium_magneto",
+      "breakpoints": true
     }
   ]
 }

@@ -1,14 +1,19 @@
 import { relations, sql } from 'drizzle-orm'
 import {
-    boolean,
     integer,
     pgEnum,
     pgTable,
     serial,
     text,
     timestamp,
-    uniqueIndex,
 } from 'drizzle-orm/pg-core'
+
+export const layoutEnum = pgEnum('layouEnum', [
+    'grid1x1',
+    'grid2x2',
+    'grid3x3',
+    'list',
+])
 
 export const users = pgTable('users', {
     id: text('id')
@@ -19,7 +24,7 @@ export const users = pgTable('users', {
     username: text('username'),
     location: text('location'),
     bio: text('bio'),
-    gridSize: integer('gridSize').default(2),
+    layout: layoutEnum('layout'),
     theme: text('theme'),
     email: text('email'),
     password: text('password'),
