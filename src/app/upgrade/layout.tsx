@@ -1,8 +1,8 @@
+import { auth } from '@/lib/auth'
 import { getSubscriptionByUserId } from '@/services/subscriptions'
-import { SignOutButton } from '../profile/customize/sign-out-button'
 import { getUser } from '@/services/user'
 import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
+import { SignOutButton } from '../profile/customize/sign-out-button'
 
 export default async function Layout({
     children,
@@ -17,9 +17,6 @@ export default async function Layout({
         redirect('/sign-in')
     }
 
-    const user = await getUser(session.user.id)
-    const subscription = await getSubscriptionByUserId(session.user.id)
-
     return (
         <>
             <div
@@ -27,10 +24,7 @@ export default async function Layout({
                     flex items-center justify-between sm:justify-normal
                      gap-1 w-full px-6 sm:w-auto sm:px-0"
             >
-                <SignOutButton
-                    hasLifetimePlan={!!subscription}
-                    integrations={user.integrationTokens}
-                />
+                <SignOutButton />
             </div>
             {children}
         </>
