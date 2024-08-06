@@ -23,6 +23,7 @@ import { SocialLinkIcon } from '@/components/social-icons'
 import { getSubscriptionByUserId } from '@/services/subscriptions'
 import { redirect } from 'next/navigation'
 import { Metadata } from 'next'
+import TimelineScroll from '../profile/customize/timeline-scroll'
 
 export const revalidate = 1200
 
@@ -101,53 +102,62 @@ export default async function UserPage({
                 <div className="lg:hidden">
                     <Separator className="my-2" />
                 </div>
-                <WidgetGrid
-                    gridSize={
-                        user.layout === 'grid1x1'
-                            ? 1
-                            : user.layout === 'grid3x3'
-                            ? 3
-                            : 2
-                    }
-                >
-                    {user.widgets.map((widget) => {
-                        if (widget.type === 'instagramIntegration')
-                            return (
-                                <InstagramWidget
-                                    key={widget.id}
-                                    userId={user.id}
-                                />
-                            )
-                        if (widget.type === 'tiktokIntegration')
-                            return (
-                                <TiktokWidget
-                                    key={widget.id}
-                                    userId={user.id}
-                                />
-                            )
-                        if (widget.type === 'youtubeIntegration')
-                            return (
-                                <YoutubeWidget
-                                    key={widget.id}
-                                    userId={user.id}
-                                />
-                            )
-                        if (widget.type === 'spotifyIntegration')
-                            return (
-                                <SpotifyWidget
-                                    key={widget.id}
-                                    userId={user.id}
-                                />
-                            )
-                        if (widget.type === 'pinterestIntegration')
-                            return (
-                                <PinterestWidget
-                                    key={widget.id}
-                                    userId={user.id}
-                                />
-                            )
-                    })}
-                </WidgetGrid>
+                {user.layout === 'list' ? (
+                    <div
+                        className="flex flex-col gap-4 col-start-2 lg:grid
+                lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
+                    >
+                        <TimelineScroll userId={user.id} />
+                    </div>
+                ) : (
+                    <WidgetGrid
+                        gridSize={
+                            user.layout === 'grid1x1'
+                                ? 1
+                                : user.layout === 'grid3x3'
+                                ? 3
+                                : 2
+                        }
+                    >
+                        {user.widgets.map((widget) => {
+                            if (widget.type === 'instagramIntegration')
+                                return (
+                                    <InstagramWidget
+                                        key={widget.id}
+                                        userId={user.id}
+                                    />
+                                )
+                            if (widget.type === 'tiktokIntegration')
+                                return (
+                                    <TiktokWidget
+                                        key={widget.id}
+                                        userId={user.id}
+                                    />
+                                )
+                            if (widget.type === 'youtubeIntegration')
+                                return (
+                                    <YoutubeWidget
+                                        key={widget.id}
+                                        userId={user.id}
+                                    />
+                                )
+                            if (widget.type === 'spotifyIntegration')
+                                return (
+                                    <SpotifyWidget
+                                        key={widget.id}
+                                        userId={user.id}
+                                    />
+                                )
+                            if (widget.type === 'pinterestIntegration')
+                                return (
+                                    <PinterestWidget
+                                        key={widget.id}
+                                        userId={user.id}
+                                    />
+                                )
+                        })}
+                    </WidgetGrid>
+                )}
             </div>
         </>
     )
