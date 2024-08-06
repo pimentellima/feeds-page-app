@@ -21,11 +21,11 @@ export default async function TimelineScroll({ userId }: { userId: string }) {
                     <div className="flex w-full flex-wrap text-nowrap">
                         <div className="flex items-center">
                             <SocialLinkIcon
-                                className="mr-2"
+                                className="mr-1"
                                 linkType={t.type}
                             />
                             <Link
-                                className="underline-offset-4 hover:underline font-medium mr-1"
+                                className="underline-offset-4 hover:underline font-medium mr-1 tracking-tight"
                                 href={t.profile.link}
                             >
                                 {t.profile.username}
@@ -36,7 +36,7 @@ export default async function TimelineScroll({ userId }: { userId: string }) {
                         </Link>
                     </div>
                     <div className="flex justify-end pl-2 text-nowrap">
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs md:text-sm text-muted-foreground">
                             {!!t.timestamp &&
                                 formatDistanceToNow(t.timestamp, {
                                     addSuffix: true,

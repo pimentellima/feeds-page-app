@@ -123,26 +123,31 @@ export async function getTimelineItems(userId: string) {
             if (t.type === 'youtubeIntegration') {
                 const accessToken = await refreshYoutubeAccessToken(t)
                 if (!accessToken) return
-                const media = await fetchYoutubeMedia(accessToken)
-                const channel = await fetchYoutubeChannel(accessToken)
-                if (!channel || !media) return
+                try {
+                    const media = await fetchYoutubeMedia(accessToken)
+                    const channel = await fetchYoutubeChannel(accessToken)
+                    if (!channel || !media) return
 
-                media.map((m) => {
-                    if (!m.snippet || !m.snippet.publishedAt || !m.id) return
-                    timelineItems.push({
-                        type: 'youtube',
-                        id: m.id || crypto.randomUUID(),
-                        caption: 'posted a video on Youtube',
-                        link: `https://youtube.com/watch?v=${m.id}`,
-                        profile: {
-                            link: channel.customUrl || '',
-                            username: channel.title || '',
-                            pictureUrl:
-                                channel.thumbnails?.high?.url || undefined,
-                        },
-                        timestamp: new Date(m.snippet.publishedAt),
+                    media.map((m) => {
+                        if (!m.snippet || !m.snippet.publishedAt || !m.id)
+                            return
+                        timelineItems.push({
+                            type: 'youtube',
+                            id: m.id || crypto.randomUUID(),
+                            caption: 'posted a video on Youtube',
+                            link: `https://youtube.com/watch?v=${m.id}`,
+                            profile: {
+                                link: channel.customUrl || '',
+                                username: channel.title || '',
+                                pictureUrl:
+                                    channel.thumbnails?.high?.url || undefined,
+                            },
+                            timestamp: new Date(m.snippet.publishedAt),
+                        })
                     })
-                })
+                } catch {
+                    return
+                }
             }
         })
     )
