@@ -77,12 +77,12 @@ export default function WidgetYoutubeEdit({
                             url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
                         />
                     ) : (
-                        <p>{error.message}</p>
+                        <p>An error occured fetching data.</p>
                     )
                 ) : data?.media ? (
                     <WidgetScrollYoutube media={data.media} />
                 ) : (
-                    <p>An error occured.</p>
+                    <p>An error occured fetching data.</p>
                 )}
             </WidgetContent>
         </Widget>

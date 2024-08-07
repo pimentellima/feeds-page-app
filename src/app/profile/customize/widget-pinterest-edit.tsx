@@ -6,7 +6,7 @@ import {
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
-    WidgetTitle
+    WidgetTitle,
 } from '@/components/widget'
 import { PinterestPin, PinterestProfile } from '@/lib/api-helpers/pinterest'
 import { useSortable } from '@dnd-kit/sortable'
@@ -79,12 +79,12 @@ export default function WidgetPinterestEdit({
                             }
                         />
                     ) : (
-                        <p>{error.message}</p>
+                        <p>An error occured fetching data.</p>
                     )
                 ) : data?.media ? (
                     <WidgetScrollPinterest media={data.media} />
                 ) : (
-                    <p>An error occured.</p>
+                    <p>An error occured fetching data.</p>
                 )}
             </WidgetContent>
         </Widget>

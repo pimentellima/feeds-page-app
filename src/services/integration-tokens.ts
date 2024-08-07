@@ -96,30 +96,7 @@ export async function getYoutubeAccessToken(userId: string) {
             ),
         })
         if (!token) return null
-        if (token.expiresAt && token.expiresAt < new Date()) {
-            oauth2Client.setCredentials({
-                refresh_token: token.refreshToken,
-            })
-            const oauth2Response = await oauth2Client.refreshAccessToken()
-            const { access_token, expiry_date } = oauth2Response.credentials
-            if (!access_token || !expiry_date) {
-                await db
-                    .delete(integrationTokens)
-                    .where(eq(integrationTokens.id, token.id))
-                return null
-            }
-            const [newToken] = await db
-                .update(integrationTokens)
-                .set({
-                    accessToken: access_token,
-                    expiresAt: new Date(expiry_date),
-                })
-                .where(eq(integrationTokens.id, token.id))
-                .returning()
-            if (!newToken) return null
-            return newToken.accessToken
-        }
-        return token.accessToken
+        return await refreshYoutubeAccessToken(token)
     } catch (e) {
         console.log(e)
         return null
@@ -191,7 +168,7 @@ export async function getTiktokAccessToken(userId: string) {
 export async function refreshSpotifyAccessToken(
     token: InferSelectModel<typeof integrationTokens>
 ) {
-    if (token.expiresAt && token.expiresAt < new Date()) {
+    if (token.expiresAt && token.expiresAt < new Date(Date.now())) {
         if (!token.refreshToken) throw new Error('No refresh token')
         const response = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',

@@ -77,12 +77,12 @@ export default function WidgetInstagramEdit({
                             url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
                         />
                     ) : (
-                        <p>{error.message}</p>
+                        <p>An error occured fetching data.</p>
                     )
                 ) : data?.media ? (
                     <WidgetScrollInstagram media={data.media} />
                 ) : (
-                    <p>An error occured.</p>
+                    <p>An error occured fetching data.</p>
                 )}
             </WidgetContent>
         </Widget>

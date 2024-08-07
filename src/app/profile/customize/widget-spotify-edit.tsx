@@ -6,7 +6,7 @@ import {
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
-    WidgetTitle
+    WidgetTitle,
 } from '@/components/widget'
 import { SpotifyMedia, SpotifyUserProfile } from '@/lib/api-helpers/spotify'
 import { useSortable } from '@dnd-kit/sortable'
@@ -77,12 +77,12 @@ export default function WidgetSpotifyEdit({
                             url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
                         />
                     ) : (
-                        <p>{error.message}</p>
+                        <p>An error occured fetching data.</p>
                     )
                 ) : data?.media ? (
                     <WidgetScrollSpotify media={data.media} />
                 ) : (
-                    <p>An error occured.</p>
+                    <p>An error occured fetching data.</p>
                 )}
             </WidgetContent>
         </Widget>
