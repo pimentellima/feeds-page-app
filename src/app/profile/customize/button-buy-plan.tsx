@@ -4,7 +4,7 @@ import { createCheckoutSession } from './actions'
 import { CrownIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export default function BuyPlanButton() {
+export default function ButtonBuyPlan() {
     const { toast } = useToast()
 
     const onClickBuyPlan = async () => {

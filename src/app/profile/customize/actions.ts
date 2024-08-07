@@ -1,15 +1,15 @@
 'use server'
-import { redirect } from 'next/navigation'
-import Stripe from 'stripe'
+import { planPrice } from '@/constants'
 import { db } from '@/drizzle/index'
 import {
     integrationTokens,
     socialLinks,
-    subscriptions,
     users,
-    widgets,
+    widgets
 } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
+import { deleteFile, uploadFile } from '@/lib/gcs'
+import { getSubscriptionByUserId } from '@/services/subscriptions'
 import {
     and,
     eq,
@@ -19,11 +19,10 @@ import {
     sql,
 } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { profileSchema, ProfileValues } from './edit-profile-schema'
+import { redirect } from 'next/navigation'
+import Stripe from 'stripe'
+import { profileSchema, ProfileValues } from './profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
-import { deleteFile, uploadFile } from '@/lib/gcs'
-import { planPrice } from '@/constants'
-import { getSubscriptionByUserId } from '@/services/subscriptions'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -303,7 +302,10 @@ interface GeoNamesResponse {
 
 export async function getCityByName(name: string) {
     const res = await fetch(
-        `http://api.geonames.org/searchJSON?name=${name}&username=${process.env.GEONAMES_USERNAME}&maxRows=5`
+        `http://api.geonames.org/searchJSON?name=${name}&username=${process.env.GEONAMES_USERNAME}&maxRows=5`,
+        {
+            cache: 'force-cache',
+        }
     )
     if (!res.ok) {
         throw new Error('')

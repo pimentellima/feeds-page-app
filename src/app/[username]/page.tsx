@@ -14,11 +14,11 @@ import { WidgetGrid } from '@/components/widget'
 import { getUserByUsername } from '@/services/user'
 import { SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
-import { InstagramWidget } from './instagram-widget'
-import { TiktokWidget } from './tiktok-widget'
-import { YoutubeWidget } from './youtube-widget'
-import { SpotifyWidget } from './spotify-widget'
-import { PinterestWidget } from './pinterest-widget'
+import { WidgetInstagram } from './widget-instagram'
+import { WidgetTiktok } from './widget-tiktok'
+import { WidgetYoutube } from './widget-youtube'
+import { WidgetSpotify } from './widget-spotify'
+import { WidgetPinterest } from './widget-pinterest'
 import { SocialLinkIcon } from '@/components/social-icons'
 import { getSubscriptionByUserId } from '@/services/subscriptions'
 import { redirect } from 'next/navigation'
@@ -110,35 +110,35 @@ export default async function UserPage({
                     {user.widgets.map((widget) => {
                         if (widget.type === 'instagramIntegration')
                             return (
-                                <InstagramWidget
+                                <WidgetInstagram
                                     key={widget.id}
                                     userId={user.id}
                                 />
                             )
                         if (widget.type === 'tiktokIntegration')
                             return (
-                                <TiktokWidget
+                                <WidgetTiktok
                                     key={widget.id}
                                     userId={user.id}
                                 />
                             )
                         if (widget.type === 'youtubeIntegration')
                             return (
-                                <YoutubeWidget
+                                <WidgetYoutube
                                     key={widget.id}
                                     userId={user.id}
                                 />
                             )
                         if (widget.type === 'spotifyIntegration')
                             return (
-                                <SpotifyWidget
+                                <WidgetSpotify
                                     key={widget.id}
                                     userId={user.id}
                                 />
                             )
                         if (widget.type === 'pinterestIntegration')
                             return (
-                                <PinterestWidget
+                                <WidgetPinterest
                                     key={widget.id}
                                     userId={user.id}
                                 />

@@ -31,11 +31,11 @@ import { Check, ChevronsUpDown, Loader } from 'lucide-react'
 import { ReactNode, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { getCityByName, updateUserProfile } from './actions'
-import { profileSchema, ProfileValues } from './edit-profile-schema'
+import { profileSchema, ProfileValues } from './profile-schema'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-export default function EditProfileDialog({
+export default function DialogEditProfile({
     user,
     trigger,
 }: {

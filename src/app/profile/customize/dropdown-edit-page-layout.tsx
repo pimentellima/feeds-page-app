@@ -22,7 +22,7 @@ import { updateLayout } from './actions'
 import { InferSelectModel } from 'drizzle-orm'
 import { users } from '@/drizzle/schema'
 
-export function EditLayoutDropdown({
+export function DropdownEditPageLayout({
     layout,
 }: {
     layout: InferSelectModel<typeof users>['layout']

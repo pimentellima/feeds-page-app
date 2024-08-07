@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/popover'
 import { deleteWidget } from './actions'
 
-export default function DeleteWidgetPopover({
+export default function PopoverDeleteWidget({
     label = 'Delete widget',
     id,
 }: {

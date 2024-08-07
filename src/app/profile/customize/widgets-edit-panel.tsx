@@ -46,11 +46,11 @@ import {
     setWidgetType,
     updateWidgetPosition,
 } from './actions'
-import WidgetInstagramInteractive from './widget-instagram-interactive'
-import WidgetPinterestInteractive from './widget-pinterest-interactive'
-import WidgetSpotifyInteractive from './widget-spotify-interactive'
-import WidgetTiktokInteractive from './widget-tiktok-interactive'
-import WidgetYoutubeInteractive from './widget-youtube-interactive'
+import WidgetInstagramInteractive from './widget-instagram-edit'
+import WidgetPinterestInteractive from './widget-pinterest-edit'
+import WidgetSpotifyInteractive from './widget-spotify-edit'
+import WidgetTiktokInteractive from './widget-tiktok-edit'
+import WidgetYoutubeInteractive from './widget-youtube-edit'
 
 type Widget = {
     id: string

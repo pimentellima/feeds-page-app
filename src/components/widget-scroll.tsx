@@ -4,13 +4,13 @@ import { ReactNode } from 'react'
 import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
-export function Scroll({ children }: { children: ReactNode }) {
+export function WidgetScroll({ children }: { children: ReactNode }) {
     return <ScrollArea className="h-96 w-full pb-4">{children}</ScrollArea>
 }
-export function ScrollContent({ children }: { children: ReactNode }) {
+export function WidgetScrollContent({ children }: { children: ReactNode }) {
     return <div className="grid gap-2 px-3">{children}</div>
 }
-export function ScrollItem({
+export function WidgetScrollItem({
     children,
     href,
 }: {
@@ -29,7 +29,7 @@ export function ScrollItem({
         </div>
     )
 }
-export function ScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
+export function WidgetScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
     return (
         <Image
             className="rounded-md object-contain mb-2"
@@ -41,20 +41,20 @@ export function ScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
         />
     )
 }
-export function ScrollItemFooter({ children }: { children: ReactNode }) {
+export function WidgetScrollItemFooter({ children }: { children: ReactNode }) {
     return (
         <div className="grid gap-1 text-center w-full">
             {children}
         </div>
     )
 }
-export function ScrollItemCaption({ children }: { children: ReactNode }) {
+export function WidgetScrollItemCaption({ children }: { children: ReactNode }) {
     return (
         <div className="overflow-hidden whitespace-nowrap text-ellipsis flex flex-col">
             {children}
         </div>
     )
 }
-export function ScrollItemTimestamp({ children }: { children: ReactNode }) {
+export function WidgetScrollItemTimestamp({ children }: { children: ReactNode }) {
     return <div className="text-muted-foreground text-xs">{children}</div>
 }

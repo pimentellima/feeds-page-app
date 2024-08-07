@@ -1,31 +1,31 @@
 'use client'
-import SpotifyScroll from '@/components/spotify-scroll'
+import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { useQuery } from '@tanstack/react-query'
 import {
-    SpotifyTitle,
+    WidgetTitleInstagram,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
-    WidgetTitle
+    WidgetTitle,
 } from '@/components/widget'
-import { SpotifyMedia, SpotifyUserProfile } from '@/lib/api-helpers/spotify'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { useQuery } from '@tanstack/react-query'
+import ButtonConnectAccount from './button-connect-account'
 import { LoaderCircle } from 'lucide-react'
-import PairAccountButton from './pair-account-button'
+import WidgetScrollInstagram from '@/components/widget-scroll-instagram'
 
-async function fetchSpotifyMediaFromApi(userId: string) {
-    const res = await fetch('/api/spotify/media/' + userId)
+async function fetchInstagramMediaFromApi(userId: string) {
+    const res = await fetch('/api/ig/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
     return data as {
-        media: SpotifyMedia[] | null
-        profile: SpotifyUserProfile | null
+        profile: InstagramProfile
+        media: InstagramPost[]
     } | null
 }
 
-export default function WidgetSpotifyInteractive({
+export default function WidgetInstagramInteractive({
     userId,
     widgetId,
     removeWidget,
@@ -34,9 +34,9 @@ export default function WidgetSpotifyInteractive({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
-    const { data, isLoading, isError, error } = useQuery({
-        queryFn: () => fetchSpotifyMediaFromApi(userId),
-        queryKey: ['spotifyMedia', userId],
+    const { data, isLoading, error, isError } = useQuery({
+        queryFn: () => fetchInstagramMediaFromApi(userId),
+        queryKey: ['instagramMedia', userId],
         refetchOnWindowFocus: false,
     })
 
@@ -58,7 +58,7 @@ export default function WidgetSpotifyInteractive({
         <Widget ref={setNodeRef} style={style}>
             <WidgetHeader>
                 <WidgetTitle>
-                    <SpotifyTitle profile={data?.profile} />
+                    <WidgetTitleInstagram profile={data?.profile} />
                 </WidgetTitle>
                 <WidgetOptions
                     isDragging={isDragging}
@@ -72,15 +72,15 @@ export default function WidgetSpotifyInteractive({
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
                     error.message === 'No access token' ? (
-                        <PairAccountButton
-                            label={'Click to connect your Spotify account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
+                        <ButtonConnectAccount
+                            label={'Click to connect your Instagram account'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
                         />
                     ) : (
                         <p>{error.message}</p>
                     )
                 ) : data?.media ? (
-                    <SpotifyScroll media={data.media} />
+                    <WidgetScrollInstagram media={data.media} />
                 ) : (
                     <p>An error occured.</p>
                 )}

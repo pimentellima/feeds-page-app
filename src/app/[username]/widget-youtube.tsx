@@ -3,9 +3,9 @@ import {
     WidgetContent,
     WidgetHeader,
     WidgetTitle,
-    YoutubeTitle,
+    WidgetTitleYoutube,
 } from '@/components/widget'
-import YoutubeScroll from '@/components/youtube-scroll'
+import WidgetScrollYoutube from '@/components/widget-scroll-youtube'
 import {
     fetchYoutubeChannel,
     fetchYoutubeMedia,
@@ -27,25 +27,22 @@ async function getMedia(accessToken: string) {
     }
 }
 
-export async function YoutubeWidget({ userId }: { userId: string }) {
+export async function WidgetYoutube({ userId }: { userId: string }) {
     const accessToken = await getYoutubeAccessToken(userId)
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
+    if (!media?.media) return null
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <YoutubeTitle channel={media?.channel} />
+                    <WidgetTitleYoutube channel={media?.channel} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                {media?.media ? (
-                    <YoutubeScroll media={media.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                <WidgetScrollYoutube media={media.media} />
             </WidgetContent>
         </Widget>
     )

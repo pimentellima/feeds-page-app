@@ -1,31 +1,31 @@
 'use client'
-import PinterestScroll from '@/components/pinterest-scroll'
+import WidgetScrollTiktok from '@/components/widget-scroll-tiktok'
 import {
-    PinterestTitle,
+    WidgetTitleTiktok,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
-    WidgetTitle
+    WidgetTitle,
 } from '@/components/widget'
-import { PinterestPin, PinterestProfile } from '@/lib/api-helpers/pinterest'
+import { TiktokMedia, TiktokUser } from '@/lib/api-helpers/tiktok'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle } from 'lucide-react'
-import PairAccountButton from './pair-account-button'
+import ButtonConnectAccount from './button-connect-account'
 
-async function fetchPinterestMediaFromApi(userId: string) {
-    const res = await fetch('/api/pinterest/media/' + userId)
+async function fetchTiktokMediaFromApi(userId: string) {
+    const res = await fetch('/api/tiktok/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
     return data as {
-        media: PinterestPin[] | null
-        user: PinterestProfile | null
+        videos: TiktokMedia[]
+        user: TiktokUser
     } | null
 }
 
-export default function WidgetPinterestInteractive({
+export default function WidgetTiktokInteractive({
     userId,
     widgetId,
     removeWidget,
@@ -35,8 +35,8 @@ export default function WidgetPinterestInteractive({
     removeWidget: (id: string) => void
 }) {
     const { data, isLoading, isError, error } = useQuery({
-        queryFn: () => fetchPinterestMediaFromApi(userId),
-        queryKey: ['pinterestMedia', userId],
+        queryFn: () => fetchTiktokMediaFromApi(userId),
+        queryKey: ['tiktokMedia', userId],
         refetchOnWindowFocus: false,
     })
 
@@ -58,7 +58,7 @@ export default function WidgetPinterestInteractive({
         <Widget ref={setNodeRef} style={style}>
             <WidgetHeader>
                 <WidgetTitle>
-                    <PinterestTitle profile={data?.user} />
+                    <WidgetTitleTiktok user={data?.user} />
                 </WidgetTitle>
                 <WidgetOptions
                     isDragging={isDragging}
@@ -72,19 +72,17 @@ export default function WidgetPinterestInteractive({
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
                     error.message === 'No access token' ? (
-                        <PairAccountButton
-                            label={'Click to connect your Pinterest account'}
-                            link={
-                                process.env.NEXT_PUBLIC_URL! + '/api/pinterest'
-                            }
+                        <ButtonConnectAccount
+                            label={'Click to connect your Tiktok account'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
                         />
                     ) : (
-                        <p>{error.message}</p>
+                        <p>An error occured fetching data.</p>
                     )
-                ) : data?.media ? (
-                    <PinterestScroll media={data.media} />
+                ) : data?.videos ? (
+                    <WidgetScrollTiktok media={data.videos} />
                 ) : (
-                    <p>An error occured.</p>
+                    <p>An error occured fetching data.</p>
                 )}
             </WidgetContent>
         </Widget>

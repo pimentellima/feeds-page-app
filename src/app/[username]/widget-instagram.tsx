@@ -1,6 +1,6 @@
-import InstagramScroll from '@/components/instagram-scroll'
+import WidgetScrollInstagram from '@/components/widget-scroll-instagram'
 import {
-    InstagramTitle,
+    WidgetTitleInstagram,
     Widget,
     WidgetContent,
     WidgetHeader,
@@ -26,25 +26,22 @@ async function getMedia(accessToken: string) {
     }
 }
 
-export async function InstagramWidget({ userId }: { userId: string }) {
+export async function WidgetInstagram({ userId }: { userId: string }) {
     const accessToken = await getInstagramAccessToken(userId)
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
+    if (!media?.media) return null
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <InstagramTitle profile={media?.profile} />
+                    <WidgetTitleInstagram profile={media?.profile} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                {media?.media ? (
-                    <InstagramScroll media={media.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                <WidgetScrollInstagram media={media.media} />
             </WidgetContent>
         </Widget>
     )

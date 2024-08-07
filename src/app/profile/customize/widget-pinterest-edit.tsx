@@ -1,31 +1,31 @@
 'use client'
+import WidgetScrollPinterest from '@/components/widget-scroll-pinterest'
 import {
+    WidgetTitlePinterest,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
-    WidgetTitle,
-    YoutubeTitle
+    WidgetTitle
 } from '@/components/widget'
-import YoutubeScroll from '@/components/youtube-scroll'
+import { PinterestPin, PinterestProfile } from '@/lib/api-helpers/pinterest'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
-import { youtube_v3 } from 'googleapis'
 import { LoaderCircle } from 'lucide-react'
-import PairAccountButton from './pair-account-button'
+import ButtonConnectAccount from './button-connect-account'
 
-async function fetchYoutubeMediaFromApi(userId: string) {
-    const res = await fetch('/api/youtube/media/' + userId)
+async function fetchPinterestMediaFromApi(userId: string) {
+    const res = await fetch('/api/pinterest/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
     return data as {
-        channel: youtube_v3.Schema$ChannelSnippet | null
-        media: youtube_v3.Schema$Video[] | null
+        media: PinterestPin[] | null
+        user: PinterestProfile | null
     } | null
 }
 
-export default function WidgetYoutubeInteractive({
+export default function WidgetPinterestInteractive({
     userId,
     widgetId,
     removeWidget,
@@ -34,9 +34,9 @@ export default function WidgetYoutubeInteractive({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
-    const { data, isLoading, error, isError } = useQuery({
-        queryFn: () => fetchYoutubeMediaFromApi(userId),
-        queryKey: ['youtubeMedia', userId],
+    const { data, isLoading, isError, error } = useQuery({
+        queryFn: () => fetchPinterestMediaFromApi(userId),
+        queryKey: ['pinterestMedia', userId],
         refetchOnWindowFocus: false,
     })
 
@@ -58,7 +58,7 @@ export default function WidgetYoutubeInteractive({
         <Widget ref={setNodeRef} style={style}>
             <WidgetHeader>
                 <WidgetTitle>
-                    <YoutubeTitle channel={data?.channel} />
+                    <WidgetTitlePinterest profile={data?.user} />
                 </WidgetTitle>
                 <WidgetOptions
                     isDragging={isDragging}
@@ -72,15 +72,17 @@ export default function WidgetYoutubeInteractive({
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
                     error.message === 'No access token' ? (
-                        <PairAccountButton
-                            label={'Click to connect your Youtube account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
+                        <ButtonConnectAccount
+                            label={'Click to connect your Pinterest account'}
+                            url={
+                                process.env.NEXT_PUBLIC_URL! + '/api/pinterest'
+                            }
                         />
                     ) : (
                         <p>{error.message}</p>
                     )
                 ) : data?.media ? (
-                    <YoutubeScroll media={data.media} />
+                    <WidgetScrollPinterest media={data.media} />
                 ) : (
                     <p>An error occured.</p>
                 )}

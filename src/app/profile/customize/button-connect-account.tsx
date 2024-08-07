@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 
-export default function PairAccountButton({
+export default function ButtonConnectAccount({
     label,
-    link,
+    url,
 }: {
     label: string
-    link: string
+    url: string
 }) {
     const router = useRouter()
     const { toast } = useToast()
@@ -19,7 +19,7 @@ export default function PairAccountButton({
             variant={'secondary'}
             onClick={async () => {
                 try {
-                    const res = await fetch(link, { method: 'POST' })
+                    const res = await fetch(url, { method: 'POST' })
                     if (!res.ok) {
                         toast({
                             title: 'An error occurred while pairing your account.',
@@ -28,8 +28,7 @@ export default function PairAccountButton({
                         return
                     }
                     const data = await res.json()
-                    const url = data.url as string
-                    router.push(url)
+                    router.push(data.url)
                 } catch (e) {
                     toast({
                         title: 'An error occurred while pairing your account.',

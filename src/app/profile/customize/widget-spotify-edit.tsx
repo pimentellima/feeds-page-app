@@ -1,31 +1,31 @@
 'use client'
-import TiktokScroll from '@/components/tiktok-scroll'
+import WidgetScrollSpotify from '@/components/widget-scroll-spotify'
 import {
-    TiktokTitle,
+    WidgetTitleSpotify,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
-    WidgetTitle,
+    WidgetTitle
 } from '@/components/widget'
-import { TiktokMedia, TiktokUser } from '@/lib/api-helpers/tiktok'
+import { SpotifyMedia, SpotifyUserProfile } from '@/lib/api-helpers/spotify'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle } from 'lucide-react'
-import PairAccountButton from './pair-account-button'
+import ButtonConnectAccount from './button-connect-account'
 
-async function fetchTiktokMediaFromApi(userId: string) {
-    const res = await fetch('/api/tiktok/media/' + userId)
+async function fetchSpotifyMediaFromApi(userId: string) {
+    const res = await fetch('/api/spotify/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
     return data as {
-        videos: TiktokMedia[]
-        user: TiktokUser
+        media: SpotifyMedia[] | null
+        profile: SpotifyUserProfile | null
     } | null
 }
 
-export default function WidgetTiktokInteractive({
+export default function WidgetSpotifyInteractive({
     userId,
     widgetId,
     removeWidget,
@@ -35,8 +35,8 @@ export default function WidgetTiktokInteractive({
     removeWidget: (id: string) => void
 }) {
     const { data, isLoading, isError, error } = useQuery({
-        queryFn: () => fetchTiktokMediaFromApi(userId),
-        queryKey: ['tiktokMedia', userId],
+        queryFn: () => fetchSpotifyMediaFromApi(userId),
+        queryKey: ['spotifyMedia', userId],
         refetchOnWindowFocus: false,
     })
 
@@ -58,7 +58,7 @@ export default function WidgetTiktokInteractive({
         <Widget ref={setNodeRef} style={style}>
             <WidgetHeader>
                 <WidgetTitle>
-                    <TiktokTitle user={data?.user} />
+                    <WidgetTitleSpotify profile={data?.profile} />
                 </WidgetTitle>
                 <WidgetOptions
                     isDragging={isDragging}
@@ -72,17 +72,17 @@ export default function WidgetTiktokInteractive({
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
                     error.message === 'No access token' ? (
-                        <PairAccountButton
-                            label={'Click to connect your Tiktok account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+                        <ButtonConnectAccount
+                            label={'Click to connect your Spotify account'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
                         />
                     ) : (
-                        <p>An error occured fetching data.</p>
+                        <p>{error.message}</p>
                     )
-                ) : data?.videos ? (
-                    <TiktokScroll media={data.videos} />
+                ) : data?.media ? (
+                    <WidgetScrollSpotify media={data.media} />
                 ) : (
-                    <p>An error occured fetching data.</p>
+                    <p>An error occured.</p>
                 )}
             </WidgetContent>
         </Widget>

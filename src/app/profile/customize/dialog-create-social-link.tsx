@@ -28,7 +28,7 @@ import { createSocialLink, deleteSocialLink } from './actions'
 import { SocialLinkIcon } from '../../../components/social-icons'
 import { schema, SocialLinkValues } from './social-link-schema'
 
-export function SocialLinkDialog({
+export function DialogCreateSocialLink({
     socialLink,
     userLinks,
 }: {

@@ -1,31 +1,31 @@
 'use client'
-import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { useQuery } from '@tanstack/react-query'
 import {
-    InstagramTitle,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
     WidgetTitle,
+    WidgetTitleYoutube,
 } from '@/components/widget'
-import PairAccountButton from './pair-account-button'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { useQuery } from '@tanstack/react-query'
+import { youtube_v3 } from 'googleapis'
 import { LoaderCircle } from 'lucide-react'
-import InstagramScroll from '@/components/instagram-scroll'
+import ButtonConnectAccount from './button-connect-account'
+import WidgetScrollYoutube from '@/components/widget-scroll-youtube'
 
-async function fetchInstagramMediaFromApi(userId: string) {
-    const res = await fetch('/api/ig/media/' + userId)
+async function fetchYoutubeMediaFromApi(userId: string) {
+    const res = await fetch('/api/youtube/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
     return data as {
-        profile: InstagramProfile
-        media: InstagramPost[]
+        channel: youtube_v3.Schema$ChannelSnippet | null
+        media: youtube_v3.Schema$Video[] | null
     } | null
 }
 
-export default function WidgetInstagramInteractive({
+export default function WidgetYoutubeInteractive({
     userId,
     widgetId,
     removeWidget,
@@ -35,8 +35,8 @@ export default function WidgetInstagramInteractive({
     removeWidget: (id: string) => void
 }) {
     const { data, isLoading, error, isError } = useQuery({
-        queryFn: () => fetchInstagramMediaFromApi(userId),
-        queryKey: ['instagramMedia', userId],
+        queryFn: () => fetchYoutubeMediaFromApi(userId),
+        queryKey: ['youtubeMedia', userId],
         refetchOnWindowFocus: false,
     })
 
@@ -58,7 +58,7 @@ export default function WidgetInstagramInteractive({
         <Widget ref={setNodeRef} style={style}>
             <WidgetHeader>
                 <WidgetTitle>
-                    <InstagramTitle profile={data?.profile} />
+                    <WidgetTitleYoutube channel={data?.channel} />
                 </WidgetTitle>
                 <WidgetOptions
                     isDragging={isDragging}
@@ -72,15 +72,15 @@ export default function WidgetInstagramInteractive({
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
                     error.message === 'No access token' ? (
-                        <PairAccountButton
-                            label={'Click to connect your Instagram account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                        <ButtonConnectAccount
+                            label={'Click to connect your Youtube account'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
                         />
                     ) : (
                         <p>{error.message}</p>
                     )
                 ) : data?.media ? (
-                    <InstagramScroll media={data.media} />
+                    <WidgetScrollYoutube media={data.media} />
                 ) : (
                     <p>An error occured.</p>
                 )}

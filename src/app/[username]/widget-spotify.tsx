@@ -1,6 +1,6 @@
-import SpotifyScroll from '@/components/spotify-scroll'
+import WidgetScrollSpotify from '@/components/widget-scroll-spotify'
 import {
-    SpotifyTitle,
+    WidgetTitleSpotify,
     Widget,
     WidgetContent,
     WidgetHeader,
@@ -26,26 +26,22 @@ async function getMedia(accessToken: string) {
     }
 }
 
-export async function SpotifyWidget({ userId }: { userId: string }) {
+export async function WidgetSpotify({ userId }: { userId: string }) {
     const accessToken = await getSpotifyAccessToken(userId)
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
-    if (!media) return null
+    if (!media?.media) return null
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <SpotifyTitle profile={media.profile} />
+                    <WidgetTitleSpotify profile={media.profile} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                {media?.media ? (
-                    <SpotifyScroll media={media.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                <WidgetScrollSpotify media={media.media} />
             </WidgetContent>
         </Widget>
     )

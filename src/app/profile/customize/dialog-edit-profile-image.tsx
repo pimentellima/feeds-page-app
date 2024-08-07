@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { removeUserImage, updateUserImage } from './actions'
 
-export default function ChangeImageDialog({ imageUrl }: { imageUrl?: string }) {
+export default function DialogEditProfileImage({ imageUrl }: { imageUrl?: string }) {
     const [open, setOpen] = useState(false)
     const [error, setError] = useState('')
     const [previewUrl, setPreviewUrl] = useState<string>()

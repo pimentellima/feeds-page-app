@@ -16,15 +16,15 @@ import { Separator } from '@radix-ui/react-separator'
 import { CircleCheckIcon, SquareArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { SignOutButton } from './sign-out-button'
-import ChangeImageDialog from './change-image-dialog'
-import ChangeThemeDropdown from './change-theme-dropdown'
-import { EditLayoutDropdown } from './edit-layout-dropdown'
-import EditProfileDialog from './edit-profile-dialog'
-import ManageIntegrationsDialog from './manage-integrations-dialog'
-import { SocialLinkDialog } from './social-link-dialog'
+import { ButtonSignOut } from './button-sign-out'
+import DialogEditProfileImage from './dialog-edit-profile-image'
+import DropdownEditPageTheme from './dropdown-edit-page-theme'
+import { DropdownEditPageLayout } from './dropdown-edit-page-layout'
+import DialogEditProfile from './dialog-edit-profile'
+import DialogEditIntegrations from './dialog-edit-integrations'
+import { DialogCreateSocialLink } from './dialog-create-social-link'
 import TimelineScroll from './timeline-scroll'
-import UpgradePlanDialog from './upgrade-plan-dialog'
+import DialogUpgradePlan from './dialog-upgrade-plan'
 import { WidgetsEditPanel } from './widgets-edit-panel'
 
 export default async function CustomizePage() {
@@ -44,14 +44,12 @@ export default async function CustomizePage() {
                     flex items-center justify-between lg:justify-normal
                      gap-1 w-full px-6 lg:w-auto lg:px-0"
             >
-                <ChangeThemeDropdown />
+                <DropdownEditPageTheme />
                 <div className="hidden lg:block">
-                    <EditLayoutDropdown layout={user.layout} />
+                    <DropdownEditPageLayout layout={user.layout} />
                 </div>
-                <ManageIntegrationsDialog
-                    integrations={user.integrationTokens}
-                />
-                <SignOutButton />
+                <DialogEditIntegrations integrations={user.integrationTokens} />
+                <ButtonSignOut />
             </div>
             <div
                 className="lg:grid lg:grid-cols-[4fr,10fr] lg:gap-44 lg:min-h-screen bg-background
@@ -61,12 +59,12 @@ export default async function CustomizePage() {
                     <ProfileSection>
                         <ProfileSectionContent>
                             <ProfileSectionImage>
-                                <ChangeImageDialog
+                                <DialogEditProfileImage
                                     imageUrl={user.imageUrl || undefined}
                                 />
                             </ProfileSectionImage>
                             <ProfileSectionInfoContainer>
-                                <EditProfileDialog
+                                <DialogEditProfile
                                     user={{
                                         bio: user.bio,
                                         location: user.location,
@@ -87,14 +85,14 @@ export default async function CustomizePage() {
                         <ProfileSectionLinks>
                             <>
                                 {user.socialLinks.map((link) => (
-                                    <SocialLinkDialog
+                                    <DialogCreateSocialLink
                                         userLinks={user.socialLinks}
                                         key={link.id}
                                         socialLink={link}
                                     />
                                 ))}
                                 {user.socialLinks.length < 6 && (
-                                    <SocialLinkDialog
+                                    <DialogCreateSocialLink
                                         userLinks={user.socialLinks}
                                         key="add_social_link"
                                     />
@@ -103,7 +101,7 @@ export default async function CustomizePage() {
                         </ProfileSectionLinks>
                         <ProfileSectionFooter>
                             {!subscription ? (
-                                <UpgradePlanDialog />
+                                <DialogUpgradePlan />
                             ) : user.username ? (
                                 <Button variant={'outline'} asChild>
                                     <Link
@@ -115,7 +113,7 @@ export default async function CustomizePage() {
                                     </Link>
                                 </Button>
                             ) : (
-                                <EditProfileDialog
+                                <DialogEditProfile
                                     user={user}
                                     trigger={
                                         <Button variant={'outline'}>

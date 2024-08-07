@@ -3,18 +3,18 @@ import { formatDistanceToNow } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
-    Scroll,
-    ScrollContent,
-    ScrollItemCaption,
-    ScrollItemFooter,
-    ScrollItemTimestamp,
-} from './scroll'
+    WidgetScroll,
+    WidgetScrollContent,
+    WidgetScrollItemCaption,
+    WidgetScrollItemFooter,
+    WidgetScrollItemTimestamp,
+} from './widget-scroll'
 import { Separator } from './ui/separator'
 
-export default function SpotifyScroll({ media }: { media: SpotifyMedia[] }) {
+export default function WidgetScrollSpotify({ media }: { media: SpotifyMedia[] }) {
     return (
-        <Scroll>
-            <ScrollContent>
+        <WidgetScroll>
+            <WidgetScrollContent>
                 {media
                     .filter((i) => !!i)
                     .map((track) => (
@@ -30,26 +30,26 @@ export default function SpotifyScroll({ media }: { media: SpotifyMedia[] }) {
                                     className="rounded-md object-contain"
                                     src={track.albumImage}
                                 />
-                                <ScrollItemFooter>
-                                    <ScrollItemCaption>
+                                <WidgetScrollItemFooter>
+                                    <WidgetScrollItemCaption>
                                         {track.trackName}
                                         <p className="text-muted-foreground text-xs">
                                             {track.artistsNames}
                                         </p>
-                                        <ScrollItemTimestamp>
+                                        <WidgetScrollItemTimestamp>
                                             {!!track.playedAt &&
                                                 'played ' + formatDistanceToNow(
                                                     new Date(track.playedAt),
                                                     { addSuffix: true }
                                                 )}
-                                        </ScrollItemTimestamp>
-                                    </ScrollItemCaption>
-                                </ScrollItemFooter>
+                                        </WidgetScrollItemTimestamp>
+                                    </WidgetScrollItemCaption>
+                                </WidgetScrollItemFooter>
                             </Link>
                             <Separator className="my-2 group-last:hidden" />
                         </div>
                     ))}
-            </ScrollContent>
-        </Scroll>
+            </WidgetScrollContent>
+        </WidgetScroll>
     )
 }

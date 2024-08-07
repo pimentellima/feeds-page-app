@@ -15,9 +15,9 @@ import { useState } from 'react'
 import { SocialLinkIcon } from '../../../components/social-icons'
 import { deleteIntegration } from './actions'
 import { LinkIcon } from 'lucide-react'
-import PairAccountButton from './pair-account-button'
+import ButtonConnectAccount from './button-connect-account'
 
-export default function ManageIntegrationsDialog({
+export default function DialogEditIntegrations({
     integrations = [],
 }: {
     integrations: InferSelectModel<typeof integrationTokens>[]
@@ -84,9 +84,9 @@ export default function ManageIntegrationsDialog({
                             <span>Revoke access</span>
                         </Button>
                     ) : (
-                        <PairAccountButton
+                        <ButtonConnectAccount
                             label={'Connect account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
                         />
                     )}
                 </div>
@@ -105,9 +105,9 @@ export default function ManageIntegrationsDialog({
                             <span>Revoke access</span>
                         </Button>
                     ) : (
-                        <PairAccountButton
+                        <ButtonConnectAccount
                             label={'Connect account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
                         />
                     )}
                 </div>
@@ -128,9 +128,9 @@ export default function ManageIntegrationsDialog({
                             <span>Revoke access</span>
                         </Button>
                     ) : (
-                        <PairAccountButton
+                        <ButtonConnectAccount
                             label={'Connect account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/pinterest'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/pinterest'}
                         />
                     )}
                 </div>
@@ -149,9 +149,9 @@ export default function ManageIntegrationsDialog({
                             <span>Revoke access</span>
                         </Button>
                     ) : (
-                        <PairAccountButton
+                        <ButtonConnectAccount
                             label={'Connect account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
                         />
                     )}
                 </div>
@@ -171,9 +171,9 @@ export default function ManageIntegrationsDialog({
                             <span>Revoke access</span>
                         </Button>
                     ) : (
-                        <PairAccountButton
+                        <ButtonConnectAccount
                             label={'Connect account'}
-                            link={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
                         />
                     )}
                 </div>

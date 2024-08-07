@@ -1,54 +1,52 @@
-import { InstagramPost } from '@/lib/api-helpers/instagram'
 import { formatDistanceToNow } from 'date-fns'
-import {
-    Scroll,
-    ScrollContent,
-    ScrollItem,
-    ScrollItemCaption,
-    ScrollItemFooter,
-    ScrollItemImage,
-    ScrollItemTimestamp,
-} from './scroll'
-import { YouTubeVideo } from '@/lib/api-helpers/youtube'
 import { youtube_v3 } from 'googleapis'
+import {
+    WidgetScroll,
+    WidgetScrollContent,
+    WidgetScrollItem,
+    WidgetScrollItemCaption,
+    WidgetScrollItemFooter,
+    WidgetScrollItemImage,
+    WidgetScrollItemTimestamp,
+} from './widget-scroll'
 
-export default function YoutubeScroll({
+export default function WidgetScrollYoutube({
     media,
 }: {
     media: youtube_v3.Schema$Video[]
 }) {
     return (
-        <Scroll>
-            <ScrollContent>
+        <WidgetScroll>
+            <WidgetScrollContent>
                 {media
                     .filter((i) => !!i)
                     .map((video) => (
-                        <ScrollItem
+                        <WidgetScrollItem
                             href={'https://www.youtube.com/watch?v=' + video.id}
                             key={video.id}
                         >
-                            <ScrollItemImage
+                            <WidgetScrollItemImage
                                 mediaUrl={
                                     video.snippet?.thumbnails?.high?.url ||
                                     video.snippet?.thumbnails?.medium?.url ||
                                     ''
                                 }
                             />
-                            <ScrollItemFooter>
-                                <ScrollItemCaption>
+                            <WidgetScrollItemFooter>
+                                <WidgetScrollItemCaption>
                                     {video.snippet?.title}
-                                </ScrollItemCaption>
-                                <ScrollItemTimestamp>
+                                </WidgetScrollItemCaption>
+                                <WidgetScrollItemTimestamp>
                                     {video.snippet?.publishedAt &&
                                         formatDistanceToNow(
                                             new Date(video.snippet.publishedAt),
                                             { addSuffix: true }
                                         )}
-                                </ScrollItemTimestamp>
-                            </ScrollItemFooter>
-                        </ScrollItem>
+                                </WidgetScrollItemTimestamp>
+                            </WidgetScrollItemFooter>
+                        </WidgetScrollItem>
                     ))}
-            </ScrollContent>
-        </Scroll>
+            </WidgetScrollContent>
+        </WidgetScroll>
     )
 }

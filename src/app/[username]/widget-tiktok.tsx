@@ -1,6 +1,6 @@
-import TiktokScroll from '@/components/tiktok-scroll'
+import WidgetScrollTiktok from '@/components/widget-scroll-tiktok'
 import {
-    TiktokTitle,
+    WidgetTitleTiktok,
     Widget,
     WidgetContent,
     WidgetHeader,
@@ -23,25 +23,22 @@ async function getMedia(accessToken: string) {
     }
 }
 
-export async function TiktokWidget({ userId }: { userId: string }) {
+export async function WidgetTiktok({ userId }: { userId: string }) {
     const accessToken = await getTiktokAccessToken(userId)
     if (!accessToken) return null
 
     const media = await getMedia(accessToken)
+    if (!media?.media) return null
 
     return (
         <Widget>
             <WidgetHeader>
                 <WidgetTitle>
-                    <TiktokTitle user={media?.user} />
+                    <WidgetTitleTiktok user={media?.user} />
                 </WidgetTitle>
             </WidgetHeader>
             <WidgetContent>
-                {media?.media ? (
-                    <TiktokScroll media={media.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                <WidgetScrollTiktok media={media.media} />
             </WidgetContent>
         </Widget>
     )

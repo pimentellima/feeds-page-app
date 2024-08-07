@@ -6,9 +6,9 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { RocketIcon, StarsIcon } from 'lucide-react'
-import BuyPlanButton from './buy-plan-button'
+import ButtonBuyPlan from './button-buy-plan'
 
-export default function UpgradePlanDialog() {
+export default function DialogUpgradePlan() {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -30,7 +30,7 @@ export default function UpgradePlanDialog() {
                 </div>
                 <DialogFooter>
                     <div>
-                        <BuyPlanButton />
+                        <ButtonBuyPlan />
                     </div>
                 </DialogFooter>
             </DialogContent>

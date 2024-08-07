@@ -13,7 +13,7 @@ import { PaletteIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { updateUserTheme } from './actions'
 
-export default function ChangeThemeDropdown() {
+export default function DropdownEditPageTheme() {
     const { forcedTheme } = useTheme()
     const { toast } = useToast()
 

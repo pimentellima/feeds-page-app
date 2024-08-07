@@ -98,7 +98,7 @@ export function WidgetContent({ children }: { children: ReactNode }) {
     )
 }
 
-export function InstagramTitle({
+export function WidgetTitleInstagram({
     profile,
 }: {
     profile?: { username?: string }
@@ -118,7 +118,7 @@ export function InstagramTitle({
     )
 }
 
-export function TiktokTitle({
+export function WidgetTitleTiktok({
     user,
 }: {
     user?: { username: string; profile_deep_link: string }
@@ -135,7 +135,7 @@ export function TiktokTitle({
     )
 }
 
-export function YoutubeTitle({
+export function WidgetTitleYoutube({
     channel,
 }: {
     channel?: { customUrl?: string | null; title?: string | null } | null
@@ -155,7 +155,7 @@ export function YoutubeTitle({
     )
 }
 
-export function SpotifyTitle({
+export function WidgetTitleSpotify({
     profile,
 }: {
     profile?: SpotifyUserProfile | null
@@ -172,7 +172,7 @@ export function SpotifyTitle({
     )
 }
 
-export function PinterestTitle({
+export function WidgetTitlePinterest({
     profile,
 }: {
     profile?: { username?: string } | null
