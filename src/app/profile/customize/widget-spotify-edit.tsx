@@ -25,7 +25,7 @@ async function fetchSpotifyMediaFromApi(userId: string) {
     } | null
 }
 
-export default function WidgetSpotifyInteractive({
+export default function WidgetSpotifyEdit({
     userId,
     widgetId,
     removeWidget,

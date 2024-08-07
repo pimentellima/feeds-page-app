@@ -46,11 +46,11 @@ import {
     setWidgetType,
     updateWidgetPosition,
 } from './actions'
-import WidgetInstagramInteractive from './widget-instagram-edit'
-import WidgetPinterestInteractive from './widget-pinterest-edit'
-import WidgetSpotifyInteractive from './widget-spotify-edit'
-import WidgetTiktokInteractive from './widget-tiktok-edit'
-import WidgetYoutubeInteractive from './widget-youtube-edit'
+import WidgetInstagramEdit from './widget-instagram-edit'
+import WidgetPinterestEdit from './widget-pinterest-edit'
+import WidgetSpotifyEdit from './widget-spotify-edit'
+import WidgetTiktokEdit from './widget-tiktok-edit'
+import WidgetYoutubeEdit from './widget-youtube-edit'
 
 type Widget = {
     id: string
@@ -191,7 +191,7 @@ export function WidgetsEditPanel({
                 {sortedWidgets.map((widget) => {
                     if (widget.type === 'instagramIntegration')
                         return (
-                            <WidgetInstagramInteractive
+                            <WidgetInstagramEdit
                                 key={widget.id}
                                 removeWidget={removeWidget}
                                 userId={userId}
@@ -200,7 +200,7 @@ export function WidgetsEditPanel({
                         )
                     if (widget.type === 'tiktokIntegration')
                         return (
-                            <WidgetTiktokInteractive
+                            <WidgetTiktokEdit
                                 key={widget.id}
                                 removeWidget={removeWidget}
                                 userId={userId}
@@ -209,7 +209,7 @@ export function WidgetsEditPanel({
                         )
                     if (widget.type === 'youtubeIntegration')
                         return (
-                            <WidgetYoutubeInteractive
+                            <WidgetYoutubeEdit
                                 key={widget.id}
                                 removeWidget={removeWidget}
                                 userId={userId}
@@ -218,7 +218,7 @@ export function WidgetsEditPanel({
                         )
                     if (widget.type === 'spotifyIntegration')
                         return (
-                            <WidgetSpotifyInteractive
+                            <WidgetSpotifyEdit
                                 key={widget.id}
                                 removeWidget={removeWidget}
                                 userId={userId}
@@ -227,7 +227,7 @@ export function WidgetsEditPanel({
                         )
                     if (widget.type === 'pinterestIntegration')
                         return (
-                            <WidgetPinterestInteractive
+                            <WidgetPinterestEdit
                                 key={widget.id}
                                 removeWidget={removeWidget}
                                 userId={userId}

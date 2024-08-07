@@ -25,7 +25,7 @@ async function fetchInstagramMediaFromApi(userId: string) {
     } | null
 }
 
-export default function WidgetInstagramInteractive({
+export default function WidgetInstagramEdit({
     userId,
     widgetId,
     removeWidget,

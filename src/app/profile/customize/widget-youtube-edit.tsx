@@ -25,7 +25,7 @@ async function fetchYoutubeMediaFromApi(userId: string) {
     } | null
 }
 
-export default function WidgetYoutubeInteractive({
+export default function WidgetYoutubeEdit({
     userId,
     widgetId,
     removeWidget,

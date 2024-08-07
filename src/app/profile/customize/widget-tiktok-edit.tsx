@@ -25,7 +25,7 @@ async function fetchTiktokMediaFromApi(userId: string) {
     } | null
 }
 
-export default function WidgetTiktokInteractive({
+export default function WidgetTiktokEdit({
     userId,
     widgetId,
     removeWidget,

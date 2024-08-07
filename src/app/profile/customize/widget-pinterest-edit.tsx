@@ -25,7 +25,7 @@ async function fetchPinterestMediaFromApi(userId: string) {
     } | null
 }
 
-export default function WidgetPinterestInteractive({
+export default function WidgetPinterestEdit({
     userId,
     widgetId,
     removeWidget,
