@@ -36,7 +36,7 @@ export default function Page() {
                         :
                         <ul className="text-muted-foreground">
                             <li>
-                                Select the "Manage integrations" option from the
+                                Select the "Integrations" option from the
                                 menu.
                             </li>
                         </ul>
