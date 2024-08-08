@@ -4,29 +4,25 @@ import Link from 'next/link'
 
 export default function Page() {
     return (
-        <main className="bg-background min-h-screen flex flex-col items-center p-10">
-            <div className="flex justify-start w-full">
-                <Button asChild variant="link">
-                    <Link href="/">
-                        <ArrowLeftIcon className="mr-1 h-4 w-4" /> Go back
-                    </Link>
-                </Button>
-            </div>
-            <div className="w-1/2 flex flex-col">
+        <main className="bg-background min-h-screen flex flex-col items-center py-3 md:py-20">
+            <div className="mx-3 md:mx-0 md:w-1/2 flex flex-col gap-8 p-3 md:p-14 border rounded-md bg-card text-card-foreground ">
                 <div>
                     <h1 className="text-center text-3xl font-semibold">
                         How to remove access to your data
                     </h1>
                 </div>
-                <p className="mt-3">
+                <p className="text-center mt-1">
                     If you wish to revoke access to your data that has been
                     shared with our application, please follow the instructions
                     below:
                 </p>
-                <ol className="text-left w-full mt-6 space-y-3">
+                <ol className='space-y-3'>
                     <li>
-                        <strong>Access the profile customization page</strong>:
-                        <ul>
+                        <strong className="text-xl font-medium">
+                            1. Access the profile customization page
+                        </strong>
+                        :
+                        <ul className="text-muted-foreground">
                             <li>
                                 Click on the "Account" icon located in the top
                                 right corner of the screen.
@@ -34,8 +30,11 @@ export default function Page() {
                         </ul>
                     </li>
                     <li>
-                        <strong>Manage Integrations</strong>:
-                        <ul>
+                        <strong className="text-xl font-medium">
+                            2. Manage Integrations
+                        </strong>
+                        :
+                        <ul className="text-muted-foreground">
                             <li>
                                 Select the "Manage integrations" option from the
                                 menu.
@@ -43,8 +42,8 @@ export default function Page() {
                         </ul>
                     </li>
                     <li>
-                        <strong>Revoke Access</strong>:
-                        <ul>
+                        <strong className='text-xl font-medium'>3. Revoke Access</strong>:
+                        <ul className='text-muted-foreground'>
                             <li>
                                 In the list of integrations, find the
                                 integration you want to remove.
@@ -56,7 +55,7 @@ export default function Page() {
                         </ul>
                     </li>
                 </ol>
-                <p className="mt-6">
+                <p>
                     These actions will ensure that our application no longer has
                     access to your data. If you have any questions or encounter
                     difficulties during the process, please contact our customer
