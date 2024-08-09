@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/react'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
@@ -23,6 +24,7 @@ export default function RootLayout({
             <body className={inter.className}>
                 <Providers>{children}</Providers>
                 <Toaster />
+                <Analytics />
             </body>
         </html>
     )
