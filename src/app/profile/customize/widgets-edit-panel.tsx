@@ -316,10 +316,10 @@ function WidgetSelectType({
                                     Youtube videos
                                 </div>
                             </SelectItem>
-                            <SelectItem disabled value="instagramIntegration">
+                            <SelectItem value="instagramIntegration">
                                 <div className="flex items-center">
                                     <InstagramIcon className="mr-1 text-pink-400 w-4 h-4" />
-                                    Instagram media (soon)
+                                    Instagram media
                                 </div>
                             </SelectItem>
                             <SelectItem disabled value="spotifyIntegration">
