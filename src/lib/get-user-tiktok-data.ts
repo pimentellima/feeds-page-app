@@ -10,7 +10,7 @@ export default async function (
     await connectRedis()
     const cache = await client.get(`tiktok-data:${userId}`)
     if (!cache) {
-        const data = await getTiktokData(userId)
+        const data = await fetchTikokData(userId)
         const expiresAt = new Date(Date.now() + TIKTOK_MEDIA_STALE_TIME_MS)
         await client.set(
             `tiktok-data:${userId}`,
@@ -26,7 +26,7 @@ export default async function (
 
     if (cacheJson.expiresAt < new Date()) {
         try {
-            const data = await getTiktokData(userId)
+            const data = await fetchTikokData(userId)
             const expiresAt = new Date(Date.now() + TIKTOK_MEDIA_STALE_TIME_MS)
             await client.set(
                 `tiktok-data:${userId}`,
@@ -42,7 +42,7 @@ export default async function (
     return cacheJson.data
 }
 
-async function getTiktokData(
+async function fetchTikokData(
     userId: string
 ): Promise<{ media: TiktokMedia[]; user: TiktokUser }> {
     const accessToken = await getTiktokAccessToken(userId)

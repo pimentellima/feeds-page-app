@@ -73,7 +73,7 @@ export default function WidgetInstagramEdit({
                 ) : isError ? (
                     error?.message === 'No access token' ? (
                         <ButtonConnectAccount
-                            label={'Click to connect your Instagram account'}
+                            label={'Connect your Instagram account'}
                             url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
                         />
                     ) : error?.message === 'Invalid access token' ? (

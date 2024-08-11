@@ -72,7 +72,7 @@ export default function WidgetYoutubeEdit({
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : error?.message === 'No access token' ? (
                     <ButtonConnectAccount
-                        label={'Click to connect your Youtube account'}
+                        label={'Connect your Youtube account'}
                         url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
                     />
                 ) : error?.message === 'Invalid access token' ? (

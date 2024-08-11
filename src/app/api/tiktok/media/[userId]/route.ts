@@ -8,14 +8,14 @@ export async function GET(
     { params }: { params: { userId: string } }
 ) {
     try {
-       const tiktokData = await getUserTiktokData(params.userId)
-         return NextResponse.json(tiktokData)
+        const tiktokData = await getUserTiktokData(params.userId)
+        return NextResponse.json(tiktokData)
     } catch (e) {
         if (e instanceof Error) {
             return NextResponse.json(
                 { message: e.message },
                 {
-                    status: (e.cause as any)?.status,
+                    status: (e.cause as any)?.status || 500,
                     statusText: (e.cause as any)?.statusText,
                 }
             )

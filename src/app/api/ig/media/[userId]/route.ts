@@ -15,7 +15,7 @@ export async function GET(
             return NextResponse.json(
                 { message: e.message },
                 {
-                    status: (e.cause as any)?.status,
+                    status: (e.cause as any)?.status || 500,
                     statusText: (e.cause as any)?.statusText,
                 }
             )

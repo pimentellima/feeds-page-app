@@ -23,7 +23,7 @@ import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import { profileSchema, ProfileValues } from './profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
-import { client } from '@/lib/redis-client'
+import { client, connectRedis } from '@/lib/redis-client'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -348,6 +348,7 @@ export async function deleteIntegration(integrationId: string) {
             .delete(integrationTokens)
             .where(eq(integrationTokens.id, integrationId))
             .returning()
+        await connectRedis()
 
         switch (integration.type) {
             case 'xIntegration':
@@ -371,7 +372,8 @@ export async function deleteIntegration(integrationId: string) {
         }
 
         revalidatePath('/profile/customize')
-    } catch {
+    } catch (e) {
+        console.log(e)
         return 'Error deleting integration'
     }
 }

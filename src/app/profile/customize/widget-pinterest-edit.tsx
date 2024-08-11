@@ -73,7 +73,7 @@ export default function WidgetPinterestEdit({
                 ) : isError ? (
                     error?.message === 'No access token' ? (
                         <ButtonConnectAccount
-                            label={'Click to connect your Pinterest account'}
+                            label={'Connect your Pinterest account'}
                             url={
                                 process.env.NEXT_PUBLIC_URL! + '/api/pinterest'
                             }
