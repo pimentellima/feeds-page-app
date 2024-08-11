@@ -1,8 +1,4 @@
-import {
-    fetchSpotifyMedia,
-    fetchSpotifyProfile,
-} from '@/lib/api-helpers/spotify'
-import { getSpotifyAccessToken } from '@/services/integration-tokens'
+import getUserSpotifyData from '@/lib/get-user-spotify-data'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const revalidate = 1200
@@ -12,25 +8,18 @@ export async function GET(
     { params }: { params: { userId: string } }
 ) {
     try {
-        const accessToken = await getSpotifyAccessToken(params.userId)
-
-        if (!accessToken)
-            return NextResponse.json(
-                { message: 'No access token' },
-                { status: 401 }
-            )
-
-        const media = await fetchSpotifyMedia(accessToken)
-        const profile = await fetchSpotifyProfile(accessToken)
-
-        return NextResponse.json({
-            media,
-            profile,
-        })
+        const spotifyData = await getUserSpotifyData(params.userId)
+        return NextResponse.json(spotifyData)
     } catch (e) {
-        return NextResponse.json(
-            { message: 'Failed fetching data' },
-            { status: 500 }
-        )
+        if (e instanceof Error) {
+            return NextResponse.json(
+                { message: e.message },
+                {
+                    status: (e.cause as any).status,
+                    statusText: (e.cause as any).statusText,
+                }
+            )
+        }
+        return NextResponse.json({ message: 'Internal error' }, { status: 500 })
     }
 }

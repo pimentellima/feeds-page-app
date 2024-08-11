@@ -6,6 +6,7 @@ import {
     serial,
     text,
     timestamp,
+    uniqueIndex,
 } from 'drizzle-orm/pg-core'
 
 export const layoutEnum = pgEnum('layouEnum', [
@@ -72,23 +73,32 @@ export const widgets = pgTable('widgets', {
     pos: serial('pos').notNull(),
 })
 
-export const integrationTokens = pgTable('integrationTokens', {
-    id: text('id')
-        .default(sql`gen_random_uuid()`)
-        .primaryKey(),
-    accessToken: text('accessToken').notNull(),
-    expiresAt: timestamp('expiresAt', {
-        mode: 'date',
-    }),
-    userId: text('userId')
-        .notNull()
-        .references(() => users.id, { onDelete: 'cascade' }),
-    type: integrationTypeEnum('type').notNull(),
-    refreshToken: text('refreshToken'),
-    refreshExpiresAt: timestamp('refreshExpiresAt', {
-        mode: 'date',
-    }),
-})
+export const integrationTokens = pgTable(
+    'integrationTokens',
+    {
+        id: text('id')
+            .default(sql`gen_random_uuid()`)
+            .primaryKey(),
+        accessToken: text('accessToken').notNull(),
+        expiresAt: timestamp('expiresAt', {
+            mode: 'date',
+        }),
+        userId: text('userId')
+            .notNull()
+            .references(() => users.id, { onDelete: 'cascade' }),
+        type: integrationTypeEnum('type').notNull(),
+        refreshToken: text('refreshToken'),
+        refreshExpiresAt: timestamp('refreshExpiresAt', {
+            mode: 'date',
+        }),
+    },
+    (table) => ({
+        uniqueUserType: uniqueIndex('uniqueUserType').on(
+            table.userId,
+            table.type
+        ),
+    })
+)
 
 export const refreshTokens = pgTable('refreshTokens', {
     token: text('token')

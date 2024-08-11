@@ -16,6 +16,7 @@ export default function ButtonConnectAccount({
 
     return (
         <Button
+            size={'sm'}
             variant={'secondary'}
             onClick={async () => {
                 try {

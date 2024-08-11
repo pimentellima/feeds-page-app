@@ -1,5 +1,6 @@
 import { google } from 'googleapis'
 import { oauth2Client } from '../google-oauth-client'
+import { YoutubeChannel, YoutubeVideo } from '@/types/youtube'
 
 interface VideoSnippet {
     publishedAt: string
@@ -37,7 +38,7 @@ interface YouTubeVideosResponse {
     }
 }
 
-export interface YouTubeVideo {
+interface YouTubeVideo {
     kind: string
     etag: string
     id: string
@@ -58,11 +59,11 @@ interface ChannelContentDetails {
 interface YouTubeChannelResponse {
     kind: string // Type of the API response
     etag: string // ETag of the response
-    items: YouTubeChannel[] // Array of channel items
+    items: YouTubeChannelResponse[] // Array of channel items
 }
 
 // Type representing a channel item
-interface YouTubeChannel {
+interface YouTubeChannelResponse {
     kind: string // Type of the channel item
     etag: string // ETag of the channel item
     id: string // Channel ID
@@ -89,7 +90,9 @@ interface ChannelSection {
     }
 }
 
-export async function fetchYoutubeChannel(accessToken: string) {
+export async function fetchYoutubeChannel(
+    accessToken: string
+): Promise<YoutubeChannel> {
     oauth2Client.setCredentials({
         access_token: accessToken,
     })
@@ -101,10 +104,32 @@ export async function fetchYoutubeChannel(accessToken: string) {
         part: ['snippet'],
         mine: true,
     })
+    if (channelResponse.status !== 200 || !channelResponse.data.items)
+        throw new Error(
+            channelResponse.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Youtube channel data',
+            {
+                cause: {
+                    statusText: channelResponse.statusText,
+                    status: channelResponse.status,
+                },
+            }
+        )
 
-    return channelResponse.data.items?.[0].snippet || null
+    const { snippet } = channelResponse.data.items[0]
+    if (!snippet) throw new Error('No available data')
+    const { customUrl, title } = snippet
+    if (!title || !customUrl) throw new Error('No available data')
+
+    return {
+        title,
+        url: customUrl,
+    }
 }
-export async function fetchYoutubeMedia(accessToken: string) {
+export async function fetchYoutubeMedia(
+    accessToken: string
+): Promise<YoutubeVideo[]> {
     oauth2Client.setCredentials({
         access_token: accessToken,
     })
@@ -117,9 +142,21 @@ export async function fetchYoutubeMedia(accessToken: string) {
         part: ['id'],
         access_token: accessToken,
     })
+    if (channelResponse.status !== 200 || !channelResponse.data.items)
+        throw new Error(
+            channelResponse.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Youtube channel data',
+            {
+                cause: {
+                    statusText: channelResponse.statusText,
+                    status: channelResponse.status,
+                },
+            }
+        )
 
-    const channelId = channelResponse.data.items?.[0].id
-    if (!channelId) return null
+    const channelId = channelResponse.data.items[0].id
+    if (!channelId) throw new Error('No channel ID found')
 
     const videosResponse = await youtube.search.list({
         part: ['id'],
@@ -127,12 +164,43 @@ export async function fetchYoutubeMedia(accessToken: string) {
         maxResults: 5,
         order: 'date',
     })
-    const videoIds =
-        videosResponse.data?.items?.map((item) => item.id?.videoId) || []
+    if (videosResponse.status !== 200 || !videosResponse.data.items)
+        throw new Error('Error fetching Youtube media', {
+            cause: {
+                statusText: channelResponse.statusText,
+                status: channelResponse.status,
+            },
+        })
+    const videoIds = videosResponse.data.items.map((item) => item.id?.videoId)
 
     const detailedResponse = await youtube.videos.list({
         part: ['snippet,contentDetails'],
         id: videoIds.filter((i) => typeof i === 'string'),
     })
-    return detailedResponse.data.items
+    if (detailedResponse.status !== 200 || !detailedResponse.data.items)
+        throw new Error('Error fetching Youtube media details', {
+            cause: {
+                statusText: channelResponse.statusText,
+                status: channelResponse.status,
+            },
+        })
+    let result: YoutubeVideo[] = []
+    detailedResponse.data.items.map((i) => {
+        const { id, snippet } = i
+        if (!id) return
+        if (!snippet) return
+        const { title, thumbnails, publishedAt } = snippet
+        if (!title || !thumbnails || !publishedAt) return
+        result.push({
+            id,
+            title,
+            mediaUrl:
+                thumbnails.high?.url ||
+                thumbnails.medium?.url ||
+                thumbnails.default?.url ||
+                '',
+            timestamp: publishedAt,
+        })
+    })
+    return result
 }

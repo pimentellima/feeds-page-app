@@ -1,5 +1,4 @@
-import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
-import { getTiktokAccessToken } from '@/services/integration-tokens'
+import getUserTiktokData from '@/lib/get-user-tiktok-data'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const revalidate = 1200
@@ -9,26 +8,18 @@ export async function GET(
     { params }: { params: { userId: string } }
 ) {
     try {
-        const accessToken = await getTiktokAccessToken(params.userId)
-
-        if (!accessToken)
-            return NextResponse.json(
-                { message: 'No access token' },
-                { status: 401 }
-            )
-
-        const videos = await fetchTiktokMedia(accessToken)
-        const user = await fetchTiktokUser(accessToken)
-
-        return NextResponse.json({
-            videos,
-            user,
-        })
+       const tiktokData = await getUserTiktokData(params.userId)
+         return NextResponse.json(tiktokData)
     } catch (e) {
-        console.log(e)
-        return NextResponse.json(
-            { message: 'Failed fetching data' },
-            { status: 500 }
-        )
+        if (e instanceof Error) {
+            return NextResponse.json(
+                { message: e.message },
+                {
+                    status: (e.cause as any)?.status,
+                    statusText: (e.cause as any)?.statusText,
+                }
+            )
+        }
+        return NextResponse.json({ message: 'Internal error' }, { status: 500 })
     }
 }

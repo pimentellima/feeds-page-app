@@ -1,4 +1,3 @@
-import { TiktokMedia } from '@/lib/api-helpers/tiktok'
 import { formatDistanceToNow } from 'date-fns'
 import {
     WidgetScroll,
@@ -9,6 +8,7 @@ import {
     WidgetScrollItemImage,
     WidgetScrollItemTimestamp,
 } from './widget-scroll'
+import { TiktokMedia } from '@/types/tiktok'
 
 export default function WidgetScrollTiktok({ media }: { media: TiktokMedia[] }) {
     return (

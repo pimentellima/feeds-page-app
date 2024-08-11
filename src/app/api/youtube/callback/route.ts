@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/index'
-import { integrationTokens } from '@/drizzle/schema'
+import { integrationTokens, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { oauth2Client } from '@/lib/google-oauth-client'
 import { cookies } from 'next/headers'
@@ -39,13 +39,23 @@ const handler = async (req: NextRequest, res: NextResponse) => {
             )
         }
 
-        await db.insert(integrationTokens).values({
-            accessToken: access_token,
-            expiresAt: new Date(expiry_date),
-            refreshToken: refresh_token,
-            type: 'youtubeIntegration',
-            userId: session.user.id,
-        })
+        await db
+            .insert(integrationTokens)
+            .values({
+                accessToken: access_token,
+                expiresAt: new Date(expiry_date),
+                refreshToken: refresh_token,
+                type: 'youtubeIntegration',
+                userId: session.user.id,
+            })
+            .onConflictDoUpdate({
+                target: [integrationTokens.userId, integrationTokens.type],
+                set: {
+                    accessToken: access_token,
+                    expiresAt: new Date(expiry_date),
+                    refreshToken: refresh_token,
+                },
+            })
 
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`

@@ -3,12 +3,15 @@ import { integrationTokens } from '@/drizzle/schema'
 import { encodeBody } from '@/lib/encode-body'
 import { oauth2Client } from '@/lib/google-oauth-client'
 import { and, eq, InferSelectModel } from 'drizzle-orm'
-import 'server-only'
 
 export async function refreshInstagramAccessToken(
     token: InferSelectModel<typeof integrationTokens>
 ) {
     if (token.expiresAt && token.expiresAt < new Date()) {
+        if (!token.refreshToken) throw new Error('No refresh token')
+        if (token.refreshExpiresAt && token.refreshExpiresAt < new Date())
+            throw new Error('Refresh token expired')
+
         const response = await fetch(
             'https://graph.instagram.com/refresh_access_token',
             {
@@ -23,6 +26,7 @@ export async function refreshInstagramAccessToken(
                 }),
             }
         )
+        if (!response.ok) throw new Error('Error refreshing token')
         const responseJson = (await response.json()) as {
             access_token: string
             expires_in: number
@@ -43,18 +47,17 @@ export async function refreshInstagramAccessToken(
 }
 
 export async function getInstagramAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'instagramIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) throw new Error('No access token')
     try {
-        const token = await db.query.integrationTokens.findFirst({
-            where: and(
-                eq(integrationTokens.type, 'instagramIntegration'),
-                eq(integrationTokens.userId, userId)
-            ),
-        })
-        if (!token) return null
         return await refreshInstagramAccessToken(token)
-    } catch (e) {
-        console.log(e)
-        return null
+    } catch {
+        throw new Error('Invalid access token')
     }
 }
 
@@ -62,17 +65,18 @@ export async function refreshYoutubeAccessToken(
     token: InferSelectModel<typeof integrationTokens>
 ) {
     if (token.expiresAt && token.expiresAt < new Date()) {
+        if (!token.refreshToken) throw new Error('No refresh token')
+        if (token.refreshExpiresAt && token.refreshExpiresAt < new Date())
+            throw new Error('Refresh token expired')
+
         oauth2Client.setCredentials({
             refresh_token: token.refreshToken,
         })
         const oauth2Response = await oauth2Client.refreshAccessToken()
         const { access_token, expiry_date } = oauth2Response.credentials
-        if (!access_token || !expiry_date) {
-            await db
-                .delete(integrationTokens)
-                .where(eq(integrationTokens.id, token.id))
-            return null
-        }
+        if (!access_token || !expiry_date)
+            throw new Error('Invalid access token')
+
         const [newToken] = await db
             .update(integrationTokens)
             .set({
@@ -81,25 +85,23 @@ export async function refreshYoutubeAccessToken(
             })
             .where(eq(integrationTokens.id, token.id))
             .returning()
-        if (!newToken) return null
         return newToken.accessToken
     }
     return token.accessToken
 }
 
 export async function getYoutubeAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'youtubeIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) throw new Error('No access token')
     try {
-        const token = await db.query.integrationTokens.findFirst({
-            where: and(
-                eq(integrationTokens.type, 'youtubeIntegration'),
-                eq(integrationTokens.userId, userId)
-            ),
-        })
-        if (!token) return null
         return await refreshYoutubeAccessToken(token)
-    } catch (e) {
-        console.log(e)
-        return null
+    } catch {
+        throw new Error('Invalid access token')
     }
 }
 
@@ -107,6 +109,9 @@ export async function refreshTiktokAccessToken(
     token: InferSelectModel<typeof integrationTokens>
 ) {
     if (token.expiresAt && token.expiresAt < new Date()) {
+        if (!token.refreshToken) throw new Error('No refresh token')
+        if (token.refreshExpiresAt && token.refreshExpiresAt < new Date())
+            throw new Error('Refresh token expired')
         const response = await fetch(
             'https://open.tiktokapis.com/v2/oauth/token/',
             {
@@ -122,6 +127,7 @@ export async function refreshTiktokAccessToken(
                 }),
             }
         )
+        if (!response.ok) throw new Error('Error refreshing token')
         const responseJson = (await response.json()) as {
             access_token: string
             expires_in: number
@@ -150,18 +156,17 @@ export async function refreshTiktokAccessToken(
 }
 
 export async function getTiktokAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'tiktokIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) throw new Error('No access token')
     try {
-        const token = await db.query.integrationTokens.findFirst({
-            where: and(
-                eq(integrationTokens.type, 'tiktokIntegration'),
-                eq(integrationTokens.userId, userId)
-            ),
-        })
-        if (!token) return null
         return await refreshTiktokAccessToken(token)
-    } catch (e) {
-        console.log(e)
-        return null
+    } catch {
+        throw new Error('Invalid access token')
     }
 }
 
@@ -170,6 +175,9 @@ export async function refreshSpotifyAccessToken(
 ) {
     if (token.expiresAt && token.expiresAt < new Date(Date.now())) {
         if (!token.refreshToken) throw new Error('No refresh token')
+        if (token.refreshExpiresAt && token.refreshExpiresAt < new Date())
+            throw new Error('Refresh token expired')
+
         const response = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
             headers: {
@@ -187,6 +195,7 @@ export async function refreshSpotifyAccessToken(
                 refresh_token: token.refreshToken,
             }),
         })
+        if (!response.ok) throw new Error('Error refreshing token')
         const responseJson = (await response.json()) as {
             access_token: string
             expires_in: number
@@ -209,18 +218,17 @@ export async function refreshSpotifyAccessToken(
 }
 
 export async function getSpotifyAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'spotifyIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) throw new Error('No access token', { cause: { status: 401 } })
     try {
-        const token = await db.query.integrationTokens.findFirst({
-            where: and(
-                eq(integrationTokens.type, 'spotifyIntegration'),
-                eq(integrationTokens.userId, userId)
-            ),
-        })
-        if (!token) return null
         return await refreshSpotifyAccessToken(token)
-    } catch (e) {
-        console.log(e)
-        return null
+    } catch {
+        throw new Error('Invalid access token', { cause: { status: 401 } })
     }
 }
 
@@ -228,6 +236,10 @@ export async function refreshPinterestAccessToken(
     token: InferSelectModel<typeof integrationTokens>
 ) {
     if (token.expiresAt && token.expiresAt < new Date()) {
+        if (!token.refreshToken) throw new Error('No refresh token')
+        if (token.refreshExpiresAt && token.refreshExpiresAt < new Date())
+            throw new Error('Refresh token expired')
+
         const response = await fetch(
             'https://api.pinterest.com/v1/oauth/token',
             {
@@ -243,6 +255,7 @@ export async function refreshPinterestAccessToken(
                 }),
             }
         )
+        if (!response.ok) throw new Error('Error refreshing token')
         const responseJson = (await response.json()) as {
             access_token: string
             token_type: string
@@ -265,17 +278,16 @@ export async function refreshPinterestAccessToken(
 }
 
 export async function getPinterestAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'pinterestIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) throw new Error('No access token')
     try {
-        const token = await db.query.integrationTokens.findFirst({
-            where: and(
-                eq(integrationTokens.type, 'pinterestIntegration'),
-                eq(integrationTokens.userId, userId)
-            ),
-        })
-        if (!token) return null
         return await refreshPinterestAccessToken(token)
-    } catch (e) {
-        console.log(e)
-        return null
+    } catch {
+        throw new Error('Invalid access token')
     }
 }

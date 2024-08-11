@@ -1,5 +1,4 @@
 'use client'
-import { InstagramPost, InstagramProfile } from '@/lib/api-helpers/instagram'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
@@ -14,15 +13,16 @@ import {
 import ButtonConnectAccount from './button-connect-account'
 import { LoaderCircle } from 'lucide-react'
 import WidgetScrollInstagram from '@/components/widget-scroll-instagram'
+import { InstagramMedia, InstagramProfile } from '@/types/instagram'
 
-async function fetchInstagramMediaFromApi(userId: string) {
+async function fetchInstagramMediaFromApi(userId: string): Promise<{
+    profile: InstagramProfile
+    media: InstagramMedia[]
+}> {
     const res = await fetch('/api/ig/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
-    return data as {
-        profile: InstagramProfile
-        media: InstagramPost[]
-    } | null
+    return data
 }
 
 export default function WidgetInstagramEdit({
@@ -71,19 +71,25 @@ export default function WidgetInstagramEdit({
                 {isLoading ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
-                    error.message === 'No access token' ? (
+                    error?.message === 'No access token' ? (
                         <ButtonConnectAccount
                             label={'Click to connect your Instagram account'}
                             url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
                         />
+                    ) : error?.message === 'Invalid access token' ? (
+                        <div className="flex flex-col items-center gap-1">
+                            <p>Your account has been disconnected.</p>
+                            <ButtonConnectAccount
+                                label={'Reconnect'}
+                                url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                            />
+                        </div>
                     ) : (
-                        <p>An error occured fetching data.</p>
+                        <p>An error occurred fetching data.</p>
                     )
-                ) : data?.media ? (
+                ) : data ? (
                     <WidgetScrollInstagram media={data.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                ) : null}
             </WidgetContent>
         </Widget>
     )

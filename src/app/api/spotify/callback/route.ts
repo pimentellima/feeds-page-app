@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/index'
-import { integrationTokens } from '@/drizzle/schema'
+import { integrationTokens, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { encodeBody } from '@/lib/encode-body'
 import { cookies } from 'next/headers'
@@ -57,13 +57,23 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
             )
         }
-        await db.insert(integrationTokens).values({
-            accessToken: data.access_token,
-            expiresAt: new Date(Date.now() + data.expires_in * 1000),
-            refreshToken: data.refresh_token,
-            type: 'spotifyIntegration',
-            userId: session.user.id,
-        })
+        await db
+            .insert(integrationTokens)
+            .values({
+                accessToken: data.access_token,
+                expiresAt: new Date(Date.now() + data.expires_in * 1000),
+                refreshToken: data.refresh_token,
+                type: 'spotifyIntegration',
+                userId: session.user.id,
+            })
+            .onConflictDoUpdate({
+                target: [integrationTokens.userId, integrationTokens.type],
+                set: {
+                    accessToken: data.access_token,
+                    expiresAt: new Date(Date.now() + data.expires_in * 1000),
+                    refreshToken: data.refresh_token,
+                },
+            })
 
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`

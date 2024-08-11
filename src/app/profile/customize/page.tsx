@@ -52,7 +52,7 @@ export default async function CustomizePage() {
                 <ButtonSignOut />
             </div>
             <div
-                className="lg:grid lg:grid-cols-[4fr,10fr] lg:gap-44 lg:min-h-screen bg-background
+                className="lg:grid lg:grid-cols-[3fr,10fr] lg:gap-44 lg:min-h-screen bg-background
                     flex flex-col px-6 lg:px-0"
             >
                 <div className="lg:fixed lg:top-0 mt-20 lg:h-[80vh]">

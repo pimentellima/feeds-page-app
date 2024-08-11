@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/index'
-import { integrationTokens } from '@/drizzle/schema'
+import { integrationTokens, users } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
@@ -62,7 +62,7 @@ const handler = async (req: NextRequest, res: NextResponse) => {
             )
         }
 
-        await db.insert(integrationTokens).values({
+        const values = {
             accessToken: token.access_token,
             refreshToken: token.refresh_token,
             expiresAt: new Date(Date.now() + token.expires_in * 1000),
@@ -71,7 +71,31 @@ const handler = async (req: NextRequest, res: NextResponse) => {
             ),
             type: 'pinterestIntegration',
             userId: session.user.id,
-        })
+        }
+
+        await db
+            .insert(integrationTokens)
+            .values({
+                accessToken: token.access_token,
+                refreshToken: token.refresh_token,
+                expiresAt: new Date(Date.now() + token.expires_in * 1000),
+                refreshExpiresAt: new Date(
+                    Date.now() + token.refresh_token_expires_in * 1000
+                ),
+                type: 'pinterestIntegration',
+                userId: session.user.id,
+            })
+            .onConflictDoUpdate({
+                target: [integrationTokens.userId, integrationTokens.type],
+                set: {
+                    accessToken: token.access_token,
+                    refreshToken: token.refresh_token,
+                    expiresAt: new Date(Date.now() + token.expires_in * 1000),
+                    refreshExpiresAt: new Date(
+                        Date.now() + token.refresh_token_expires_in * 1000
+                    ),
+                },
+            })
 
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`

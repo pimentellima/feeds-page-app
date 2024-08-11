@@ -1,35 +1,16 @@
-import WidgetScrollTiktok from '@/components/widget-scroll-tiktok'
 import {
-    WidgetTitleTiktok,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetTitle,
+    WidgetTitleTiktok,
 } from '@/components/widget'
-import { fetchTiktokMedia, fetchTiktokUser } from '@/lib/api-helpers/tiktok'
-import { getTiktokAccessToken } from '@/services/integration-tokens'
-
-async function getMedia(accessToken: string) {
-    try {
-        const media = await fetchTiktokMedia(accessToken)
-        const user = await fetchTiktokUser(accessToken)
-
-        return {
-            user,
-            media,
-        }
-    } catch {
-        return null
-    }
-}
+import WidgetScrollTiktok from '@/components/widget-scroll-tiktok'
+import getUserTiktokData from '@/lib/get-user-tiktok-data'
 
 export async function WidgetTiktok({ userId }: { userId: string }) {
-    const accessToken = await getTiktokAccessToken(userId)
-    if (!accessToken) return null
-
-    const media = await getMedia(accessToken)
-    if (!media?.media) return null
-
+    const media = await getUserTiktokData(userId).catch(() => null)
+    if (!media) return null
     return (
         <Widget>
             <WidgetHeader>

@@ -1,3 +1,5 @@
+import { SpotifyPlayedTrack, SpotifyProfile } from '@/types/spotify'
+
 type SpotifyResponse = {
     href: string
     limit: number
@@ -91,7 +93,7 @@ type SpotifyResponse = {
     }>
 }
 
-export type SpotifyUserProfile = {
+type SpotifyUserProfile = {
     country: string
     display_name: string
     email: string
@@ -118,7 +120,7 @@ export type SpotifyUserProfile = {
     uri: string
 }
 
-export interface SpotifyMedia {
+interface SpotifyMedia {
     trackName: string
     artistsNames: string
     albumName: string
@@ -130,56 +132,73 @@ export interface SpotifyMedia {
 
 export async function fetchSpotifyMedia(
     accessToken: string
-): Promise<SpotifyMedia[] | null> {
-    try {
-        const response = await fetch(
-            'https://api.spotify.com/v1/me/player/recently-played?limit=10',
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        )
-        const json = (await response.json()) as SpotifyResponse
-        return json.items.map((item) => {
-            const trackName = item.track.name
-            const artistsNames = item.track.artists
-                .map((artist) => artist.name)
-                .join(', ')
-            const albumName = item.track.album.name
-            const playedAt = item.played_at
-            const albumImage = item.track.album.images[0].url
-            const trackUrl = item.track.external_urls.spotify
-            const trackId: string = item.track.id
-
-            return {
-                trackName,
-                artistsNames,
-                albumName,
-                trackId,
-                playedAt,
-                albumImage,
-                trackUrl,
-            }
-        })
-    } catch(e) {
-        console.log(e)
-        return null
-    }
-}
-
-export async function fetchSpotifyProfile(accessToken: string) {
-    try {
-        const response = await fetch('https://api.spotify.com/v1/me', {
+): Promise<SpotifyPlayedTrack[]> {
+    const response = await fetch(
+        'https://api.spotify.com/v1/me/player/recently-played?limit=10',
+        {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
             },
-        })
-        const json = (await response.json()) as SpotifyUserProfile
-        return json
-    } catch {
-        return null
-    }
+        }
+    )
+    const json = (await response.json()) as SpotifyResponse
+    if (!response.ok)
+        throw new Error(
+            response.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Spotify media',
+            {
+                cause: {
+                    statusText: response.statusText,
+                    status: response.status,
+                },
+            }
+        )
+    return json.items.map((item) => {
+        const trackName = item.track.name
+        const artistsNames = item.track.artists
+            .map((artist) => artist.name)
+            .join(', ')
+        const albumName = item.track.album.name
+        const playedAt = item.played_at
+        const albumImage = item.track.album.images[0].url
+        const trackUrl = item.track.external_urls.spotify
+        const trackId: string = item.track.id
+
+        return {
+            trackName,
+            artistsNames,
+            albumName,
+            trackId,
+            playedAt,
+            albumImage,
+            trackUrl,
+        }
+    })
+}
+
+export async function fetchSpotifyProfile(
+    accessToken: string
+): Promise<SpotifyProfile> {
+    const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    })
+    if (!response.ok)
+        throw new Error(
+            response.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Spotify profile',
+            {
+                cause: {
+                    statusText: response.statusText,
+                    status: response.status,
+                },
+            }
+        )
+    const json = (await response.json()) as SpotifyUserProfile
+    return { display_name: json.display_name, uri: json.uri }
 }

@@ -1,38 +1,16 @@
-import WidgetScrollPinterest from '@/components/widget-scroll-pinterest'
 import {
-    WidgetTitlePinterest,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetTitle,
+    WidgetTitlePinterest,
 } from '@/components/widget'
-import {
-    fetchPinterestUserMedia,
-    fetchPinterestUserProfile,
-} from '@/lib/api-helpers/pinterest'
-import { getPinterestAccessToken } from '@/services/integration-tokens'
-
-async function getMedia(accessToken: string) {
-    try {
-        const media = await fetchPinterestUserMedia(accessToken)
-        const profile = await fetchPinterestUserProfile(accessToken)
-
-        return {
-            profile,
-            media,
-        }
-    } catch {
-        return null
-    }
-}
+import WidgetScrollPinterest from '@/components/widget-scroll-pinterest'
+import getUserPinterestData from '@/lib/get-user-pinterest-data'
 
 export async function WidgetPinterest({ userId }: { userId: string }) {
-    const accessToken = await getPinterestAccessToken(userId)
-    if (!accessToken) return null
-
-    const media = await getMedia(accessToken)
-    if (!media?.media) return null
-
+    const media = await getUserPinterestData(userId).catch(() => null)
+    if (!media) return null
     return (
         <Widget>
             <WidgetHeader>

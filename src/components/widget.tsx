@@ -1,16 +1,13 @@
-import { SpotifyUserProfile } from '@/lib/api-helpers/spotify'
-import { TiktokUser } from '@/lib/api-helpers/tiktok'
 import { DraggableAttributes } from '@dnd-kit/core'
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
-import { youtube_v3 } from 'googleapis'
 import { GripIcon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import { forwardRef, ReactNode } from 'react'
 import InstagramIcon from './instagram-icon'
 import TiktokIcon from './tiktok-icon'
 import SpotifyIcon from './spotify-icon'
-import { PinterestProfile } from '@/lib/api-helpers/pinterest'
 import { SocialLinkIcon } from './social-icons'
+import { SpotifyProfile } from '@/types/spotify'
 
 export function WidgetGrid({
     gridSize,
@@ -22,8 +19,7 @@ export function WidgetGrid({
     return (
         <div
             style={{
-                gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-                gridAutoRows: 'min-content',
+                gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
             }}
             className="flex flex-col gap-4 col-start-2 sm:grid
         sm:gap-4 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
@@ -155,11 +151,7 @@ export function WidgetTitleYoutube({
     )
 }
 
-export function WidgetTitleSpotify({
-    profile,
-}: {
-    profile?: SpotifyUserProfile | null
-}) {
+export function WidgetTitleSpotify({ profile }: { profile?: SpotifyProfile }) {
     return profile?.uri ? (
         <Link className="flex" href={profile.uri}>
             <SpotifyIcon className="h-5 w-5 text-white fill-green-600  mr-1" />

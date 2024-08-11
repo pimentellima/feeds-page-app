@@ -1,28 +1,27 @@
 'use client'
-import WidgetScrollTiktok from '@/components/widget-scroll-tiktok'
 import {
-    WidgetTitleTiktok,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
     WidgetTitle,
+    WidgetTitleTiktok,
 } from '@/components/widget'
-import { TiktokMedia, TiktokUser } from '@/lib/api-helpers/tiktok'
+import WidgetScrollTiktok from '@/components/widget-scroll-tiktok'
+import { TiktokMedia, TiktokUser } from '@/types/tiktok'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle } from 'lucide-react'
 import ButtonConnectAccount from './button-connect-account'
 
-async function fetchTiktokMediaFromApi(userId: string) {
+async function fetchTiktokMediaFromApi(
+    userId: string
+): Promise<{ media: TiktokMedia[]; user: TiktokUser }> {
     const res = await fetch('/api/tiktok/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
-    return data as {
-        videos: TiktokMedia[]
-        user: TiktokUser
-    } | null
+    return data
 }
 
 export default function WidgetTiktokEdit({
@@ -71,19 +70,27 @@ export default function WidgetTiktokEdit({
                 {isLoading ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
-                    error.message === 'No access token' ? (
+                    error?.message === 'No access token' ? (
                         <ButtonConnectAccount
-                            label={'Click to connect your Tiktok account'}
+                            label={'Connect your Tiktok account'}
                             url={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
                         />
+                    ) : error?.message === 'Invalid access token' ? (
+                        <div className="flex flex-col items-center gap-1">
+                            <p>Your account has been disconnected.</p>
+                            <ButtonConnectAccount
+                                label={'Reconnect'}
+                                url={
+                                    process.env.NEXT_PUBLIC_URL! + '/api/tiktok'
+                                }
+                            />
+                        </div>
                     ) : (
-                        <p>An error occured fetching data.</p>
+                        <p>An error occurred fetching data.</p>
                     )
-                ) : data?.videos ? (
-                    <WidgetScrollTiktok media={data.videos} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                ) : data ? (
+                    <WidgetScrollTiktok media={data.media} />
+                ) : null}
             </WidgetContent>
         </Widget>
     )

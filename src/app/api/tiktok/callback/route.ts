@@ -72,6 +72,17 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                 type: 'tiktokIntegration',
                 userId: session.user.id,
             })
+            .onConflictDoUpdate({
+                target: [integrationTokens.userId, integrationTokens.type],
+                set: {
+                    accessToken: data.access_token,
+                    expiresAt: new Date(Date.now() + data.expires_in * 1000),
+                    refreshToken: data.refresh_token,
+                    refreshExpiresAt: new Date(
+                        Date.now() + data.refresh_expires_in * 1000
+                    ),
+                },
+            })
 
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`

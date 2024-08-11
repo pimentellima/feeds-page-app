@@ -1,8 +1,4 @@
-import {
-    fetchInstagramMedia,
-    fetchInstagramProfile,
-} from '@/lib/api-helpers/instagram'
-import { getInstagramAccessToken } from '@/services/integration-tokens'
+import getUserInstagramData from '@/lib/get-user-instagram-data'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const revalidate = 1200
@@ -12,25 +8,18 @@ export async function GET(
     { params }: { params: { userId: string } }
 ) {
     try {
-        const accessToken = await getInstagramAccessToken(params.userId)
-
-        if (!accessToken)
-            return NextResponse.json(
-                { message: 'No access token' },
-                { status: 401 }
-            )
-
-        const media = await fetchInstagramMedia(accessToken)
-        const profile = await fetchInstagramProfile(accessToken)
-
-        return NextResponse.json({
-            profile,
-            media,
-        })
+        const instagramData = await getUserInstagramData(params.userId)
+        return NextResponse.json(instagramData)
     } catch (e) {
-        return NextResponse.json(
-            { message: 'Failed fetching data' },
-            { status: 500 }
-        )
+        if (e instanceof Error) {
+            return NextResponse.json(
+                { message: e.message },
+                {
+                    status: (e.cause as any)?.status,
+                    statusText: (e.cause as any)?.statusText,
+                }
+            )
+        }
+        return NextResponse.json({ message: 'Internal error' }, { status: 500 })
     }
 }

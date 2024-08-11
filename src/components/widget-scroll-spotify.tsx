@@ -1,4 +1,3 @@
-import { SpotifyMedia } from '@/lib/api-helpers/spotify'
 import { formatDistanceToNow } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,8 +9,9 @@ import {
     WidgetScrollItemTimestamp,
 } from './widget-scroll'
 import { Separator } from './ui/separator'
+import { SpotifyPlayedTrack } from '@/types/spotify'
 
-export default function WidgetScrollSpotify({ media }: { media: SpotifyMedia[] }) {
+export default function WidgetScrollSpotify({ media }: { media: SpotifyPlayedTrack[] }) {
     return (
         <WidgetScroll>
             <WidgetScrollContent>

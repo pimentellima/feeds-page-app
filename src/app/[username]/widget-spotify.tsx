@@ -1,38 +1,17 @@
-import WidgetScrollSpotify from '@/components/widget-scroll-spotify'
 import {
-    WidgetTitleSpotify,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetTitle,
+    WidgetTitleSpotify,
 } from '@/components/widget'
-import {
-    fetchSpotifyMedia,
-    fetchSpotifyProfile,
-} from '@/lib/api-helpers/spotify'
-import { getSpotifyAccessToken } from '@/services/integration-tokens'
+import WidgetScrollSpotify from '@/components/widget-scroll-spotify'
+import getUserSpotifyData from '@/lib/get-user-spotify-data'
 
-async function getMedia(accessToken: string) {
-    try {
-        const media = await fetchSpotifyMedia(accessToken)
-        const profile = await fetchSpotifyProfile(accessToken)
-
-        return {
-            profile,
-            media,
-        }
-    } catch {
-        return null
-    }
-}
 
 export async function WidgetSpotify({ userId }: { userId: string }) {
-    const accessToken = await getSpotifyAccessToken(userId)
-    if (!accessToken) return null
-
-    const media = await getMedia(accessToken)
-    if (!media?.media) return null
-
+    const media = await getUserSpotifyData(userId).catch(() => null)
+    if (!media) return null
     return (
         <Widget>
             <WidgetHeader>

@@ -1,4 +1,6 @@
-export interface PinterestProfile {
+import { PinterestMedia, PinterestProfile } from '@/types/pinterest'
+
+export interface PinterestProfileResponse {
     board_count: number
     following_count: number
     pin_count: number
@@ -48,8 +50,9 @@ export interface PinterestPin {
 
 export async function fetchPinterestUserMedia(
     accessToken: string
-): Promise<PinterestPin[]> {
-    const url = 'https://api.pinterest.com/v5/pins'
+): Promise<PinterestMedia[]> {
+    const url =
+        'https://api.pinterest.com/v5/pins?page_size=5&include_protected_pins=true'
 
     const response = await fetch(url, {
         method: 'GET',
@@ -58,8 +61,26 @@ export async function fetchPinterestUserMedia(
             'Content-Type': 'application/json',
         },
     })
+    if (!response.ok)
+        throw new Error(
+            response.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Pinterest media',
+            {
+                cause: {
+                    statusText: response.statusText,
+                    status: response.status,
+                },
+            }
+        )
     const data: { items: PinterestPin[] } = await response.json()
-    return data.items
+    return data.items.map((i) => ({
+        id: i.id,
+        title: i.title,
+        timestamp: i.created_at,
+        url: i.link,
+        mediaUrl: i.media.images['600x'].url,
+    }))
 }
 
 export async function fetchPinterestUserProfile(
@@ -74,7 +95,18 @@ export async function fetchPinterestUserProfile(
             'Content-Type': 'application/json',
         },
     })
-
-    const data: PinterestProfile = await response.json()
-    return data
+    if (!response.ok)
+        throw new Error(
+            response.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Pinterest profile',
+            {
+                cause: {
+                    statusText: response.statusText,
+                    status: response.status,
+                },
+            }
+        )
+    const data: PinterestProfileResponse = await response.json()
+    return { username: data.username }
 }

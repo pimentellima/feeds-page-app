@@ -10,19 +10,19 @@ import {
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
-import { youtube_v3 } from 'googleapis'
 import { LoaderCircle } from 'lucide-react'
 import ButtonConnectAccount from './button-connect-account'
 import WidgetScrollYoutube from '@/components/widget-scroll-youtube'
+import { YoutubeChannel, YoutubeVideo } from '@/types/youtube'
 
-async function fetchYoutubeMediaFromApi(userId: string) {
+async function fetchYoutubeMediaFromApi(userId: string): Promise<{
+    channel: YoutubeChannel
+    media: YoutubeVideo[]
+}> {
     const res = await fetch('/api/youtube/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
-    return data as {
-        channel: youtube_v3.Schema$ChannelSnippet | null
-        media: youtube_v3.Schema$Video[] | null
-    } | null
+    return data
 }
 
 export default function WidgetYoutubeEdit({
@@ -34,7 +34,7 @@ export default function WidgetYoutubeEdit({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
-    const { data, isLoading, error, isError } = useQuery({
+    const { data, isLoading, error } = useQuery({
         queryFn: () => fetchYoutubeMediaFromApi(userId),
         queryKey: ['youtubeMedia', userId],
         refetchOnWindowFocus: false,
@@ -70,20 +70,22 @@ export default function WidgetYoutubeEdit({
             <WidgetContent>
                 {isLoading ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                ) : isError ? (
-                    error.message === 'No access token' ? (
+                ) : error?.message === 'No access token' ? (
+                    <ButtonConnectAccount
+                        label={'Click to connect your Youtube account'}
+                        url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
+                    />
+                ) : error?.message === 'Invalid access token' ? (
+                    <div className="flex flex-col items-center gap-1">
+                        <p>Your account has been disconnected.</p>
                         <ButtonConnectAccount
-                            label={'Click to connect your Youtube account'}
+                            label={'Reconnect'}
                             url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
                         />
-                    ) : (
-                        <p>An error occured fetching data.</p>
-                    )
-                ) : data?.media ? (
+                    </div>
+                ) : data ? (
                     <WidgetScrollYoutube media={data.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                ) : null}
             </WidgetContent>
         </Widget>
     )

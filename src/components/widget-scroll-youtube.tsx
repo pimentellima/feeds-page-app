@@ -13,7 +13,7 @@ import {
 export default function WidgetScrollYoutube({
     media,
 }: {
-    media: youtube_v3.Schema$Video[]
+    media: { mediaUrl: string; id: string; title: string; timestamp: string }[]
 }) {
     return (
         <WidgetScroll>
@@ -25,23 +25,16 @@ export default function WidgetScrollYoutube({
                             href={'https://www.youtube.com/watch?v=' + video.id}
                             key={video.id}
                         >
-                            <WidgetScrollItemImage
-                                mediaUrl={
-                                    video.snippet?.thumbnails?.high?.url ||
-                                    video.snippet?.thumbnails?.medium?.url ||
-                                    ''
-                                }
-                            />
+                            <WidgetScrollItemImage mediaUrl={video.mediaUrl} />
                             <WidgetScrollItemFooter>
                                 <WidgetScrollItemCaption>
-                                    {video.snippet?.title}
+                                    {video.title}
                                 </WidgetScrollItemCaption>
                                 <WidgetScrollItemTimestamp>
-                                    {video.snippet?.publishedAt &&
-                                        formatDistanceToNow(
-                                            new Date(video.snippet.publishedAt),
-                                            { addSuffix: true }
-                                        )}
+                                    {formatDistanceToNow(
+                                        new Date(video.timestamp),
+                                        { addSuffix: true }
+                                    )}
                                 </WidgetScrollItemTimestamp>
                             </WidgetScrollItemFooter>
                         </WidgetScrollItem>

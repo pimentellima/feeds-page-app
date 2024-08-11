@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS "uniqueUserType" ON "integrationTokens" USING btree ("userId","type");

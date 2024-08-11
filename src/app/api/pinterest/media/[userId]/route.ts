@@ -1,8 +1,4 @@
-import {
-    fetchPinterestUserMedia,
-    fetchPinterestUserProfile,
-} from '@/lib/api-helpers/pinterest'
-import { getPinterestAccessToken } from '@/services/integration-tokens'
+import getUserPinterestData from '@/lib/get-user-pinterest-data'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const revalidate = 1200
@@ -12,25 +8,18 @@ export async function GET(
     { params }: { params: { userId: string } }
 ) {
     try {
-        const accessToken = await getPinterestAccessToken(params.userId)
-
-        if (!accessToken)
-            return NextResponse.json(
-                { message: 'No access token' },
-                { status: 401 }
-            )
-
-        const media = await fetchPinterestUserMedia(accessToken)
-        const user = await fetchPinterestUserProfile(accessToken)
-
-        return NextResponse.json({
-            media,
-            user,
-        })
+        const pinterestData = await getUserPinterestData(params.userId)
+        return NextResponse.json(pinterestData)
     } catch (e) {
-        return NextResponse.json(
-            { message: 'Failed fetching data' },
-            { status: 500 }
-        )
+        if (e instanceof Error) {
+            return NextResponse.json(
+                { message: e.message },
+                {
+                    status: (e.cause as any)?.status,
+                    statusText: (e.cause as any)?.statusText,
+                }
+            )
+        }
+        return NextResponse.json({ message: 'Internal error' }, { status: 500 })
     }
 }

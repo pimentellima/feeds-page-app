@@ -1,38 +1,16 @@
-import WidgetScrollInstagram from '@/components/widget-scroll-instagram'
 import {
-    WidgetTitleInstagram,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetTitle,
+    WidgetTitleInstagram,
 } from '@/components/widget'
-import {
-    fetchInstagramMedia,
-    fetchInstagramProfile,
-} from '@/lib/api-helpers/instagram'
-import { getInstagramAccessToken } from '@/services/integration-tokens'
-
-async function getMedia(accessToken: string) {
-    try {
-        const media = await fetchInstagramMedia(accessToken)
-        const profile = await fetchInstagramProfile(accessToken)
-
-        return {
-            profile,
-            media,
-        }
-    } catch {
-        return null
-    }
-}
+import WidgetScrollInstagram from '@/components/widget-scroll-instagram'
+import getUserInstagramData from '@/lib/get-user-instagram-data'
 
 export async function WidgetInstagram({ userId }: { userId: string }) {
-    const accessToken = await getInstagramAccessToken(userId)
-    if (!accessToken) return null
-
-    const media = await getMedia(accessToken)
-    if (!media?.media) return null
-
+    const media = await getUserInstagramData(userId).catch(() => null)
+    if (!media) return null
     return (
         <Widget>
             <WidgetHeader>

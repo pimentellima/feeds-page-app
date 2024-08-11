@@ -1,4 +1,6 @@
-export interface TiktokMedia {
+import { TiktokMedia, TiktokUser } from '@/types/tiktok'
+
+interface TiktokMediaResponse {
     id: string
     title: string
     video_description: string
@@ -12,8 +14,8 @@ export interface TiktokMedia {
     share_url: string
 }
 
-export interface VideoData {
-    videos: TiktokMedia[]
+interface VideoData {
+    videos: TiktokMediaResponse[]
     cursor: number
     has_more: boolean
 }
@@ -29,7 +31,7 @@ interface MediaApiResponse {
     error: Error
 }
 
-export interface TiktokUser {
+interface TiktokUserResponse {
     avatar_url: string
     open_id: string
     profile_deep_link: string
@@ -38,8 +40,8 @@ export interface TiktokUser {
     display_name: string
 }
 
-export interface UserData {
-    user: TiktokUser
+interface UserData {
+    user: TiktokUserResponse
 }
 
 interface UserApiResponse {
@@ -47,7 +49,9 @@ interface UserApiResponse {
     error: Error
 }
 
-export async function fetchTiktokUser(accessToken: string) {
+export async function fetchTiktokUser(
+    accessToken: string
+): Promise<TiktokUser> {
     const profileUrl =
         'https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,profile_deep_link,username'
 
@@ -57,12 +61,29 @@ export async function fetchTiktokUser(accessToken: string) {
             Authorization: `Bearer ${accessToken}`,
         },
     })
+    if (!response.ok)
+        throw new Error(
+            response.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Tiktok user',
+            {
+                cause: {
+                    statusText: response.statusText,
+                    status: response.status,
+                },
+            }
+        )
     const responseJson = (await response.json()) as UserApiResponse
 
-    return responseJson.data.user
+    return {
+        profile_deep_link: responseJson.data.user.profile_deep_link,
+        username: responseJson.data.user.username,
+    }
 }
 
-export async function fetchTiktokMedia(accessToken: string) {
+export async function fetchTiktokMedia(
+    accessToken: string
+): Promise<TiktokMedia[]> {
     const mediaUrl =
         'https://open.tiktokapis.com/v2/video/list/?fields=id,title,video_description,duration,cover_image_url,embed_link,create_time,share_url,comment_count,share_count,view_count'
 
@@ -73,6 +94,24 @@ export async function fetchTiktokMedia(accessToken: string) {
             'Content-Type': 'application/json',
         },
     })
+    if (!response.ok)
+        throw new Error(
+            response.status === 401
+                ? 'Invalid access token'
+                : 'Error fetching Tiktok media',
+            {
+                cause: {
+                    statusText: response.statusText,
+                    status: response.status,
+                },
+            }
+        )
     const responseJson = (await response.json()) as MediaApiResponse
-    return responseJson.data.videos
+    return responseJson.data.videos.map((i) => ({
+        cover_image_url: i.cover_image_url,
+        create_time: i.create_time,
+        id: i.id,
+        share_url: i.share_url,
+        title: i.title,
+    }))
 }

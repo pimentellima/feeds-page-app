@@ -1,4 +1,3 @@
-import { PinterestPin } from '@/lib/api-helpers/pinterest'
 import { formatDistanceToNow } from 'date-fns'
 import {
     WidgetScroll,
@@ -9,22 +8,27 @@ import {
     WidgetScrollItemImage,
     WidgetScrollItemTimestamp,
 } from './widget-scroll'
+import { PinterestMedia } from '@/types/pinterest'
 
-export default function WidgetScrollPinterest({ media }: { media: PinterestPin[] }) {
+export default function WidgetScrollPinterest({
+    media,
+}: {
+    media: PinterestMedia[]
+}) {
     return (
         <WidgetScroll>
             <WidgetScrollContent>
                 {media.map((pin) => (
-                    <WidgetScrollItem href={pin.link} key={pin.id}>
-                        <WidgetScrollItemImage
-                            mediaUrl={pin.media.images['600x'].url}
-                        />
+                    <WidgetScrollItem href={pin.url} key={pin.id}>
+                        <WidgetScrollItemImage mediaUrl={pin.mediaUrl} />
                         <WidgetScrollItemFooter>
-                            <WidgetScrollItemCaption>{pin.title}</WidgetScrollItemCaption>
+                            <WidgetScrollItemCaption>
+                                {pin.title}
+                            </WidgetScrollItemCaption>
                             <WidgetScrollItemTimestamp>
-                                {!!pin.created_at &&
+                                {!!pin.timestamp &&
                                     formatDistanceToNow(
-                                        new Date(pin.created_at),
+                                        new Date(pin.timestamp),
                                         { addSuffix: true }
                                     )}
                             </WidgetScrollItemTimestamp>

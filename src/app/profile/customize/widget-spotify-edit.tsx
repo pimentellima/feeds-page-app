@@ -1,28 +1,27 @@
 'use client'
-import WidgetScrollSpotify from '@/components/widget-scroll-spotify'
 import {
-    WidgetTitleSpotify,
     Widget,
     WidgetContent,
     WidgetHeader,
     WidgetOptions,
     WidgetTitle,
+    WidgetTitleSpotify,
 } from '@/components/widget'
-import { SpotifyMedia, SpotifyUserProfile } from '@/lib/api-helpers/spotify'
+import WidgetScrollSpotify from '@/components/widget-scroll-spotify'
+import { SpotifyPlayedTrack, SpotifyProfile } from '@/types/spotify'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle } from 'lucide-react'
 import ButtonConnectAccount from './button-connect-account'
 
-async function fetchSpotifyMediaFromApi(userId: string) {
+async function fetchSpotifyMediaFromApi(
+    userId: string
+): Promise<{ media: SpotifyPlayedTrack[]; profile: SpotifyProfile }> {
     const res = await fetch('/api/spotify/media/' + userId)
     const data = await res.json()
     if (!res.ok) throw new Error(data.message)
-    return data as {
-        media: SpotifyMedia[] | null
-        profile: SpotifyUserProfile | null
-    } | null
+    return data
 }
 
 export default function WidgetSpotifyEdit({
@@ -71,19 +70,28 @@ export default function WidgetSpotifyEdit({
                 {isLoading ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : isError ? (
-                    error.message === 'No access token' ? (
+                    error?.message === 'No access token' ? (
                         <ButtonConnectAccount
-                            label={'Click to connect your Spotify account'}
+                            label={'Connect your Spotify account'}
                             url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
                         />
+                    ) : error?.message === 'Invalid access token' ? (
+                        <div className='flex flex-col items-center gap-1'>
+                            <p>Your account has been disconnected.</p>
+                            <ButtonConnectAccount
+                                label={'Reconnect'}
+                                url={
+                                    process.env.NEXT_PUBLIC_URL! +
+                                    '/api/spotify'
+                                }
+                            />
+                        </div>
                     ) : (
-                        <p>An error occured fetching data.</p>
+                        <p>An error occurred fetching data.</p>
                     )
-                ) : data?.media ? (
+                ) : data ? (
                     <WidgetScrollSpotify media={data.media} />
-                ) : (
-                    <p>An error occured fetching data.</p>
-                )}
+                ) : null}
             </WidgetContent>
         </Widget>
     )

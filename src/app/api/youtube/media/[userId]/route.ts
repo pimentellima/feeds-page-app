@@ -1,8 +1,4 @@
-import {
-    fetchYoutubeChannel,
-    fetchYoutubeMedia,
-} from '@/lib/api-helpers/youtube'
-import { getYoutubeAccessToken } from '@/services/integration-tokens'
+import getUserYoutubeData from '@/lib/get-user-youtube-data'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const revalidate = 1200
@@ -12,25 +8,19 @@ export async function GET(
     { params }: { params: { userId: string } }
 ) {
     try {
-        const accessToken = await getYoutubeAccessToken(params.userId)
-
-        if (!accessToken)
-            return NextResponse.json(
-                { message: 'No access token' },
-                { status: 401 }
-            )
-
-        const media = await fetchYoutubeMedia(accessToken)
-        const channel = await fetchYoutubeChannel(accessToken)
-
-        return NextResponse.json({
-            media,
-            channel,
-        })
+        const userId = params.userId
+        const youtubeData = await getUserYoutubeData(userId)
+        return NextResponse.json(youtubeData)
     } catch (e) {
-        return NextResponse.json(
-            { message: 'Failed fetching data' },
-            { status: 500 }
-        )
+        if (e instanceof Error) {
+            return NextResponse.json(
+                { message: e.message },
+                {
+                    status: (e.cause as any)?.status,
+                    statusText: (e.cause as any)?.statusText,
+                }
+            )
+        }
+        return NextResponse.json({ message: 'Internal error' }, { status: 500 })
     }
 }
