@@ -5,7 +5,7 @@ import {
     integrationTokens,
     socialLinks,
     users,
-    widgets
+    widgets,
 } from '@/drizzle/schema'
 import { auth } from '@/lib/auth'
 import { deleteFile, uploadFile } from '@/lib/gcs'
@@ -23,6 +23,7 @@ import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import { profileSchema, ProfileValues } from './profile-schema'
 import { schema, SocialLinkValues } from './social-link-schema'
+import { client } from '@/lib/redis-client'
 
 export async function createSocialLink(values: SocialLinkValues) {
     try {
@@ -343,9 +344,32 @@ export async function deleteIntegration(integrationId: string) {
         const session = await auth()
         if (!session?.user) return 'Unauthenticated'
 
-        await db
+        const [integration] = await db
             .delete(integrationTokens)
             .where(eq(integrationTokens.id, integrationId))
+            .returning()
+
+        switch (integration.type) {
+            case 'xIntegration':
+                await client.del(`x-data:${session.user.id}`)
+                break
+            case 'youtubeIntegration':
+                await client.del(`youtube-data:${session.user.id}`)
+                break
+            case 'spotifyIntegration':
+                await client.del(`spotify-data:${session.user.id}`)
+                break
+            case 'instagramIntegration':
+                await client.del(`instagram-data:${session.user.id}`)
+                break
+            case 'pinterestIntegration':
+                await client.del(`pinterest-data:${session.user.id}`)
+                break
+            case 'tiktokIntegration':
+                await client.del(`tiktok-data:${session.user.id}`)
+                break
+        }
+
         revalidatePath('/profile/customize')
     } catch {
         return 'Error deleting integration'
