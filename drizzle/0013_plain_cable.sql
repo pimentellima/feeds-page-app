@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "layout" SET DEFAULT 'grid2x2';

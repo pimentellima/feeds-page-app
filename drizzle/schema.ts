@@ -25,7 +25,7 @@ export const users = pgTable('users', {
     username: text('username'),
     location: text('location'),
     bio: text('bio'),
-    layout: layoutEnum('layout'),
+    layout: layoutEnum('layout').default('grid2x2'),
     theme: text('theme'),
     email: text('email'),
     password: text('password'),
