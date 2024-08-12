@@ -4,48 +4,70 @@
 
 @layer base {
     :root {
-        --background: 345 10% 10%;
-        --foreground: 345 2% 100%;
-        --card: 345 2% 10%;
-        --card-foreground: 345 2% 100%;
-        --popover: 345 10% 5%;
-        --popover-foreground: 345 2% 100%;
-        --primary: 345 59% 35%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 345 10% 20%;
-        --secondary-foreground: 0 0% 100%;
-        --muted: 307 10% 25%;
-        --muted-foreground: 345 2% 65%;
-        --accent: 307 10% 25%;
-        --accent-foreground: 345 2% 95%;
-        --destructive: 0 50% 50%;
-        --destructive-foreground: 345 2% 100%;
-        --border: 345 20% 50%;
-        --input: 345 20% 50%;
-        --ring: 345 59% 35%;
+        --gradient: #c1dfc4;
+
+        --background: 134 20.8% 6.56%;
+        --foreground: 134 3.2% 99.1%;
+
+        --muted: 134 16% 24.599999999999998%;
+        --muted-foreground: 134 3.2% 58.2%;
+
+        --popover: 134 58.6% 10.66%;
+        --popover-foreground: 134 3.2% 99.1%;
+
+        --card: 134 58.6% 10.66%;
+        --card-foreground: 134 3.2% 99.1%;
+
+        --border: 134 16% 24.599999999999998%;
+        --input: 134 16% 24.599999999999998%;
+
+        --primary: 134 32% 82%;
+        --primary-foreground: 134 3.2% 8.2%;
+
+        --secondary: 134 16% 24.599999999999998%;
+        --secondary-foreground: 134 3.2% 99.1%;
+
+        --accent: 134 16% 24.599999999999998%;
+        --accent-foreground: 134 3.2% 99.1%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 134 3.2% 99.1%;
+
+        --ring: 134 32% 82%;
         --radius: 0.75rem;
     }
 
     .default {
-        --background: 345 10% 10%;
-        --foreground: 345 2% 100%;
-        --card: 345 2% 10%;
-        --card-foreground: 345 2% 100%;
-        --popover: 345 10% 5%;
-        --popover-foreground: 345 2% 100%;
-        --primary: 345 59% 35%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 345 10% 20%;
-        --secondary-foreground: 0 0% 100%;
-        --muted: 307 10% 25%;
-        --muted-foreground: 345 2% 65%;
-        --accent: 307 10% 25%;
-        --accent-foreground: 345 2% 95%;
-        --destructive: 0 50% 50%;
-        --destructive-foreground: 345 2% 100%;
-        --border: 345 20% 50%;
-        --input: 345 20% 50%;
-        --ring: 345 59% 35%;
+        --gradient: #c1dfc4;
+
+        --background: 134 20.8% 6.56%;
+        --foreground: 134 3.2% 99.1%;
+
+        --muted: 134 16% 24.599999999999998%;
+        --muted-foreground: 134 3.2% 58.2%;
+
+        --popover: 134 58.6% 10.66%;
+        --popover-foreground: 134 3.2% 99.1%;
+
+        --card: 134 58.6% 10.66%;
+        --card-foreground: 134 3.2% 99.1%;
+
+        --border: 134 16% 24.599999999999998%;
+        --input: 134 16% 24.599999999999998%;
+
+        --primary: 134 32% 82%;
+        --primary-foreground: 134 3.2% 8.2%;
+
+        --secondary: 134 16% 24.599999999999998%;
+        --secondary-foreground: 134 3.2% 99.1%;
+
+        --accent: 134 16% 24.599999999999998%;
+        --accent-foreground: 134 3.2% 99.1%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 134 3.2% 99.1%;
+
+        --ring: 134 32% 82%;
         --radius: 0.75rem;
     }
 
@@ -464,51 +486,19 @@
         --radius: 0.75rem;
     }
 
-    .pastel-green {
-        /* CSS: .bg-gradient { background: var(--gradient) } */
-        --gradient: #c1dfc4;
-
-        --background: 134 20.8% 6.56%;
-        --foreground: 134 3.2% 99.1%;
-
-        --muted: 134 16% 24.599999999999998%;
-        --muted-foreground: 134 3.2% 58.2%;
-
-        --popover: 134 58.6% 10.66%;
-        --popover-foreground: 134 3.2% 99.1%;
-
-        --card: 134 58.6% 10.66%;
-        --card-foreground: 134 3.2% 99.1%;
-
-        --border: 134 16% 24.599999999999998%;
-        --input: 134 16% 24.599999999999998%;
-
-        --primary: 134 32% 82%;
-        --primary-foreground: 134 3.2% 8.2%;
-
-        --secondary: 134 16% 24.599999999999998%;
-        --secondary-foreground: 134 3.2% 99.1%;
-
-        --accent: 134 16% 24.599999999999998%;
-        --accent-foreground: 134 3.2% 99.1%;
-
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 134 3.2% 99.1%;
-
-        --ring: 134 32% 82%;
-        --radius: 0.75rem;
-    }
-
     .bg-gradient {
         background: var(--gradient);
     }
 }
 
 @layer base {
+    html {
+        @apply scroll-smooth;
+      }
     * {
         @apply border-border;
     }
     body {
-        @apply text-foreground bg-background;
+        @apply text-foreground bg-background shadow-2xl;
     }
 }
