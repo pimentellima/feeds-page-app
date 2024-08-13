@@ -499,6 +499,6 @@
         @apply border-border;
     }
     body {
-        @apply text-foreground bg-background shadow-2xl;
+        @apply text-foreground bg-background;
     }
 }

@@ -1,28 +1,27 @@
 import {
     ProfileSection,
     ProfileSectionContent,
-    ProfileSectionFooter,
     ProfileSectionImage,
     ProfileSectionInfo,
     ProfileSectionInfoContainer,
     ProfileSectionLinks,
 } from '@/components/profile-section'
+import { SocialLinkIcon } from '@/components/social-icons'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import UserAvatar from '@/components/user-avatar'
 import { WidgetGrid } from '@/components/widget'
-import { getUserByUsername } from '@/services/user'
-import { SquareArrowRightIcon } from 'lucide-react'
+import { getSubscriptionByUserId } from '@/services/subscriptions'
+import { getUser, getUserByUsername } from '@/services/user'
+import { NewspaperIcon } from 'lucide-react'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import TimelineScroll from '@/components/timeline-scroll'
 import { WidgetInstagram } from './widget-instagram'
+import { WidgetPinterest } from './widget-pinterest'
+import { WidgetSpotify } from './widget-spotify'
 import { WidgetTiktok } from './widget-tiktok'
 import { WidgetYoutube } from './widget-youtube'
-import { WidgetSpotify } from './widget-spotify'
-import { WidgetPinterest } from './widget-pinterest'
-import { SocialLinkIcon } from '@/components/social-icons'
-import { getSubscriptionByUserId } from '@/services/subscriptions'
-import { redirect } from 'next/navigation'
-import TimelineScroll from '../profile/customize/timeline-scroll'
+import { auth } from '@/lib/auth'
 
 export const revalidate = 1200
 
@@ -31,6 +30,7 @@ export async function generateMetadata({
 }: {
     params: { username: string }
 }) {
+    if (params.username === 'preview') return { title: 'Feeds - Preview' }
     const user = await getUserByUsername(params.username)
     const name = user.name || user.username
     return {
@@ -43,8 +43,15 @@ export default async function UserPage({
 }: {
     params: { username: string }
 }) {
-    const user = await getUserByUsername(params.username)
-    const subscription = await getSubscriptionByUserId(user.id)
+    let user = null
+    if (params.username === 'preview') {
+        const session = await auth()
+        user = await getUser(session?.user.id as string)
+    } else {
+        user = await getUserByUsername(params.username)
+    }
+
+    const subscription = user ? await getSubscriptionByUserId(user.id) : null
 
     if (!user || !subscription) {
         return redirect('/404')
@@ -132,10 +139,15 @@ export default async function UserPage({
                     </WidgetGrid>
                 )}
             </div>
-            <Button className="mb-8" variant={'secondary'} size={'lg'} asChild>
+            <Button
+                className="mb-5 sm:mb-0 sm:fixed bottom-5 right-5"
+                variant={'secondary'}
+                size={'sm'}
+                asChild
+            >
                 <Link href={'/sign-in'}>
-                    <SquareArrowRightIcon className="h-4 w-4 mr-1" /> Create
-                    your Feed Page
+                    <NewspaperIcon className="text-primary h-4 w-4 mr-1" />{' '}
+                    Create your Feed Page
                 </Link>
             </Button>
         </div>

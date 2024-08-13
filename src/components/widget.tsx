@@ -21,7 +21,7 @@ export function WidgetGrid({
             style={{
                 gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
             }}
-            className="flex flex-col lg:grid w-full gap-4 pb-5 lg:pb-10"
+            className="flex flex-col lg:grid w-full gap-4"
         >
             {children}
         </div>

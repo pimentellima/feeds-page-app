@@ -24,8 +24,9 @@ import DialogEditProfileImage from './dialog-edit-profile-image'
 import DialogUpgradePlan from './dialog-upgrade-plan'
 import { DropdownEditPageLayout } from './dropdown-edit-page-layout'
 import DropdownEditPageTheme from './dropdown-edit-page-theme'
-import TimelineScroll from './timeline-scroll'
+import TimelineScroll from '../../../components/timeline-scroll'
 import { WidgetsEditPanel } from './widgets-edit-panel'
+import DialogMobileView from './dialog-mobile-view'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -146,6 +147,9 @@ function MenuItems({
                 />
             </div>
             <div className="flex justify-end">
+                <div className="hidden sm:block">
+                    <DialogMobileView />
+                </div>
                 <DropdownEditPageTheme />
                 <DropdownEditPageLayout layout={user.layout} />
                 <DialogEditIntegrations integrations={user.integrationTokens} />
