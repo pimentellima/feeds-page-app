@@ -13,14 +13,14 @@ export const planPrice =
         : 'price_1PjqYkEyugco4uX2723GUXyS'
 
 export const themes = [
-    { name: 'default', label: 'Default', gradient: '#c1dfc4' },
-    { name: 'aspargus-green', label: 'Asparagus green', gradient: '#215f00' },
-    { name: 'ultra-pink', label: 'Ultra pink', gradient: '#f857a6' },
-    { name: 'lavender-mist', label: 'Lavender mist', gradient: '#ddd6f3' },
-    { name: 'mango-tango', label: 'Mango tango', gradient: '#FD8112' },
-    { name: 'walnut-brown', label: 'Walnut brown', gradient: '#603813' },
-    { name: 'dark-chocolate', label: 'Dark chocolate', gradient: '#fdfcfb' },
-    { name: 'blush-pink', label: 'Blush Pink', gradient: '#fccfcf' },
-    { name: 'charcoal-blue', label: 'Charcoal blue', gradient: '#314755' },
-    { name: 'vivid-red', label: 'Vivid red', gradient: '#F00000' },
+    { name: 'default', gradient: '#0b2b13' },
+    { name: 'walnut-brown', gradient: '#f3ece4' },
+    { name: 'dark-cyan', gradient: '#091a1d' },
+    { name: 'aspargus-green', gradient: '#e9ece8' },
+    { name: 'ultra-pink', gradient: '#270b1e' },
+    { name: 'blush-pink', gradient: '#fccfcf' },
+    { name: 'lavender-mist', gradient: '#1e0e2d' },
+    { name: 'pastel-blue', gradient: '#e1e4f3' },
+    { name: 'dark-chocolate', gradient: '#34220e' },
+    { name: 'pale-rose', gradient: '#f2e5e5' },
 ]

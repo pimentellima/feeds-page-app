@@ -58,7 +58,7 @@ export default async function UserPage({
     }
 
     return (
-        <div className="flex flex-col items-center gap-3 mt-3 px-3 md:px-24 lg:px-60">
+        <div className="flex flex-col items-center gap-3 py-3 px-3 md:px-24 lg:px-60">
             <ProfileSection>
                 <ProfileSectionContent>
                     <ProfileSectionImage>

@@ -40,7 +40,7 @@ export default async function CustomizePage() {
     const subscription = await getSubscriptionByUserId(session.user.id)
 
     return (
-        <div className="px-3 md:px-24 lg:px-60">
+        <div className="px-3 py-3 md:px-24 lg:px-60">
             <MenuItems hasSubscription={!!subscription} user={user} />
             <div className="flex flex-col items-center gap-3 mt-5">
                 <ProfileSection>

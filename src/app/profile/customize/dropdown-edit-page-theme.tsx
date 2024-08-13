@@ -40,26 +40,22 @@ export default function DropdownEditPageTheme({
                 {trigger || (
                     <Button variant="ghost">
                         <PaletteIcon className="sm:mr-1 mr-0 h-4 w-4" />
-                        <span className='hidden sm:block'>Theme</span>
+                        <span className="hidden sm:block">Theme</span>
                     </Button>
                 )}
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-44">
                 <DropdownMenuRadioGroup
+                    className="grid grid-cols-2"
                     value={forcedTheme}
                     onValueChange={(theme) => handleChangeTheme(theme)}
                 >
-                    {themes.map(({ gradient, label, name }) => (
-                        <DropdownMenuRadioItem
-                            key={name}
-                            value={name}
-                            className="flex items-center"
-                        >
+                    {themes.map(({ gradient, name }) => (
+                        <DropdownMenuRadioItem key={name} value={name}>
                             <div
                                 style={{ backgroundColor: gradient }}
-                                className="rounded-full h-4 w-4 mr-2"
+                                className="rounded-full h-4 w-4 ring-1 ring-secondary"
                             />
-                            {label}
                         </DropdownMenuRadioItem>
                     ))}
                 </DropdownMenuRadioGroup>
