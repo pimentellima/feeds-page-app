@@ -38,9 +38,9 @@ export default function DropdownEditPageTheme({
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 {trigger || (
-                    <Button variant="ghost">
-                        <PaletteIcon className="sm:mr-1 mr-0 h-4 w-4" />
-                        <span className="hidden sm:block">Theme</span>
+                    <Button size={'sm'} variant="ghost">
+                        <PaletteIcon className="mr-1 h-4 w-4" />
+                        <span className="text-xs sm:text-sm">Theme</span>
                     </Button>
                 )}
             </DropdownMenuTrigger>

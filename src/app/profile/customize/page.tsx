@@ -41,7 +41,7 @@ export default async function CustomizePage() {
 
     return (
         <>
-            <div className="px-5 py-3 md:px-24 lg:px-60">
+            <div className="md:px-24 sm:pb-2 lg:px-60">
                 <MenuItems hasSubscription={!!subscription} user={user} />
             </div>
             <div className="flex flex-col items-center py-3 px-3 md:px-24 lg:px-60">
@@ -138,7 +138,7 @@ function MenuItems({
     }
 }) {
     return (
-        <div className="mt-4 flex justify-end sm:justify-between">
+        <div className="mt-4 flex justify-center sm:justify-between">
             <div className="hidden sm:block">
                 <ButtonVisitPage
                     hasSubscription={hasSubscription}

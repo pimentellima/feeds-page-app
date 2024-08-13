@@ -51,9 +51,9 @@ export function DropdownEditPageLayout({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost">
+                <Button variant="ghost" size={'sm'}>
                     <LayoutIcon className="mr-1 h-4 w-4" />
-                    <span className="hidden sm:block">Layout</span>
+                    <span className="text-xs sm:text-sm">Layout</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">

@@ -16,9 +16,9 @@ export default function DialogSharePage({ username }: { username: string }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="ghost">
+                <Button variant="ghost" size={'sm'}>
                     <Share2Icon className="mr-1 h-4 w-4 text-yellow-500" />
-                    <span className="hidden sm:block ">Share</span>
+                    <span className="text-xs sm:text-sm ">Share</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

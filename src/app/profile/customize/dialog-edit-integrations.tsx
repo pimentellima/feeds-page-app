@@ -58,9 +58,9 @@ export default function DialogEditIntegrations({
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
                 {trigger || (
-                    <Button variant="ghost">
+                    <Button variant="ghost" size={'sm'}>
                         <LinkIcon className="mr-0 sm:mr-1 h-4 w-4" />
-                        <span className='hidden sm:block'>Integrations</span>
+                        <span className='text-xs sm:text-sm'>Accounts</span>
                     </Button>
                 )}
             </DialogTrigger>
