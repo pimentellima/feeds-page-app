@@ -19,8 +19,10 @@ import ButtonConnectAccount from './button-connect-account'
 
 export default function DialogEditIntegrations({
     integrations = [],
+    trigger
 }: {
     integrations: InferSelectModel<typeof integrationTokens>[]
+    trigger?: React.ReactNode
 }) {
     const { toast } = useToast()
     const [open, setOpen] = useState(false)
@@ -55,10 +57,12 @@ export default function DialogEditIntegrations({
     return (
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
             <DialogTrigger asChild>
-                <Button variant="ghost">
-                    <LinkIcon className="mr-1 h-4 w-4" />
-                    <span>Integrations</span>
-                </Button>
+                {trigger || (
+                    <Button variant="ghost">
+                        <LinkIcon className="mr-0 sm:mr-1 h-4 w-4" />
+                        <span className='hidden sm:block'>Integrations</span>
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -130,7 +134,9 @@ export default function DialogEditIntegrations({
                     ) : (
                         <ButtonConnectAccount
                             label={'Connect account'}
-                            url={process.env.NEXT_PUBLIC_URL! + '/api/pinterest'}
+                            url={
+                                process.env.NEXT_PUBLIC_URL! + '/api/pinterest'
+                            }
                         />
                     )}
                 </div>

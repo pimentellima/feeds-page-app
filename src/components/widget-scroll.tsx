@@ -5,10 +5,10 @@ import { ScrollArea } from './ui/scroll-area'
 import { Separator } from './ui/separator'
 
 export function WidgetScroll({ children }: { children: ReactNode }) {
-    return <ScrollArea className="h-96 w-full pb-4">{children}</ScrollArea>
+    return <ScrollArea className="h-96 w-full">{children}</ScrollArea>
 }
 export function WidgetScrollContent({ children }: { children: ReactNode }) {
-    return <div className="grid gap-2 px-3">{children}</div>
+    return <div className="grid gap-2">{children}</div>
 }
 export function WidgetScrollItem({
     children,
@@ -25,7 +25,7 @@ export function WidgetScrollItem({
             >
                 {children}
             </Link>
-            <Separator className="my-4 group-last:hidden" />
+            <Separator className="my-4 group-last:hidden opacity-40" />
         </div>
     )
 }
@@ -42,11 +42,7 @@ export function WidgetScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
     )
 }
 export function WidgetScrollItemFooter({ children }: { children: ReactNode }) {
-    return (
-        <div className="grid gap-1 text-center w-full">
-            {children}
-        </div>
-    )
+    return <div className="grid gap-1 text-center w-full">{children}</div>
 }
 export function WidgetScrollItemCaption({ children }: { children: ReactNode }) {
     return (
@@ -55,6 +51,10 @@ export function WidgetScrollItemCaption({ children }: { children: ReactNode }) {
         </div>
     )
 }
-export function WidgetScrollItemTimestamp({ children }: { children: ReactNode }) {
+export function WidgetScrollItemTimestamp({
+    children,
+}: {
+    children: ReactNode
+}) {
     return <div className="text-muted-foreground text-xs">{children}</div>
 }

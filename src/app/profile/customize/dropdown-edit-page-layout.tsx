@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import {
+    AlertCircleIcon,
     Columns2Icon,
     Columns3Icon,
     LayoutIcon,
@@ -21,6 +22,12 @@ import {
 import { updateLayout } from './actions'
 import { InferSelectModel } from 'drizzle-orm'
 import { users } from '@/drizzle/schema'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export function DropdownEditPageLayout({
     layout,
@@ -45,12 +52,28 @@ export function DropdownEditPageLayout({
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost">
-                    <LayoutIcon className="mr-1 h-4 w-4" /> Layout
+                    <LayoutIcon className="mr-1 h-4 w-4" />
+                    <span className="hidden sm:block">Layout</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
                 <DropdownMenuGroup>
-                    <DropdownMenuLabel>Widget grid</DropdownMenuLabel>
+                    <DropdownMenuLabel className='flex items-center'>
+                        Widget grid
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <AlertCircleIcon className="ml-2 h-3 w-3" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p className='text-wrap'>
+                                        In mobile devices, grid view is limited
+                                        to 1 column.
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </DropdownMenuLabel>
                     <DropdownMenuCheckboxItem
                         checked={layout === 'grid1x1'}
                         onClick={() => handleChangeGrid('grid1x1')}

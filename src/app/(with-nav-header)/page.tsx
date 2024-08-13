@@ -18,14 +18,16 @@ export default function Home() {
 
 function HeroSection() {
     return (
-        <section className="w-full py-10 md:py-24 lg:py-32 border-b">
-            <div className="px-3 md:px-28 md:grid grid-cols-2">
+        <section
+            id="#feed-page"
+            className="w-full py-10 md:py-24 lg:py-28 border-b"
+        >
+            <div className="px-3 md:px-60 md:grid grid-cols-[4fr,3fr]">
                 <div className="flex flex-col justify-center">
-                    <h1 className="text-3xl font-bold tracking-tighter md:text-6xl xl:text-7xl/none">
-                        All your social media updates
-                        <br /> in one place.
+                    <h1 className="text-3xl font-bold tracking-tighter md:text-6xl xl:text-6xl/none">
+                        Aggregate your <br/> social media updates in one place.
                     </h1>
-                    <p className="max-w-[700px] text-muted-foreground md:text-xl mt-3">
+                    <p className="max-w-[700px] text-muted-foreground md:text-xl mt-6">
                         Aggregate posts from all your social media platforms,
                         customize your page, and easily share your updates.
                     </p>
@@ -42,9 +44,9 @@ function HeroSection() {
                         <div className="flex items-center rounded-md bg-secondary">
                             <label
                                 htmlFor="username"
-                                className="bg-secondary font-medium px-3 py-2 rounded-l-md text-sm text-nowrap"
+                                className="bg-secondary font-medium px-3 py-2 rounded-l-md text-nowrap text-sm"
                             >
-                                feeds-page-app.vercel.app/
+                                feedpage.co/
                             </label>
                             <Input
                                 maxLength={20}
@@ -55,12 +57,12 @@ function HeroSection() {
                                 className="pl-1 rounded-l-none border-none bg-secondary"
                             />
                         </div>
-                        <Button type="submit" variant={'default'}>
+                        <Button size="lg" type="submit">
                             Claim your Feed Page
                         </Button>
                     </form>
                 </div>
-                <div className="flex justify-center md:mt-0 mt-10">
+                <div className="flex justify-end md:mt-0 mt-10">
                     <Image
                         className="rounded-[2.5rem] ring-8 ring-secondary overflow-hidden"
                         height={550}
@@ -129,12 +131,9 @@ function GetStartedSection() {
                         </div>
                     </div>
                     <div className="flex justify-center">
-                        <Link
-                            href="/sign-in"
-                            className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-                        >
-                            Sign Up Now
-                        </Link>
+                        <Button asChild size={'lg'}>
+                            <Link href="/sign-in">Sign Up Now</Link>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -162,13 +161,13 @@ function PricingSection() {
                     <div className="mx-auto max-w-md rounded-lg border bg-card p-6 shadow-sm md:p-8">
                         <div className="flex flex-col items-center gap-4">
                             <div className="text-4xl font-bold">$20</div>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground">
                                 Lifetime Access
                             </p>
-                            <Button className="w-full">
+                            <Button size="lg" className="w-full">
                                 <Link href="sign-in">Get Started</Link>
                             </Button>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground">
                                 No monthly fees, no hidden costs.
                             </p>
                         </div>
@@ -184,8 +183,11 @@ function Footer() {
         <footer className="border-t grid grid-cols-3 px-12 md:px-40 py-16 text-sm bg-card text-card-foreground">
             <div className="flex flex-col gap-1 w-max">
                 <h3 className="font-semibold uppercase mb-2">Links</h3>
-                <Link className="hover:underline underline-offset-4" href="/">
-                    Home
+                <Link
+                    className="hover:underline underline-offset-4"
+                    href="#feed-page"
+                >
+                    Feed Page
                 </Link>
                 <Link
                     className="hover:underline underline-offset-4"

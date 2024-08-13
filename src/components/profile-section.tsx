@@ -2,19 +2,19 @@ import { MapPinIcon } from 'lucide-react'
 import { ReactNode } from 'react'
 
 export function ProfileSection({ children }: { children: ReactNode }) {
-    return <div className="flex flex-col h-full">{children}</div>
+    return <div className="flex flex-col h-full items-center">{children}</div>
 }
 
 export function ProfileSectionContent({ children }: { children: ReactNode }) {
     return (
-        <div className="flex lg:flex-col items-center lg:items-start">
+        <div className="flex items-center">
             {children}
         </div>
     )
 }
 
 export function ProfileSectionImage({ children }: { children: ReactNode }) {
-    return <div className="lg:pl-16 mt-1">{children}</div>
+    return <div className='mr-1'>{children}</div>
 }
 
 export function ProfileSectionInfoContainer({
@@ -22,7 +22,7 @@ export function ProfileSectionInfoContainer({
 }: {
     children: ReactNode
 }) {
-    return <div className="lg:pl-14 mt-1">{children}</div>
+    return <div className=''>{children}</div>
 }
 
 export function ProfileSectionInfo({
@@ -36,7 +36,7 @@ export function ProfileSectionInfo({
 }) {
     return (
         <div
-            className="rounded-md transition-colors lg:w-96
+            className="rounded-md transition-colors max-w-96
             p-3 text-left font-sans"
         >
             <h2 className="w-full text-2xl lg:text-4xl font-bold">

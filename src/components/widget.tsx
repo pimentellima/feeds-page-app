@@ -21,8 +21,7 @@ export function WidgetGrid({
             style={{
                 gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
             }}
-            className="flex flex-col gap-4 col-start-2 sm:grid
-        sm:gap-4 sm:mt-20 pb-10 sm:pr-16 pt-5 sm:pt-0"
+            className="flex flex-col lg:grid w-full gap-4 pb-5 lg:pb-10"
         >
             {children}
         </div>
@@ -35,18 +34,14 @@ export const Widget = forwardRef<
 >(({ className, ...props }, ref) => (
     <div
         ref={ref}
-        className="rounded-lg border bg-card text-card-foreground shadow-sm 
-        text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4 font-sans"
+        className="rounded-lg bg-card text-card-foreground shadow-md
+        text-sm h-[450px] hover:bg-card/70 transition-colors space-y-4 font-sans p-5"
         {...props}
     />
 ))
 
 export function WidgetHeader({ children }: { children: ReactNode }) {
-    return (
-        <div className="flex justify-between w-full px-5 pt-5 pb-2">
-            {children}
-        </div>
-    )
+    return <div className="flex justify-between w-full">{children}</div>
 }
 export function WidgetTitle({ children }: { children: ReactNode }) {
     return (
@@ -88,7 +83,7 @@ export function WidgetOptions({
 
 export function WidgetContent({ children }: { children: ReactNode }) {
     return (
-        <div className="p-5 pt-0 flex justify-center w-full h-96 items-center">
+        <div className="flex justify-center w-full h-96 items-center mt-5">
             {children}
         </div>
     )
@@ -134,13 +129,10 @@ export function WidgetTitleTiktok({
 export function WidgetTitleYoutube({
     channel,
 }: {
-    channel?: { customUrl?: string | null; title?: string | null } | null
+    channel?: { url?: string | null; title?: string | null } | null
 }) {
-    return channel?.customUrl ? (
-        <Link
-            className="flex"
-            href={'https://youtube.com/' + channel.customUrl}
-        >
+    return channel?.url ? (
+        <Link className="flex" href={'https://youtube.com/' + channel.url}>
             <SocialLinkIcon className="mr-1" linkType="youtube" />
             <p>{channel.title}</p>
         </Link>
@@ -158,8 +150,8 @@ export function WidgetTitleSpotify({ profile }: { profile?: SpotifyProfile }) {
             <p>{profile.display_name}</p>
         </Link>
     ) : (
-        <div className="flex">
-            <SpotifyIcon className="h-5 w-5 text-white fill-green-600 " />
+        <div className="flex items-center">
+            <SpotifyIcon className="mr-1 h-5 w-5 text-white fill-green-600 " />
         </div>
     )
 }

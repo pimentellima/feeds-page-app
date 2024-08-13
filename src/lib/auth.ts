@@ -6,8 +6,6 @@ import {
 import { AuthOptions } from 'next-auth'
 import { getServerSession } from 'next-auth/next'
 import GoogleProvider from 'next-auth/providers/google'
-import GithubProvider from 'next-auth/providers/github'
-import TiktokProvider from 'next-auth/providers/github'
 import Credentials from 'next-auth/providers/credentials'
 import * as z from 'zod'
 import { eq } from 'drizzle-orm'

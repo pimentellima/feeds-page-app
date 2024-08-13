@@ -46,7 +46,7 @@ export default function WidgetScrollSpotify({ media }: { media: SpotifyPlayedTra
                                     </WidgetScrollItemCaption>
                                 </WidgetScrollItemFooter>
                             </Link>
-                            <Separator className="my-2 group-last:hidden" />
+                            <Separator className="my-2 group-last:hidden opacity-40" />
                         </div>
                     ))}
             </WidgetScrollContent>

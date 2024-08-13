@@ -259,7 +259,7 @@ function ButtonAddWidget({
     return (
         <Button
             onClick={onClickAddWidget}
-            className="text-sm h-[450px] hover:bg-card/70 bg-card text-card-foreground border transition-colors space-y-4"
+            className="text-sm h-[450px] hover:bg-card/70 bg-card text-card-foreground transition-colors space-y-4"
         >
             <div className="h-full w-full flex justify-center items-center flex-col">
                 <PlusIcon className="h-14 w-14" />

@@ -13,7 +13,11 @@ import { PaletteIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { updateUserTheme } from './actions'
 
-export default function DropdownEditPageTheme() {
+export default function DropdownEditPageTheme({
+    trigger,
+}: {
+    trigger?: React.ReactNode
+}) {
     const { forcedTheme } = useTheme()
     const { toast } = useToast()
 
@@ -33,10 +37,12 @@ export default function DropdownEditPageTheme() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost">
-                    <PaletteIcon className="mr-1 h-4 w-4" />
-                    <span>Theme</span>
-                </Button>
+                {trigger || (
+                    <Button variant="ghost">
+                        <PaletteIcon className="sm:mr-1 mr-0 h-4 w-4" />
+                        <span className='hidden sm:block'>Theme</span>
+                    </Button>
+                )}
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-44">
                 <DropdownMenuRadioGroup
