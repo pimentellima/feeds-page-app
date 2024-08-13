@@ -55,6 +55,7 @@ export async function fetchInstagramMedia(
 
     const responseJson = (await response.json())
         .data as InstagramMediaResponse[]
+    console.log(responseJson[0])
     return responseJson.map((i) => ({
         id: i.id,
         caption: i.caption,

@@ -90,10 +90,7 @@ export default async function CustomizePage() {
                 </ProfileSection>
                 <div className="w-full">
                     {user.layout === 'list' ? (
-                        <div
-                            className="flex flex-col gap-4 col-start-2 lg:grid
-                            lg:gap-4 lg:mt-20 pb-10 lg:pr-16 pt-5 lg:pt-0 font-sans"
-                        >
+                        <div>
                             {user.integrationTokens.length === 0 ? (
                                 <span className="h-min rounded-md border p-4 text-center">
                                     No integrations. Click on Integrations to

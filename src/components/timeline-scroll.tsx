@@ -32,37 +32,36 @@ export default async function TimelineScroll({ userId }: { userId: string }) {
         return <div className="h-min rounded-md border p-4">No updates</div>
 
     return (
-        <ScrollArea className="flex h-min max-h-[80vh] flex-col overflow-y-auto border rounded-md text-card-foreground">
+        <ScrollArea className="flex h-min max-h-[80vh] flex-col overflow-y-auto rounded-md text-card-foreground">
             {timelineItems.map((t) => (
                 <div
                     key={t.id}
                     className="flex border-b p-4 last:border-none
                                     bg-card hover:bg-card/70 transition-colors items-center"
                 >
-                    <div className="flex w-full flex-wrap text-nowrap">
+                    <div className="flex w-full flex-wrap text-sm sm:text-base">
                         <div className="flex items-center">
-                            <SocialLinkIcon
-                                className="mr-1"
-                                linkType={t.type}
-                            />
+                            <span className="mr-1">
+                                <SocialLinkIcon linkType={t.type} />
+                            </span>
                             <Link
-                                className="underline-offset-4 hover:underline font-medium mr-1 tracking-tight"
+                                className="underline-offset-4 hover:underline font-medium mr-1"
                                 href={t.profile.link}
                             >
                                 {t.profile.username}
                             </Link>
                         </div>
-                        <Link className="flex-1" href={t.link || ''}>
+                        <Link className="mr-2 flex-1 text-nowrap" href={t.link || ''}>
                             {t.caption}
                         </Link>
-                    </div>
-                    <div className="flex justify-end pl-2 text-nowrap">
-                        <p className="text-xs md:text-sm text-muted-foreground">
-                            {!!t.timestamp &&
-                                formatDistanceToNow(t.timestamp, {
-                                    addSuffix: true,
-                                })}
-                        </p>
+                        <div className="flex items-center justify-end text-nowrap">
+                            <p className="text-xs md:text-sm text-muted-foreground">
+                                {!!t.timestamp &&
+                                    formatDistanceToNow(t.timestamp, {
+                                        addSuffix: true,
+                                    })}
+                            </p>
+                        </div>
                     </div>
                 </div>
             ))}

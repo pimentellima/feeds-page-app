@@ -1,8 +1,6 @@
 import getUserPinterestData from '@/lib/get-user-pinterest-data'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const revalidate = 1200
-
 export async function GET(
     req: NextRequest,
     { params }: { params: { userId: string } }

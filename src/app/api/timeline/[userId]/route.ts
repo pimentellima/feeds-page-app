@@ -19,8 +19,6 @@ export interface TimelineItem {
     type: 'instagram' | 'tiktok' | 'pinterest' | 'youtube'
 }
 
-export const revalidate = 1200
-
 export async function GET(
     req: NextRequest,
     { params }: { params: { userId: string } }
