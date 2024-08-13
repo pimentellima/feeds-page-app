@@ -1,5 +1,4 @@
-# foto de perfil
-# integrações facebook, pinterest, reddit
-# olhar respostas de erro
-# planos, pagamentos, config stripe
-# landing page
+# integraçao facebook
+# links facebook, website, shopify, spotify
+# compartilhar link
+# analytics

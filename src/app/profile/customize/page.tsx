@@ -27,6 +27,7 @@ import DropdownEditPageTheme from './dropdown-edit-page-theme'
 import TimelineScroll from '../../../components/timeline-scroll'
 import { WidgetsEditPanel } from './widgets-edit-panel'
 import DialogMobileView from './dialog-mobile-view'
+import DialogSharePage from './dialog-share-page'
 
 export default async function CustomizePage() {
     const session = await auth()
@@ -147,6 +148,7 @@ function MenuItems({
                 />
             </div>
             <div className="flex justify-end">
+                {user.username && <DialogSharePage username={user.username} />}
                 <div className="hidden sm:block">
                     <DialogMobileView />
                 </div>
