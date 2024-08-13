@@ -40,9 +40,11 @@ export default async function CustomizePage() {
     const subscription = await getSubscriptionByUserId(session.user.id)
 
     return (
-        <div className="px-3 py-3 md:px-24 lg:px-60">
-            <MenuItems hasSubscription={!!subscription} user={user} />
-            <div className="flex flex-col items-center gap-3 mt-5">
+        <>
+            <div className="px-5 py-3 md:px-24 lg:px-60">
+                <MenuItems hasSubscription={!!subscription} user={user} />
+            </div>
+            <div className="flex flex-col items-center py-3 px-3 md:px-24 lg:px-60">
                 <ProfileSection>
                     <ProfileSectionContent>
                         <ProfileSectionImage>
@@ -54,7 +56,6 @@ export default async function CustomizePage() {
                             <DialogEditProfile
                                 user={{
                                     bio: user.bio,
-                                    location: user.location,
                                     name: user.name,
                                     username: user.username,
                                 }}
@@ -87,7 +88,7 @@ export default async function CustomizePage() {
                         </>
                     </ProfileSectionLinks>
                 </ProfileSection>
-                <div className="mt-3 w-full">
+                <div className="w-full">
                     {user.layout === 'list' ? (
                         <div
                             className="flex flex-col gap-4 col-start-2 lg:grid
@@ -126,7 +127,7 @@ export default async function CustomizePage() {
                     />
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

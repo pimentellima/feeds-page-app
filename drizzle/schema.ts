@@ -23,7 +23,6 @@ export const users = pgTable('users', {
         .primaryKey(),
     name: text('name'),
     username: text('username'),
-    location: text('location'),
     bio: text('bio'),
     layout: layoutEnum('layout').default('grid2x2'),
     theme: text('theme'),

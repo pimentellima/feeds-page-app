@@ -13,7 +13,6 @@ export const profileSchema = z.object({
     username: z.string().max(20, {
         message: 'Username must be 20 characters or less',
     }),
-    location: z.string().nullable().default(''),
 })
 
 export type ProfileValues = z.infer<typeof profileSchema>

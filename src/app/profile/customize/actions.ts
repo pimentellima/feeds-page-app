@@ -74,7 +74,7 @@ export async function updateUserProfile(values: ProfileValues) {
         if (!session?.user) return 'Unauthenticated'
         const data = profileSchema.parse(values)
 
-        const { name, bio, username, location } = data
+        const { name, bio, username } = data
 
         if (username) {
             const existingUsername = await db.query.users.findFirst({
@@ -88,7 +88,7 @@ export async function updateUserProfile(values: ProfileValues) {
 
         await db
             .update(users)
-            .set({ bio, name, username, location })
+            .set({ bio, name, username })
             .where(eq(users.id, session.user.id))
         revalidatePath('/profile/customize')
     } catch (e) {

@@ -58,7 +58,7 @@ export default async function UserPage({
     }
 
     return (
-        <div className="flex flex-col items-center gap-3 py-3 px-3 md:px-24 lg:px-60">
+        <div className="flex flex-col items-center py-3 px-5 md:px-24 lg:px-60">
             <ProfileSection>
                 <ProfileSectionContent>
                     <ProfileSectionImage>
@@ -81,7 +81,7 @@ export default async function UserPage({
                     ))}
                 </ProfileSectionLinks>
             </ProfileSection>
-            <div className="mt-3 w-full">
+            <div className="w-full">
                 {user.layout === 'list' ? (
                     <div
                         className="flex flex-col gap-4 col-start-2 lg:grid
@@ -140,7 +140,7 @@ export default async function UserPage({
                 )}
             </div>
             <Button
-                className="mb-5 sm:mb-0 sm:fixed bottom-5 right-5"
+                className="my-3 sm:my-0 sm:fixed bottom-5 right-5"
                 variant={'secondary'}
                 size={'sm'}
                 asChild
