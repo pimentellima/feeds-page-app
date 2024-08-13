@@ -6,7 +6,7 @@ export default function DialogMobileView() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="ghost">
+                <Button variant="ghost" size={'sm'}>
                     <SmartphoneIcon className="mr-1 h-4 w-4" />
                     Mobile view
                 </Button>
