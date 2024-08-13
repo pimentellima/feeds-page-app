@@ -1,6 +1,8 @@
 import getUserTiktokData from '@/lib/get-user-tiktok-data'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const revalidate = 600
+
 export async function GET(
     req: NextRequest,
     { params }: { params: { userId: string } }
