@@ -39,27 +39,21 @@ export default async function TimelineScroll({ userId }: { userId: string }) {
                     className="flex border-b p-4 last:border-none
                                     bg-card hover:bg-card/70 transition-colors items-center"
                 >
-                    <div className="flex w-full flex-wrap text-sm sm:text-base">
-                        <div className="flex items-center">
-                            <span className="mr-1">
-                                <SocialLinkIcon linkType={t.type} />
-                            </span>
-                            <Link
-                                className="underline-offset-4 hover:underline font-medium mr-1"
-                                href={t.profile.link}
-                            >
-                                {t.profile.username}
-                            </Link>
-                        </div>
-                        <Link className="mr-2 flex-1 text-nowrap" href={t.link || ''}>
+                    <div className="flex w-full flex-wrap text-sm sm:text-base items-center gap-1">
+                        <SocialLinkIcon linkType={t.type} />
+                        <Link
+                            className="underline-offset-4 hover:underline font-medium"
+                            href={t.profile.link}
+                        >
+                            {t.profile.username}
+                        </Link>
+                        <Link className="sm:flex-1" href={t.link || ''}>
                             {t.caption}
                         </Link>
-                        <div className="flex items-center justify-end text-nowrap">
+                        <div className="flex justify-end flex-1 text-nowrap">
                             <p className="text-xs md:text-sm text-muted-foreground">
                                 {!!t.timestamp &&
-                                    formatDistanceToNow(t.timestamp, {
-                                        addSuffix: true,
-                                    })}
+                                    formatDistanceToNow(t.timestamp)}
                             </p>
                         </div>
                     </div>
