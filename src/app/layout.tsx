@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
     title: 'Feeds Page',
+    description: 'Aggregate your social media updates in one place.',
 }
 
 export default function RootLayout({
