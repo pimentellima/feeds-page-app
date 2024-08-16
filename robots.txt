@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /api/
-Disallow: /private/
-Allow: /public/
+Disallow: /
+Allow: /$
 Sitemap: https://feeds-page-app.vercel.app/sitemap.xml
