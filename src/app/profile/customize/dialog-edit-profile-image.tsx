@@ -66,13 +66,7 @@ export default function DialogEditProfileImage({ imageUrl }: { imageUrl?: string
                         type="file"
                     />
                     {imageUrl || previewUrl ? (
-                        <Image
-                            className="h-48 w-48 rounded-full"
-                            height={200}
-                            width={200}
-                            src={previewUrl || imageUrl || ''}
-                            alt="profile image"
-                        />
+                        <UserAvatar imageUrl={previewUrl || imageUrl} />
                     ) : null}
                     <Button className="my-3" variant="link" asChild>
                         <Label htmlFor="file">
