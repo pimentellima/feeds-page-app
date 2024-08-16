@@ -14,7 +14,7 @@ export const storage = new Storage({
 
 export const bucket = storage.bucket(process.env.GCS_BUCKET as string)
 
-export const baseGCSUrl = `http://storage.googleapis.com/${bucket.name}`
+export const baseGCSUrl = `https://storage.googleapis.com/${bucket.name}`
 
 export async function uploadFile(file: File): Promise<string> {
     const arrayBuffer = await file.arrayBuffer()
