@@ -37,7 +37,7 @@ export default async function UpgradePage({
     }
 
     if (!searchParams.session_id && !searchParams.canceled) {
-        return redirect('/profile-customize')
+        return redirect('/profile/customize')
     }
 
     const checkoutSession = searchParams.session_id
