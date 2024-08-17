@@ -22,6 +22,7 @@ import { WidgetSpotify } from './widget-spotify'
 import { WidgetTiktok } from './widget-tiktok'
 import { WidgetYoutube } from './widget-youtube'
 import { auth } from '@/lib/auth'
+import { WidgetTwitch } from './widget-twitch'
 
 export const revalidate = 1200
 
@@ -126,6 +127,13 @@ export default async function UserPage({
                             if (widget.type === 'pinterestIntegration')
                                 return (
                                     <WidgetPinterest
+                                        key={widget.id}
+                                        userId={user.id}
+                                    />
+                                )
+                            if (widget.type === 'twitchIntegration')
+                                return (
+                                    <WidgetTwitch
                                         key={widget.id}
                                         userId={user.id}
                                     />
