@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { FormValues, schema } from './schema'
 import { FloatingLabelInput } from '@/components/ui/floating-input'
+import FacebookIcon from '@/components/facebook-icon'
 
 export default function SignInForm() {
     const {
@@ -107,6 +108,14 @@ export default function SignInForm() {
                 >
                     <GoogleIcon className="w-5 h-5 mr-2" />
                     Sign in with Google
+                </Button>
+                <Button
+                    size={'lg'}
+                    onClick={() => signIn('facebook')}
+                    className="w-full mt-2"
+                >
+                    <FacebookIcon className="w-6 h-6 mr-2" />
+                    Sign in with Facebook
                 </Button>
             </CardFooter>
         </Card>

@@ -33,7 +33,6 @@ export function WidgetScrollItemImage({ mediaUrl }: { mediaUrl: string }) {
     return (
         <Image
             className="rounded-md object-contain mb-2"
-            quality={75}
             src={mediaUrl}
             alt="Post image"
             width={280}
