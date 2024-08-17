@@ -39,6 +39,9 @@ export const socialLinksEnum = pgEnum('socialLinksEnum', [
     'linkedin',
     'github',
     'youtube',
+    'twitch',
+    'facebook',
+    'website'
 ])
 
 export const integrationTypeEnum = pgEnum('integrationType', [

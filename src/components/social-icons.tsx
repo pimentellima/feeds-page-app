@@ -9,6 +9,9 @@ import YoutubeIcon from '@/components/youtube-icon'
 import { cn } from '@/lib/utils'
 
 import { SVGProps } from 'react'
+import FacebookIcon from './facebook-icon'
+import TwitchIcon from './twitch-icon'
+import { GlobeIcon } from 'lucide-react'
 
 export function SocialLinkIcon({
     linkType,
@@ -24,6 +27,9 @@ export function SocialLinkIcon({
         | 'github'
         | 'spotify'
         | 'pinterest'
+        | 'facebook'
+        | 'twitch'
+        | 'website'
 }) {
     if (linkType === 'tiktok')
         return (
@@ -99,6 +105,32 @@ export function SocialLinkIcon({
                 {...props}
             />
         )
-
+    if (linkType === 'facebook')
+        return (
+            <FacebookIcon
+                className={cn('sm:h-4 sm:w-4 h-4 w-4 text-blue-500', className)}
+                {...props}
+            />
+        )
+    if (linkType === 'twitch')
+        return (
+            <TwitchIcon
+                className={cn(
+                    'sm:h-4 sm:w-4 h-4 w-4 text-purple-700',
+                    className
+                )}
+                {...props}
+            />
+        )
+    if (linkType === 'website')
+        return (
+            <GlobeIcon
+                className={cn(
+                    'sm:h-4 sm:w-4 h-4 w-4 text-foreground',
+                    className
+                )}
+                {...props}
+            />
+        )
     return null
 }

@@ -248,6 +248,33 @@ function SelectSocialLinkField({
                         Youtube
                     </div>
                 </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'twitch')}
+                    value="twitch"
+                >
+                    <div className="flex items-center gap-2">
+                        <SocialLinkIcon linkType="twitch" />
+                        Twitch
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'facebook')}
+                    value="facebook"
+                >
+                    <div className="flex items-center gap-2">
+                        <SocialLinkIcon linkType="facebook" />
+                        Facebook
+                    </div>
+                </SelectItem>
+                <SelectItem
+                    disabled={userLinks.some((l) => l.type === 'website')}
+                    value="website"
+                >
+                    <div className="flex items-center gap-2">
+                        <SocialLinkIcon linkType="website" />
+                        Website
+                    </div>
+                </SelectItem>
             </SelectContent>
         </Select>
     )

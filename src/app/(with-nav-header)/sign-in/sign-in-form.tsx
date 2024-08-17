@@ -114,7 +114,7 @@ export default function SignInForm() {
                     onClick={() => signIn('facebook')}
                     className="w-full mt-2"
                 >
-                    <FacebookIcon className="w-6 h-6 mr-2" />
+                    <FacebookIcon className="w-5 h-5 mr-2" />
                     Sign in with Facebook
                 </Button>
             </CardFooter>
