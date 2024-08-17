@@ -51,6 +51,8 @@ import WidgetPinterestEdit from './widget-pinterest-edit'
 import WidgetSpotifyEdit from './widget-spotify-edit'
 import WidgetTiktokEdit from './widget-tiktok-edit'
 import WidgetYoutubeEdit from './widget-youtube-edit'
+import TwitchIcon from '@/components/twitch-icon'
+import WidgetTwitchEdit from './widget-twitch-edit'
 
 type Widget = {
     id: string
@@ -234,6 +236,15 @@ export function WidgetsEditPanel({
                                 widgetId={widget.id}
                             />
                         )
+                    if (widget.type === 'twitchIntegration')
+                        return (
+                            <WidgetTwitchEdit
+                                key={widget.id}
+                                removeWidget={removeWidget}
+                                userId={userId}
+                                widgetId={widget.id}
+                            />
+                        )
                     if (!widget.type)
                         return (
                             <WidgetSelectType
@@ -320,6 +331,12 @@ function WidgetSelectType({
                                 <div className="flex items-center">
                                     <InstagramIcon className="mr-1 text-pink-400 w-4 h-4" />
                                     Instagram media
+                                </div>
+                            </SelectItem>
+                            <SelectItem value="twitchIntegration">
+                                <div className="flex items-center">
+                                    <TwitchIcon className="mr-1 fill-purple-600 w-4 h-4" />
+                                    Twitch stream videos
                                 </div>
                             </SelectItem>
                             <SelectItem disabled value="spotifyIntegration">

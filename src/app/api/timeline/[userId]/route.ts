@@ -3,6 +3,7 @@ import { integrationTokens } from '@/drizzle/schema'
 import getUserInstagramData from '@/lib/get-user-instagram-data'
 import getUserPinterestData from '@/lib/get-user-pinterest-data'
 import getUserTiktokData from '@/lib/get-user-tiktok-data'
+import getUserTwitchData from '@/lib/get-user-twitch-data'
 import getUserYoutubeData from '@/lib/get-user-youtube-data'
 import { eq, InferSelectModel } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
@@ -16,7 +17,7 @@ export interface TimelineItem {
     }
     caption?: string
     timestamp: Date
-    type: 'instagram' | 'tiktok' | 'pinterest' | 'youtube'
+    type: 'instagram' | 'tiktok' | 'pinterest' | 'youtube' | 'twitch'
 }
 
 export async function GET(
@@ -133,6 +134,27 @@ async function getTimelineItems(
                                 username: channel.title || '',
                             },
                             timestamp: new Date(m.timestamp),
+                        })
+                    })
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+            if (t.type === 'twitchIntegration') {
+                try {
+                    const { media, user } = await getUserTwitchData(t.userId)
+
+                    media.map((m) => {
+                        timelineItems.push({
+                            type: 'twitch',
+                            id: m.id || crypto.randomUUID(),
+                            caption: 'started a stream on Twitch',
+                            link: `https://www.twitch.tv/videos/${m.id}`,
+                            profile: {
+                                link: 'https://www.twitch.tv/' + user.username,
+                                username: user.username || '',
+                            },
+                            timestamp: new Date(m.create_time),
                         })
                     })
                 } catch (e) {

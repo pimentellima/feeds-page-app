@@ -291,3 +291,64 @@ export async function getPinterestAccessToken(userId: string) {
         throw new Error('Invalid access token')
     }
 }
+
+
+export async function refreshTwitchAccessToken(
+    token: InferSelectModel<typeof integrationTokens>
+) {
+    if (token.expiresAt && token.expiresAt < new Date()) {
+        if (!token.refreshToken) throw new Error('No refresh token')
+        if (token.refreshExpiresAt && token.refreshExpiresAt < new Date())
+            throw new Error('Refresh token expired')
+
+        const response = await fetch(
+            'https://id.twitch.tv/oauth2/token',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: encodeBody({
+                    grant_type: 'refresh_token',
+                    client_id: process.env.TWITCH_CLIENT_ID!,
+                    client_secret: process.env.TWITCH_CLIENT_SECRET!,
+                    refresh_token: token.refreshToken as string,
+                }),
+            }
+        )
+        if (!response.ok) throw new Error('Error refreshing token')
+        const responseJson = (await response.json()) as {
+            access_token: string
+            refresh_token: string
+            expires_in: number
+        }
+        const expiresInMs = responseJson.expires_in * 1000
+
+        const [newToken] = await db
+            .update(integrationTokens)
+            .set({
+                accessToken: responseJson.access_token,
+                refreshToken: responseJson.refresh_token,
+                expiresAt: new Date(Date.now() + expiresInMs),
+            })
+            .where(eq(integrationTokens.id, token.id))
+            .returning()
+        return newToken.accessToken
+    }
+    return token.accessToken
+}
+
+export async function getTwitchAccessToken(userId: string) {
+    const token = await db.query.integrationTokens.findFirst({
+        where: and(
+            eq(integrationTokens.type, 'twitchIntegration'),
+            eq(integrationTokens.userId, userId)
+        ),
+    })
+    if (!token) throw new Error('No access token')
+    try {
+        return await refreshTwitchAccessToken(token)
+    } catch {
+        throw new Error('Invalid access token')
+    }
+}

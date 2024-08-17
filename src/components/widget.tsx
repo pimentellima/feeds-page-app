@@ -8,6 +8,7 @@ import TiktokIcon from './tiktok-icon'
 import SpotifyIcon from './spotify-icon'
 import { SocialLinkIcon } from './social-icons'
 import { SpotifyProfile } from '@/types/spotify'
+import TwitchIcon from './twitch-icon'
 
 export function WidgetGrid({
     gridSize,
@@ -175,6 +176,19 @@ export function WidgetTitlePinterest({
     ) : (
         <div className="flex">
             <SocialLinkIcon className="sm:h-5 sm:w-5" linkType="pinterest" />
+        </div>
+    )
+}
+
+export function WidgetTitleTwitch({ user }: { user?: { username: string } }) {
+    return user ? (
+        <Link className="flex" href={'https://www.twitch.tv/' + user.username}>
+            <TwitchIcon className="mr-1 text-purple-700 w-5 h-5" />
+            <p>{user.username}</p>
+        </Link>
+    ) : (
+        <div>
+            <TwitchIcon className="mr-1 text-purple-700 w-5 h-5" />
         </div>
     )
 }

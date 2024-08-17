@@ -51,6 +51,7 @@ export const integrationTypeEnum = pgEnum('integrationType', [
     'youtubeIntegration',
     'spotifyIntegration',
     'pinterestIntegration',
+    'twitchIntegration',
 ])
 
 export const socialLinks = pgTable('socialLinks', {

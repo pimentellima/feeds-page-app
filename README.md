@@ -1,3 +1,3 @@
 # integraçao facebook
-# links facebook, website, shopify, spotify
+# ver quais integrações devolvem um refresh token diferente
 # analytics
