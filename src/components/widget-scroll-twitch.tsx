@@ -15,6 +15,8 @@ export default function WidgetScrollTwitch({
 }: {
     media: TwitchVideos[]
 }) {
+    if (media.length === 0) return <p>No recent updates</p>
+    
     return (
         <WidgetScroll>
             <WidgetScrollContent>

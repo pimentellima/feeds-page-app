@@ -15,6 +15,8 @@ export default function WidgetScrollPinterest({
 }: {
     media: PinterestMedia[]
 }) {
+    if (media.length === 0) return <p>No recent updates</p>
+
     return (
         <WidgetScroll>
             <WidgetScrollContent>

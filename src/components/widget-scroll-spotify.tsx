@@ -12,6 +12,8 @@ import { Separator } from './ui/separator'
 import { SpotifyPlayedTrack } from '@/types/spotify'
 
 export default function WidgetScrollSpotify({ media }: { media: SpotifyPlayedTrack[] }) {
+    if (media.length === 0) return <p>No recent updates</p>
+
     return (
         <WidgetScroll>
             <WidgetScrollContent>

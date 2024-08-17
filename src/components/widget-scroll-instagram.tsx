@@ -15,6 +15,8 @@ export default function WidgetScrollInstagram({
 }: {
     media: InstagramMedia[]
 }) {
+    if (media.length === 0) return <p>No recent updates</p>
+
     return (
         <WidgetScroll>
             <WidgetScrollContent>
