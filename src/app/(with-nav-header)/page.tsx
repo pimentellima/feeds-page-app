@@ -46,7 +46,7 @@ function HeroSection() {
                                 htmlFor="username"
                                 className="bg-secondary font-medium px-3 py-2 rounded-l-md text-nowrap text-sm"
                             >
-                                feedpage.co/
+                                feedpage.me/
                             </label>
                             <Input
                                 maxLength={20}
