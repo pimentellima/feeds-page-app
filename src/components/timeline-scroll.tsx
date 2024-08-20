@@ -50,8 +50,8 @@ export default async function TimelineScroll({ userId }: { userId: string }) {
                         <Link className="sm:flex-1" href={t.link || ''}>
                             {t.caption}
                         </Link>
-                        <div className="flex justify-end flex-1 text-nowrap">
-                            <p className="text-xs md:text-sm text-muted-foreground">
+                        <div className="ml-1 flex justify-end flex-1">
+                            <p className="text-xs md:text-sm text-muted-foreground text-nowrap">
                                 {!!t.timestamp &&
                                     formatDistanceToNow(t.timestamp)}
                             </p>
