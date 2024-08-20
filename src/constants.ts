@@ -14,14 +14,14 @@ export const planPrice =
         : 'price_1PjqYkEyugco4uX2723GUXyS'
 
 export const themes = [
-    { name: 'default', gradient: '#0b2b13' },
-    { name: 'walnut-brown', gradient: '#f3ece4' },
+    { name: 'default', gradient: '#bdc2db' },
     { name: 'dark-cyan', gradient: '#091a1d' },
-    { name: 'aspargus-green', gradient: '#e9ece8' },
+    { name: 'walnut-brown', gradient: '#f3ece4' },
     { name: 'ultra-pink', gradient: '#270b1e' },
-    { name: 'blush-pink', gradient: '#fccfcf' },
-    { name: 'lavender-mist', gradient: '#1e0e2d' },
-    { name: 'pastel-blue', gradient: '#e1e4f3' },
-    { name: 'dark-chocolate', gradient: '#34220e' },
+    { name: 'aspargus-green', gradient: '#e9ece8' },
+    { name: 'dark-green', gradient: '#0f2810' },
     { name: 'pale-rose', gradient: '#f2e5e5' },
+    { name: 'dark-chocolate', gradient: '#34220e' },
+    { name: 'pastel-blue', gradient: '#e1e4f3' },
+    { name: 'lavender-mist', gradient: '#1e0e2d' },
 ]

@@ -69,7 +69,7 @@ function HeroSection() {
                         width={275}
                         quality={100}
                         alt="Cellphone mockup"
-                        src="/list-view-sem-moldura.png"
+                        src="/list-view-sem-moldura-dark.png"
                     />
                 </div>
             </div>
