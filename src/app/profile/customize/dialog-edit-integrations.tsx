@@ -19,7 +19,7 @@ import ButtonConnectAccount from './button-connect-account'
 
 export default function DialogEditIntegrations({
     integrations = [],
-    trigger
+    trigger,
 }: {
     integrations: InferSelectModel<typeof integrationTokens>[]
     trigger?: React.ReactNode
@@ -53,6 +53,7 @@ export default function DialogEditIntegrations({
     const pinterestIntegration = findIntegration('pinterestIntegration')
     const spotifyIntegration = findIntegration('spotifyIntegration')
     const youtubeIntegration = findIntegration('youtubeIntegration')
+    const twitchIntegration = findIntegration('twitchIntegration')
 
     return (
         <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
@@ -60,7 +61,7 @@ export default function DialogEditIntegrations({
                 {trigger || (
                     <Button variant="ghost" size={'sm'}>
                         <LinkIcon className="mr-0 sm:mr-1 h-4 w-4" />
-                        <span className='text-xs sm:text-sm'>Accounts</span>
+                        <span className="text-xs sm:text-sm">Accounts</span>
                     </Button>
                 )}
             </DialogTrigger>
@@ -180,6 +181,27 @@ export default function DialogEditIntegrations({
                         <ButtonConnectAccount
                             label={'Connect account'}
                             url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
+                        />
+                    )}
+                </div>
+                <div className="flex justify-between">
+                    <div className="flex items-center gap-1">
+                        <SocialLinkIcon linkType="twitch" />
+                        Twitch
+                    </div>
+                    {twitchIntegration ? (
+                        <Button
+                            onClick={() =>
+                                onClickDeleteIntegration(twitchIntegration.id)
+                            }
+                            variant="destructive"
+                        >
+                            <span>Revoke access</span>
+                        </Button>
+                    ) : (
+                        <ButtonConnectAccount
+                            label={'Connect account'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/twitch'}
                         />
                     )}
                 </div>
