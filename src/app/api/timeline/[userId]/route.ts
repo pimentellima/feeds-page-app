@@ -8,6 +8,8 @@ import getUserYoutubeData from '@/lib/get-user-youtube-data'
 import { eq, InferSelectModel } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const revalidate = 600
+
 export interface TimelineItem {
     id: string
     link?: string
