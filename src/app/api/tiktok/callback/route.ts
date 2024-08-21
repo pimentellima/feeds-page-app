@@ -17,16 +17,16 @@ const handler = async (req: NextRequest, res: NextResponse) => {
         const queryParams = new URLSearchParams(url.search)
 
         const code = queryParams.get('code')
-        const state = queryParams.get('state')
+        // const state = queryParams.get('state')
 
         const cookieCsrf = cookies().get('csrfState')
 
-        if (cookieCsrf?.value !== state) {
+        /* if (cookieCsrf?.value !== state) {
             return NextResponse.json(
                 { error: 'Invalid CSRF token' },
                 { status: 400 }
             )
-        }
+        } */
         if (!code)
             return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
 
