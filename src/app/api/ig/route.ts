@@ -15,6 +15,7 @@ export function POST(req: NextRequest, res: NextResponse) {
         const url = 'https://api.instagram.com/oauth/authorize/?' + urlParams
         return NextResponse.json({ url })
     } catch (e) {
+        console.log(e)
         return NextResponse.json({ error: 'Internal error' }, { status: 500 })
     }
 }
