@@ -11,6 +11,7 @@ export async function GET(
         const tiktokData = await getUserTiktokData(params.userId)
         return NextResponse.json(tiktokData)
     } catch (e) {
+        console.log(e)
         if (e instanceof Error) {
             return NextResponse.json(
                 { message: e.message },

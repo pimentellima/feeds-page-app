@@ -11,6 +11,7 @@ export async function GET(
         const pinterestData = await getUserPinterestData(params.userId)
         return NextResponse.json(pinterestData)
     } catch (e) {
+        console.log(e)
         if (e instanceof Error) {
             return NextResponse.json(
                 { message: e.message },

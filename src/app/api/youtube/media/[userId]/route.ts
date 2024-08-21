@@ -12,6 +12,7 @@ export async function GET(
         const youtubeData = await getUserYoutubeData(userId)
         return NextResponse.json(youtubeData)
     } catch (e) {
+        console.log(e)
         if (e instanceof Error) {
             return NextResponse.json(
                 { message: e.message },

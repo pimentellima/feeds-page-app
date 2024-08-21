@@ -11,6 +11,7 @@ export async function GET(
         const spotifyData = await getUserSpotifyData(params.userId)
         return NextResponse.json(spotifyData)
     } catch (e) {
+        console.log(e)
         if (e instanceof Error) {
             return NextResponse.json(
                 { message: e.message },
