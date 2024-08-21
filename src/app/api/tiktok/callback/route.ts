@@ -42,7 +42,7 @@ const handler = async (req: NextRequest, res: NextResponse) => {
                     client_secret: process.env.TIKTOK_CLIENT_SECRET!,
                     code,
                     grant_type: 'authorization_code',
-                    redirect_uri: `${process.env.NEXT_PUBLIC_API_URL}/tiktok/callback`,
+                    redirect_uri: `${process.env.NEXT_PUBLIC_URL}/api/tiktok/callback`,
                 }),
             }
         )

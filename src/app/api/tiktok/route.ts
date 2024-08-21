@@ -10,7 +10,7 @@ export function POST() {
             scope: 'user.info.basic,video.list,user.info.profile',
             response_type: 'code',
             state: csrfState,
-            redirect_uri: `${process.env.NEXT_PUBLIC_API_URL}/tiktok/callback`,
+            redirect_uri: `${process.env.NEXT_PUBLIC_URL}/tiktok/callback`,
         })
         const url = 'https://www.tiktok.com/v2/auth/authorize/?' + urlParams
         return NextResponse.json({ url })
