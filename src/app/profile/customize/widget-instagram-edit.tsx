@@ -14,6 +14,7 @@ import ButtonConnectAccount from './button-connect-account'
 import { LoaderCircle } from 'lucide-react'
 import WidgetScrollInstagram from '@/components/widget-scroll-instagram'
 import { InstagramMedia, InstagramProfile } from '@/types/instagram'
+import { getInstagramTokenState } from './has-tokens-actions'
 
 async function fetchInstagramMediaFromApi(userId: string): Promise<{
     profile: InstagramProfile
@@ -34,10 +35,17 @@ export default function WidgetInstagramEdit({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
+    const { data: tokenState, isLoading: isLoadingToken } = useQuery({
+        queryFn: () => getInstagramTokenState(userId),
+        queryKey: ['instagramToken', userId],
+        refetchOnWindowFocus: false,
+    })
+
     const { data, isLoading, error, isError } = useQuery({
         queryFn: () => fetchInstagramMediaFromApi(userId),
         queryKey: ['instagramMedia', userId],
         refetchOnWindowFocus: false,
+        enabled: tokenState === 'Valid token',
     })
 
     const {
@@ -68,28 +76,26 @@ export default function WidgetInstagramEdit({
                 />
             </WidgetHeader>
             <WidgetContent>
-                {isLoading ? (
+                {isLoading || isLoadingToken ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                ) : isError ? (
-                    error?.message === 'No access token' ? (
-                        <ButtonConnectAccount
-                            label={'Connect your Instagram account'}
-                            url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
-                        />
-                    ) : error?.message === 'Invalid access token' ? (
-                        <div className="flex flex-col items-center gap-1">
-                            <p>Your account has been disconnected.</p>
-                            <ButtonConnectAccount
-                                label={'Reconnect'}
-                                url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
-                            />
-                        </div>
-                    ) : (
-                        <p>An error occurred fetching data.</p>
-                    )
                 ) : data ? (
                     <WidgetScrollInstagram media={data.media} />
-                ) : null}
+                ) : tokenState === 'Invalid access token' ? (
+                    <div className="flex flex-col items-center gap-1">
+                        <p>Your account has been disconnected.</p>
+                        <ButtonConnectAccount
+                            label={'Reconnect'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                        />
+                    </div>
+                ) : tokenState === 'No access token' ? (
+                    <ButtonConnectAccount
+                        label={'Connect your Instagram account'}
+                        url={process.env.NEXT_PUBLIC_URL! + '/api/ig'}
+                    />
+                ) : (
+                    <p>An error occured.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

@@ -14,6 +14,7 @@ import { LoaderCircle } from 'lucide-react'
 import ButtonConnectAccount from './button-connect-account'
 import WidgetScrollYoutube from '@/components/widget-scroll-youtube'
 import { YoutubeChannel, YoutubeVideo } from '@/types/youtube'
+import { getYoutubeTokenState } from './has-tokens-actions'
 
 async function fetchYoutubeMediaFromApi(userId: string): Promise<{
     channel: YoutubeChannel
@@ -34,10 +35,17 @@ export default function WidgetYoutubeEdit({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
+    const { data: tokenState, isLoading: isLoadingToken } = useQuery({
+        queryFn: () => getYoutubeTokenState(userId),
+        queryKey: ['youtubeToken', userId],
+        refetchOnWindowFocus: false,
+    })
+
     const { data, isLoading, error } = useQuery({
         queryFn: () => fetchYoutubeMediaFromApi(userId),
         queryKey: ['youtubeMedia', userId],
         refetchOnWindowFocus: false,
+        enabled: tokenState === 'Valid token'
     })
 
     const {
@@ -68,14 +76,11 @@ export default function WidgetYoutubeEdit({
                 />
             </WidgetHeader>
             <WidgetContent>
-                {isLoading ? (
+                {isLoading || isLoadingToken ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                ) : error?.message === 'No access token' ? (
-                    <ButtonConnectAccount
-                        label={'Connect your Youtube account'}
-                        url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
-                    />
-                ) : error?.message === 'Invalid access token' ? (
+                ) : data ? (
+                    <WidgetScrollYoutube media={data.media} />
+                ) : tokenState === 'Invalid access token' ? (
                     <div className="flex flex-col items-center gap-1">
                         <p>Your account has been disconnected.</p>
                         <ButtonConnectAccount
@@ -83,9 +88,14 @@ export default function WidgetYoutubeEdit({
                             url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
                         />
                     </div>
-                ) : data ? (
-                    <WidgetScrollYoutube media={data.media} />
-                ) : null}
+                ) : tokenState === 'No access token' ? (
+                    <ButtonConnectAccount
+                        label={'Connect your Youtube account'}
+                        url={process.env.NEXT_PUBLIC_URL! + '/api/youtube'}
+                    />
+                ) : (
+                    <p>An error occured.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

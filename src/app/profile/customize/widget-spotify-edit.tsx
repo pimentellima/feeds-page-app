@@ -14,6 +14,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle } from 'lucide-react'
 import ButtonConnectAccount from './button-connect-account'
+import { getSpotifyTokenState } from './has-tokens-actions'
 
 async function fetchSpotifyMediaFromApi(
     userId: string
@@ -33,10 +34,17 @@ export default function WidgetSpotifyEdit({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
+    const { data: tokenState, isLoading: isLoadingToken } = useQuery({
+        queryFn: () => getSpotifyTokenState(userId),
+        queryKey: ['spotifyToken', userId],
+        refetchOnWindowFocus: false,
+    })
+
     const { data, isLoading, isError, error } = useQuery({
         queryFn: () => fetchSpotifyMediaFromApi(userId),
         queryKey: ['spotifyMedia', userId],
         refetchOnWindowFocus: false,
+        enabled: tokenState === 'Valid token',
     })
 
     const {
@@ -67,31 +75,26 @@ export default function WidgetSpotifyEdit({
                 />
             </WidgetHeader>
             <WidgetContent>
-                {isLoading ? (
+                {isLoading || isLoadingToken ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                ) : isError ? (
-                    error?.message === 'No access token' ? (
-                        <ButtonConnectAccount
-                            label={'Connect your Spotify account'}
-                            url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
-                        />
-                    ) : error?.message === 'Invalid access token' ? (
-                        <div className='flex flex-col items-center gap-1'>
-                            <p>Your account has been disconnected.</p>
-                            <ButtonConnectAccount
-                                label={'Reconnect'}
-                                url={
-                                    process.env.NEXT_PUBLIC_URL! +
-                                    '/api/spotify'
-                                }
-                            />
-                        </div>
-                    ) : (
-                        <p>An error occurred fetching data.</p>
-                    )
                 ) : data ? (
                     <WidgetScrollSpotify media={data.media} />
-                ) : null}
+                ) : tokenState === 'Invalid access token' ? (
+                    <div className="flex flex-col items-center gap-1">
+                        <p>Your account has been disconnected.</p>
+                        <ButtonConnectAccount
+                            label={'Reconnect'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
+                        />
+                    </div>
+                ) : tokenState === 'No access token' ? (
+                    <ButtonConnectAccount
+                        label={'Connect your Spotify account'}
+                        url={process.env.NEXT_PUBLIC_URL! + '/api/spotify'}
+                    />
+                ) : (
+                    <p>An error occured.</p>
+                )}
             </WidgetContent>
         </Widget>
     )

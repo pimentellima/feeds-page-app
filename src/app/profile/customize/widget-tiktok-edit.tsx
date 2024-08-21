@@ -14,6 +14,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { useQuery } from '@tanstack/react-query'
 import { LoaderCircle } from 'lucide-react'
 import ButtonConnectAccount from './button-connect-account'
+import { getTiktokTokenState } from './has-tokens-actions'
 
 async function fetchTiktokMediaFromApi(
     userId: string
@@ -33,10 +34,17 @@ export default function WidgetTiktokEdit({
     widgetId: string
     removeWidget: (id: string) => void
 }) {
+    const { data: tokenState, isLoading: isLoadingToken } = useQuery({
+        queryFn: () => getTiktokTokenState(userId),
+        queryKey: ['tiktokToken', userId],
+        refetchOnWindowFocus: false,
+    })
+
     const { data, isLoading, isError, error } = useQuery({
         queryFn: () => fetchTiktokMediaFromApi(userId),
         queryKey: ['tiktokMedia', userId],
         refetchOnWindowFocus: false,
+        enabled: tokenState === 'Valid token',
     })
 
     const {
@@ -67,30 +75,26 @@ export default function WidgetTiktokEdit({
                 />
             </WidgetHeader>
             <WidgetContent>
-                {isLoading ? (
+                {isLoading || isLoadingToken ? (
                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                ) : isError ? (
-                    error?.message === 'No access token' ? (
-                        <ButtonConnectAccount
-                            label={'Connect your Tiktok account'}
-                            url={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
-                        />
-                    ) : error?.message === 'Invalid access token' ? (
-                        <div className="flex flex-col items-center gap-1">
-                            <p>Your account has been disconnected.</p>
-                            <ButtonConnectAccount
-                                label={'Reconnect'}
-                                url={
-                                    process.env.NEXT_PUBLIC_URL! + '/api/tiktok'
-                                }
-                            />
-                        </div>
-                    ) : (
-                        <p>An error occurred fetching data.</p>
-                    )
                 ) : data ? (
                     <WidgetScrollTiktok media={data.media} />
-                ) : null}
+                ) : tokenState === 'Invalid access token' ? (
+                    <div className="flex flex-col items-center gap-1">
+                        <p>Your account has been disconnected.</p>
+                        <ButtonConnectAccount
+                            label={'Reconnect'}
+                            url={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+                        />
+                    </div>
+                ) : tokenState === 'No access token' ? (
+                    <ButtonConnectAccount
+                        label={'Connect your Tiktok account'}
+                        url={process.env.NEXT_PUBLIC_URL! + '/api/tiktok'}
+                    />
+                ) : (
+                    <p>An error occured.</p>
+                )}
             </WidgetContent>
         </Widget>
     )
