@@ -13,9 +13,9 @@ import {
 export default function WidgetScrollYoutube({
     media,
 }: {
-    media: { mediaUrl: string; id: string; title: string; timestamp: string }[]
+    media?: { mediaUrl: string; id: string; title: string; timestamp: string }[]
 }) {
-    if (media.length === 0) return <p>No recent updates</p>
+    if (!media || media.length === 0) return <p>No recent updates</p>
 
     return (
         <WidgetScroll>

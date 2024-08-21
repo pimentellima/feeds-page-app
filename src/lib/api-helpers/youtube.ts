@@ -172,6 +172,7 @@ export async function fetchYoutubeMedia(
             },
         })
     const videoIds = videosResponse.data.items.map((item) => item.id?.videoId)
+    if (!videoIds || videoIds.length === 0) return []
 
     const detailedResponse = await youtube.videos.list({
         part: ['snippet,contentDetails'],
