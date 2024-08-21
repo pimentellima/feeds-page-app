@@ -13,7 +13,7 @@ export default async function (userId: string): Promise<{
 }> {
     await connectRedis()
     const cache = await client.get(`instagram-data:${userId}`)
-    
+
     if (!cache) {
         const data = await getInstagramData(userId)
         const expiresAt = new Date(Date.now() + INSTAGRAM_MEDIA_STALE_TIME_MS)
@@ -26,10 +26,10 @@ export default async function (userId: string): Promise<{
 
     const cacheJson = JSON.parse(cache) as {
         data: any
-        expiresAt: Date
+        expiresAt: string
     }
 
-    if (cacheJson.expiresAt < new Date()) {
+    if (new Date(cacheJson.expiresAt) < new Date()) {
         try {
             const data = await getInstagramData(userId)
             const expiresAt = new Date(

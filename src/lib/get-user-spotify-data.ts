@@ -22,10 +22,10 @@ export default async function (userId: string) {
 
     const cacheJson = JSON.parse(cache) as {
         data: any
-        expiresAt: Date
+        expiresAt: string
     }
 
-    if (cacheJson.expiresAt < new Date()) {
+    if (new Date(cacheJson.expiresAt) < new Date()) {
         try {
             const data = await getSpotifyData(userId)
             const expiresAt = new Date(Date.now() + SPOTIFY_MEDIA_STALE_TIME_MS)

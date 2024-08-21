@@ -27,7 +27,7 @@ export default async function (userId: string): Promise<{
         expiresAt: Date
     }
 
-    if (cacheJson.expiresAt < new Date()) {
+    if (new Date(cacheJson.expiresAt) < new Date()) {
         try {
             const data = await getTwitchData(userId)
             const expiresAt = new Date(Date.now() + TWITCH_MEDIA_STALE_TIME_MS)

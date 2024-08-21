@@ -25,10 +25,10 @@ export default async function (userId: string): Promise<{
 
     const cacheJson = JSON.parse(cache) as {
         data: any
-        expiresAt: Date
+        expiresAt: string
     }
 
-    if (cacheJson.expiresAt < new Date()) {
+    if (new Date(cacheJson.expiresAt) < new Date()) {
         try {
             const data = await getPinterestData(userId)
             const expiresAt = new Date(

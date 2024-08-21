@@ -23,10 +23,10 @@ export default async function (userId: string): Promise<{
 
     const cacheJson = JSON.parse(cache) as {
         data: { channel: YoutubeChannel; media: YoutubeVideo[] }
-        expiresAt: Date
+        expiresAt: string
     }
 
-    if (cacheJson.expiresAt < new Date()) {
+    if (new Date(cacheJson.expiresAt) < new Date()) {
         try {
             const data = await getYoutubeData(userId)
             const expiresAt = new Date(Date.now() + YOUTUBE_MEDIA_STALE_TIME_MS)
