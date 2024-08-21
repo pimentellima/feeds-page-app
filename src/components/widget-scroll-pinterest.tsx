@@ -30,7 +30,7 @@ export default function WidgetScrollPinterest({
                             <WidgetScrollItemTimestamp>
                                 {!!pin.timestamp &&
                                     formatDistanceToNow(
-                                        new Date(pin.timestamp),
+                                        new Date(pin.timestamp + '.000Z'),
                                         { addSuffix: true }
                                     )}
                             </WidgetScrollItemTimestamp>

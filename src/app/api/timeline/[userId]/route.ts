@@ -112,7 +112,7 @@ async function getTimelineItems(
                                     'https://pinterest.com/' + profile.username,
                                 username: profile.username,
                             },
-                            timestamp: new Date(m.timestamp),
+                            timestamp: new Date(m.timestamp + '.000Z'),
                         })
                     })
                 } catch (e) {
