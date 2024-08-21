@@ -75,6 +75,7 @@ const handler = async (req: NextRequest, res: NextResponse) => {
             `${process.env.NEXT_PUBLIC_URL}/profile/customize`
         )
     } catch (e) {
+        console.log(e)
         return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_URL}/error-linking-account`
         )
