@@ -8,7 +8,7 @@ import Providers from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'Feeds Page',
+    title: 'Feed Page',
     description: 'Aggregate your social media updates in one place.',
 }
 

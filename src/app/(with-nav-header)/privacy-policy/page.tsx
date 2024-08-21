@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-    title: 'Privacy policy - Feeds Page',
+    title: 'Privacy policy - Feed Page',
     description: 'Privacy Policy',
 }
 

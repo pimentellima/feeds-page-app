@@ -51,7 +51,7 @@ export default function SignUpForm({ username = '' }: { username?: string }) {
     return (
         <Card className="w-[400px]">
             <CardHeader>
-                <CardTitle className="text-2xl">Join Feeds Page</CardTitle>
+                <CardTitle className="text-2xl">Join Feed Page</CardTitle>
                 <CardDescription>Sign up for free</CardDescription>
             </CardHeader>
             <CardContent>
