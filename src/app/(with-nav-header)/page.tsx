@@ -25,7 +25,8 @@ function HeroSection() {
             <div className="px-3 md:px-60 md:grid grid-cols-[4fr,3fr]">
                 <div className="flex flex-col justify-center">
                     <h1 className="text-3xl font-bold tracking-tighter md:text-6xl xl:text-6xl/none">
-                        Aggregate your <br/> social media updates <br className='sm:hidden'/> in one place.
+                        Aggregate your <br /> social media updates{' '}
+                        <br className="sm:hidden" /> in one place.
                     </h1>
                     <p className="max-w-[700px] text-muted-foreground md:text-xl mt-3 sm:mt-6">
                         Aggregate posts from all your social media platforms,
@@ -200,6 +201,12 @@ function Footer() {
                     href="#pricing"
                 >
                     Pricing
+                </Link>
+                <Link
+                    className="hover:underline underline-offset-4"
+                    href={'mailto:matheuspimentel910@gmail.com'}
+                >
+                    Contact
                 </Link>
             </div>
             <div className="flex flex-col gap-1 w-max">
