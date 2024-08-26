@@ -29,7 +29,7 @@ function HeroSection() {
                         <br className="sm:hidden" /> in one place.
                     </h1>
                     <p className="max-w-[700px] text-muted-foreground md:text-xl mt-3 sm:mt-6">
-                        Aggregate posts from all your social media platforms,
+                        Comibine posts from all your social media platforms,
                         customize your page, and easily share your updates.
                     </p>
                     <form
@@ -113,7 +113,7 @@ function GetStartedSection() {
                                 </h3>
                                 <p className="text-muted-foreground">
                                     Link your social media profiles to start
-                                    aggregating your feeds.
+                                    customizing your feeds.
                                 </p>
                             </div>
                         </div>
@@ -155,8 +155,7 @@ function PricingSection() {
                             Pricing
                         </h2>
                         <p className="mt-4 text-muted-foreground md:text-lg">
-                            Get lifetime access to our social media feed
-                            aggregator for a one-time payment.
+                            Get lifetime access to Feed App for a one-time payment.
                         </p>
                     </div>
                     <div className="mx-auto max-w-md rounded-lg border bg-card p-6 shadow-sm md:p-8">
