@@ -5,8 +5,9 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { RocketIcon, StarsIcon } from 'lucide-react'
+import { CrownIcon, RocketIcon, StarsIcon } from 'lucide-react'
 import ButtonBuyPlan from './button-buy-plan'
+import DialogRedeemCode from './dialog-redeem-code'
 
 export default function DialogUpgradePlan() {
     return (
@@ -20,16 +21,22 @@ export default function DialogUpgradePlan() {
             <DialogContent className="sm:max-w-[425px]">
                 <div className="flex flex-col items-center justify-center gap-4 py-8">
                     <RocketIcon className="size-12 text-primary" />
-                    <div className="space-y-2 text-center">
-                        <h3 className="text-2xl font-bold">Upgrade plan</h3>
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-center">
+                            <h3 className="text-2xl font-bold">
+                                Upgrade plan{' '}
+                            </h3>
+                            <CrownIcon className="text-yellow-600 ml-2 h-5 w-5" />
+                        </div>
                         <p className="text-muted-foreground">
-                            Deploy your page and support the development
-                            of this app with a one-time payment of $20.
+                            Deploy your page and support the development of this
+                            app with a one-time payment of $20.
                         </p>
                     </div>
                 </div>
                 <DialogFooter>
-                    <div>
+                    <div className="flex gap-1">
+                        <DialogRedeemCode />
                         <ButtonBuyPlan />
                     </div>
                 </DialogFooter>

@@ -1,7 +1,7 @@
 'use client'
 import { useToast } from '@/components/ui/use-toast'
 import { createCheckoutSession } from './actions'
-import { CrownIcon } from 'lucide-react'
+import { CreditCardIcon, CrownIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function ButtonBuyPlan() {
@@ -20,9 +20,9 @@ export default function ButtonBuyPlan() {
     }
 
     return (
-        <Button onClick={onClickBuyPlan} variant={'outline'}>
-            <CrownIcon className="text-yellow-600 mr-2 h-4 w-4" />
-            <span>Get lifetime access</span>
+        <Button onClick={onClickBuyPlan} variant={'default'}>
+            <CreditCardIcon className="mr-2 h-4 w-4" />
+            <span>Checkout on stripe</span>
         </Button>
     )
 }

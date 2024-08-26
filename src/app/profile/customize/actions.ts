@@ -3,7 +3,9 @@ import { planPrice } from '@/constants'
 import { db } from '@/drizzle/index'
 import {
     integrationTokens,
+    promoCodes,
     socialLinks,
+    subscriptions,
     users,
     widgets,
 } from '@/drizzle/schema'
@@ -419,4 +421,32 @@ export async function createCheckoutSession() {
         return 'Internal error'
     }
     redirect(url)
+}
+
+export async function redeemCode(previousState: string | undefined, formData: FormData) {
+    try {
+        const session = await auth()
+        if (!session?.user) return 'Unauthenticated'
+        const code = formData.get('code')
+        console.log(code)
+        if (!code || typeof code !== 'string') {
+            return 'Invalid code'
+        }
+        const codeInDb = await db.query.promoCodes.findFirst({
+            where: eq(promoCodes.code, code),
+        })
+        if (!codeInDb || !codeInDb.valid) return 'Invalid code'
+        await db.transaction(async (db) => {
+            await db.insert(subscriptions).values({ userId: session.user.id })
+            await db
+                .update(promoCodes)
+                .set({ valid: false })
+                .where(eq(promoCodes.id, codeInDb.id))
+        })
+        revalidatePath('/profile/customize')
+    } catch (e) {
+        console.log(e)
+        return 'An error occurred'
+    }
+    return redirect('/profile/customize')
 }

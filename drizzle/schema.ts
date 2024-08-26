@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm'
 import {
+    boolean,
     integer,
     pgEnum,
     pgTable,
@@ -41,7 +42,7 @@ export const socialLinksEnum = pgEnum('socialLinksEnum', [
     'youtube',
     'twitch',
     'facebook',
-    'website'
+    'website',
 ])
 
 export const integrationTypeEnum = pgEnum('integrationType', [
@@ -53,6 +54,14 @@ export const integrationTypeEnum = pgEnum('integrationType', [
     'pinterestIntegration',
     'twitchIntegration',
 ])
+
+export const promoCodes = pgTable('promoCodes', {
+    id: text('id')
+        .default(sql`gen_random_uuid()`)
+        .primaryKey(),
+    code: text('code').default(sql`gen_random_uuid()`),
+    valid: boolean('valid').default(true),
+})
 
 export const socialLinks = pgTable('socialLinks', {
     id: text('id')
